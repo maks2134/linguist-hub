@@ -1,0 +1,62 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:17.4-alpine
+    container_name: linguist-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: linguistai
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d linguistai"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - linguist-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: linguist-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - DB_DSN=host=postgres user=postgres password=postgres dbname=linguistai port=5432 sslmode=disable
+      - JWT_SECRET=dev_jwt_secret_change_in_production
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - LOG_LEVEL=info
+      - ALLOWED_ORIGINS=http://localhost:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - linguist-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: linguist-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8080
+    depends_on:
+      - backend
+    networks:
+      - linguist-network
+
+volumes:
+  pgdata:
+
+networks:
+  linguist-network:
+    driver: bridge
