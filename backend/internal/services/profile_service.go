@@ -1,6 +1,8 @@
 package services
 
 import (
+	"errors"
+
 	"github.com/makskozlov/linguist-hub/internal/dto"
 	"github.com/makskozlov/linguist-hub/internal/models"
 	"github.com/makskozlov/linguist-hub/internal/repository"
@@ -32,7 +34,7 @@ func (s *ProfileService) SelectLanguage(userID uint, language string) (*dto.Prof
 		}, nil
 	}
 
-	if err != nil && err != gorm.ErrRecordNotFound {
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, apierror.Wrap(err, 500, "DB_ERROR")
 	}
 
@@ -79,7 +81,7 @@ func (s *ProfileService) GetProfiles(userID uint) ([]dto.ProfileResponse, error)
 func (s *ProfileService) GetProfile(profileID uint) (*dto.ProfileResponse, error) {
 	profile, err := s.profileRepo.FindByID(profileID)
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, apierror.ErrNotFound
 		}
 		return nil, apierror.Wrap(err, 500, "DB_ERROR")

@@ -1,6 +1,8 @@
 package httputil
 
 import (
+	"errors"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/makskozlov/linguist-hub/pkg/apierror"
 )
@@ -24,7 +26,8 @@ func RespondJSON(c *fiber.Ctx, statusCode int, data interface{}) error {
 }
 
 func RespondError(c *fiber.Ctx, err error) error {
-	if appErr, ok := err.(*apierror.AppError); ok {
+	var appErr *apierror.AppError
+	if errors.As(err, &appErr) {
 		return c.Status(appErr.StatusCode).JSON(Response{
 			Success: false,
 			Error: &ErrorInfo{

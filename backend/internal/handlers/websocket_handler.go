@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"log/slog"
+	"strings"
 	"time"
 
 	"github.com/gofiber/contrib/websocket"
@@ -182,7 +183,7 @@ func (h *WebSocketHandler) sendError(c *websocket.Conn, errMsg string, closeConn
 
 func splitIntoChunks(text string, chunkSize int) []string {
 	words := splitWords(text)
-	var chunks []string
+	chunks := make([]string, 0, len(words)/chunkSize+1)
 	for i := 0; i < len(words); i += chunkSize {
 		end := i + chunkSize
 		if end > len(words) {
@@ -195,31 +196,31 @@ func splitIntoChunks(text string, chunkSize int) []string {
 }
 
 func splitWords(text string) []string {
-	var words []string
-	var current string
+	words := []string{}
+	var current strings.Builder
 	for _, r := range text {
 		if r == ' ' || r == '\n' || r == '\t' {
-			if current != "" {
-				words = append(words, current)
-				current = ""
+			if current.Len() > 0 {
+				words = append(words, current.String())
+				current.Reset()
 			}
 			words = append(words, string(r))
 		} else {
-			current += string(r)
+			current.WriteRune(r)
 		}
 	}
-	if current != "" {
-		words = append(words, current)
+	if current.Len() > 0 {
+		words = append(words, current.String())
 	}
 	return words
 }
 
 func joinWords(words []string) string {
-	result := ""
+	var result strings.Builder
 	for _, w := range words {
-		result += w
+		result.WriteString(w)
 	}
-	return result
+	return result.String()
 }
 
 func wsAuthMiddleware() fiber.Handler {

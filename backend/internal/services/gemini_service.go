@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log/slog"
 	"strings"
@@ -40,18 +41,12 @@ func NewGeminiService(apiKey string) (*GeminiService, error) {
 }
 
 func logGeminiError(op string, err error) {
-	if apiErr, ok := err.(*googleapi.Error); ok {
+	var apiErr *googleapi.Error
+	if errors.As(err, &apiErr) {
 		slog.Error("gemini operation failed", "operation", op, "http_code", apiErr.Code, "error", apiErr.Message)
 	} else {
 		slog.Error("gemini operation failed", "operation", op, "error", err)
 	}
-}
-
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
 }
 
 func (s *GeminiService) Close() error {
@@ -124,7 +119,7 @@ func (s *GeminiService) TutorChat(ctx context.Context, systemPrompt string, hist
 }
 
 func (s *GeminiService) convertHistory(messages []models.ChatMessage) []*genai.Content {
-	var history []*genai.Content
+	history := make([]*genai.Content, 0, len(messages))
 	for _, msg := range messages {
 		role := "user"
 		if msg.Role == "assistant" {

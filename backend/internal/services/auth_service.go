@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -75,7 +76,7 @@ func (s *AuthService) Login(email, password string) (*dto.AuthResponse, error) {
 
 	user, err := s.userRepo.FindByEmail(email)
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, apierror.ErrInvalidCredentials
 		}
 		return nil, apierror.Wrap(err, 500, "DB_ERROR")

@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"errors"
 	"log/slog"
 	"time"
 
@@ -36,7 +37,7 @@ func NewAIService(
 func (s *AIService) DiagnosticChat(ctx context.Context, userID, profileID uint, message string) (*dto.ChatResponse, error) {
 	profile, err := s.profileRepo.FindByID(profileID)
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, apierror.ErrNotFound
 		}
 		return nil, apierror.Wrap(err, 500, "DB_ERROR")
@@ -107,7 +108,7 @@ func (s *AIService) DiagnosticChat(ctx context.Context, userID, profileID uint, 
 func (s *AIService) GeneratePlan(ctx context.Context, userID, profileID uint) (*dto.PlanResponse, error) {
 	profile, err := s.profileRepo.FindByID(profileID)
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, apierror.ErrNotFound
 		}
 		return nil, apierror.Wrap(err, 500, "DB_ERROR")
@@ -176,7 +177,7 @@ func (s *AIService) GeneratePlan(ctx context.Context, userID, profileID uint) (*
 func (s *AIService) TutorChat(ctx context.Context, userID, profileID uint, message, topic string) (*dto.ChatResponse, error) {
 	profile, err := s.profileRepo.FindByID(profileID)
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, apierror.ErrNotFound
 		}
 		return nil, apierror.Wrap(err, 500, "DB_ERROR")
@@ -229,7 +230,7 @@ func (s *AIService) TutorChat(ctx context.Context, userID, profileID uint, messa
 func (s *AIService) GetPlan(userID, profileID uint) (*dto.PlanResponse, error) {
 	profile, err := s.profileRepo.FindByID(profileID)
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, apierror.ErrNotFound
 		}
 		return nil, apierror.Wrap(err, 500, "DB_ERROR")
@@ -241,7 +242,7 @@ func (s *AIService) GetPlan(userID, profileID uint) (*dto.PlanResponse, error) {
 
 	plan, err := s.planRepo.FindByProfileID(profileID)
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, apierror.New(404, "PLAN_NOT_FOUND", "Study plan not found")
 		}
 		return nil, apierror.Wrap(err, 500, "DB_ERROR")
@@ -268,7 +269,7 @@ func (s *AIService) GetPlan(userID, profileID uint) (*dto.PlanResponse, error) {
 func (s *AIService) GetChatHistory(userID, profileID uint, context string, limit, offset int) ([]dto.ChatHistoryMessage, error) {
 	profile, err := s.profileRepo.FindByID(profileID)
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, apierror.ErrNotFound
 		}
 		return nil, apierror.Wrap(err, 500, "DB_ERROR")
