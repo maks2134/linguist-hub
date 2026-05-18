@@ -190,7 +190,6 @@ func (s *AIService) TutorChat(ctx context.Context, userID, profileID uint, messa
 	if err != nil {
 		return nil, apierror.Wrap(err, 500, "DB_ERROR")
 	}
-
 	systemPrompt := GetTutorSystemPrompt(profile.TargetLanguage, topic, profile.CurrentLevel)
 
 	response, err := s.geminiService.TutorChat(ctx, systemPrompt, history, message)
@@ -264,4 +263,38 @@ func (s *AIService) GetPlan(userID, profileID uint) (*dto.PlanResponse, error) {
 		ProfileID: plan.ProfileID,
 		Modules:   dtoModules,
 	}, nil
+}
+
+func (s *AIService) GetChatHistory(userID, profileID uint, context string, limit, offset int) ([]dto.ChatHistoryMessage, error) {
+	profile, err := s.profileRepo.FindByID(profileID)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, apierror.ErrNotFound
+		}
+		return nil, apierror.Wrap(err, 500, "DB_ERROR")
+	}
+
+	if profile.UserID != userID {
+		return nil, apierror.ErrForbidden
+	}
+
+	history, err := s.chatRepo.FindByUserIDAndContextPaginated(userID, context, profileID, limit, offset)
+	if err != nil {
+		return nil, apierror.Wrap(err, 500, "DB_ERROR")
+	}
+
+	result := make([]dto.ChatHistoryMessage, len(history))
+	for i, msg := range history {
+		result[i] = dto.ChatHistoryMessage{
+			ID:        msg.ID,
+			UserID:    msg.UserID,
+			ProfileID: msg.ProfileID,
+			Role:      msg.Role,
+			Context:   msg.Context,
+			Content:   msg.Content,
+			CreatedAt: msg.CreatedAt.Format("2006-01-02T15:04:05Z"),
+		}
+	}
+
+	return result, nil
 }

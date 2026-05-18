@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/makskozlov/linguist-hub/internal/dto"
 	"github.com/makskozlov/linguist-hub/internal/services"
+	"github.com/makskozlov/linguist-hub/pkg/apierror"
 	"github.com/makskozlov/linguist-hub/pkg/httputil"
 )
 
@@ -137,6 +138,44 @@ func (h *AIHandler) GetPlan(c *fiber.Ctx) error {
 	return httputil.RespondJSON(c, 200, resp)
 }
 
+// GetChatHistory godoc
+// @Summary Get chat history
+// @Description Get chat message history for a specific context
+// @Tags chat
+// @Produce json
+// @Security BearerAuth
+// @Param profileId path int true "Profile ID"
+// @Param context query string true "Chat context (diagnostic|tutor)"
+// @Param limit query int false "Limit (default: 0 = no limit)"
+// @Param offset query int false "Offset (default: 0)"
+// @Success 200 {object} httputil.Response{data=[]dto.ChatHistoryMessage}
+// @Failure 400 {object} httputil.Response
+// @Failure 401 {object} httputil.Response
+// @Router /chat/history/{profileId} [get]
+func (h *AIHandler) GetChatHistory(c *fiber.Ctx) error {
+	userID := c.Locals("userID").(uint)
+
+	profileID, err := c.ParamsInt("profileId")
+	if err != nil {
+		return httputil.RespondError(c, err)
+	}
+
+	context := c.Query("context")
+	if context == "" {
+		return httputil.RespondError(c, apierror.New(400, "INVALID_CONTEXT", "context query parameter is required"))
+	}
+
+	limit := c.QueryInt("limit", 0)
+	offset := c.QueryInt("offset", 0)
+
+	history, err := h.aiService.GetChatHistory(userID, uint(profileID), context, limit, offset)
+	if err != nil {
+		return httputil.RespondError(c, err)
+	}
+
+	return httputil.RespondJSON(c, 200, history)
+}
+
 func (h *AIHandler) RegisterRoutes(api fiber.Router, authMiddleware fiber.Handler) {
 	ai := api.Group("/ai", authMiddleware)
 	ai.Post("/diagnostic/:profileId", h.DiagnosticChat)
@@ -145,4 +184,5 @@ func (h *AIHandler) RegisterRoutes(api fiber.Router, authMiddleware fiber.Handle
 
 	chat := api.Group("/chat", authMiddleware)
 	chat.Post("/tutor/:profileId", h.TutorChat)
+	chat.Get("/history/:profileId", h.GetChatHistory)
 }

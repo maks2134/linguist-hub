@@ -9,6 +9,16 @@ interface ApiResponse<T> {
   };
 }
 
+export interface ChatHistoryMessage {
+  id: number;
+  user_id: number;
+  profile_id: number;
+  role: "user" | "assistant";
+  context: string;
+  content: string;
+  created_at: string;
+}
+
 class ApiClient {
   private baseUrl: string;
 
@@ -75,6 +85,18 @@ class ApiClient {
 
   async delete<T>(endpoint: string): Promise<T> {
     return this.request<T>(endpoint, { method: "DELETE" });
+  }
+
+  async getChatHistory(
+    profileId: string,
+    context: "diagnostic" | "tutor",
+    limit?: number,
+    offset?: number
+  ): Promise<ChatHistoryMessage[]> {
+    const params = new URLSearchParams({ context });
+    if (limit) params.append("limit", limit.toString());
+    if (offset) params.append("offset", offset.toString());
+    return this.get<ChatHistoryMessage[]>(`/api/chat/history/${profileId}?${params.toString()}`);
   }
 }
 

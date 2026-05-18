@@ -12,6 +12,17 @@ type ChatResponse struct {
 	IsAssessment bool     `json:"is_assessment,omitempty"`
 }
 
+// ChatHistoryMessage represents a single chat message in history
+type ChatHistoryMessage struct {
+	ID        uint   `json:"id"`
+	UserID    uint   `json:"user_id"`
+	ProfileID uint   `json:"profile_id,omitempty"`
+	Role      string `json:"role"`
+	Context   string `json:"context"`
+	Content   string `json:"content"`
+	CreatedAt string `json:"created_at"`
+}
+
 type GeneratePlanRequest struct {
 	ProfileID uint `json:"profile_id"`
 }
