@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,6 +21,7 @@ export default function TutorPage({
   params: Promise<{ profileId: string }>;
 }) {
   const router = useRouter();
+  const t = useTranslations("Tutor");
   const searchParams = useSearchParams();
   const topic = searchParams.get("topic") || "General conversation";
   const [profileId, setProfileId] = useState<string | null>(null);
@@ -119,12 +122,12 @@ export default function TutorPage({
         <div className="mb-6 flex items-center justify-between">
           <Button variant="ghost" onClick={() => router.back()} className="rounded-full">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
+            {t("back")}
           </Button>
           <div className="flex items-center gap-2">
              <div className="h-8 px-4 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center gap-2 text-sm font-medium">
                 <BookOpen className="h-4 w-4 text-primary" />
-                Topic: {topic}
+                {t("topic")}: {topic}
              </div>
           </div>
         </div>
@@ -136,10 +139,10 @@ export default function TutorPage({
                   <Languages className="h-6 w-6" />
                </div>
                <div>
-                  <CardTitle className="text-lg">AI Tutor</CardTitle>
+                  <CardTitle className="text-lg">{t("aiTutor")}</CardTitle>
                   <div className="flex items-center gap-2">
                      <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                     <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Active Session</span>
+                     <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">{t("activeSession")}</span>
                   </div>
                </div>
             </div>
@@ -159,9 +162,9 @@ export default function TutorPage({
                         <div className="h-20 w-20 rounded-3xl bg-primary/5 flex items-center justify-center mx-auto text-primary">
                           <MessageSquare className="h-10 w-10" />
                         </div>
-                        <h3 className="font-bold text-xl tracking-tight">Ready to practice?</h3>
+                        <h3 className="font-bold text-xl tracking-tight">{t("readyToPractice")}</h3>
                         <p className="text-muted-foreground">
-                          I&apos;m here to help you master <strong>{topic}</strong>. Start by saying hello!
+                          {t("readyToPracticeDesc", { topic })}
                         </p>
                       </div>
                     </motion.div>
@@ -230,7 +233,7 @@ export default function TutorPage({
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyPress={(e) => e.key === "Enter" && handleSend()}
-                    placeholder="Ask your tutor anything..."
+                    placeholder={t("messagePlaceholder")}
                     disabled={loading}
                     className="h-14 rounded-full px-8 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-primary shadow-xl border-none outline-none ring-1 ring-slate-200 dark:ring-slate-800"
                   />

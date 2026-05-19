@@ -1,30 +1,57 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { Link } from "@/i18n/routing";
+import { useRouter, usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { LogOut, Languages, User, Sun, Moon, Monitor } from "lucide-react";
+import { LogOut, Languages, User, Sun, Moon, Monitor, Globe } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function Navbar() {
   const router = useRouter();
+  const pathname = usePathname();
+  const locale = useLocale();
+  const t = useTranslations("Auth");
+  const tNav = useTranslations("Navbar");
   const { theme, setTheme } = useTheme();
   const [themeOpen, setThemeOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
 
   const themes = [
-    { key: "light", label: "Light", icon: Sun },
-    { key: "dark", label: "Dark", icon: Moon },
-    { key: "system", label: "System", icon: Monitor },
+    { key: "light", label: tNav("light"), icon: Sun },
+    { key: "dark", label: tNav("dark"), icon: Moon },
+    { key: "system", label: tNav("system"), icon: Monitor },
+  ];
+
+  const languages = [
+    { key: "en", label: "English", flag: "🇬🇧" },
+    { key: "ru", label: "Русский", flag: "🇷🇺" },
+    { key: "es", label: "Español", flag: "🇪🇸" },
+    { key: "fr", label: "Français", flag: "🇫🇷" },
+    { key: "de", label: "Deutsch", flag: "🇩🇪" },
+    { key: "zh", label: "中文", flag: "🇨🇳" },
+    { key: "it", label: "Italiano", flag: "🇮🇹" },
+    { key: "ja", label: "日本語", flag: "🇯🇵" },
+    { key: "pt", label: "Português", flag: "🇵🇹" },
+    { key: "ar", label: "العربية", flag: "🇸🇦" },
   ];
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    router.push("/login");
+    router.push(`/${locale}/login`);
+  };
+
+  const toggleLanguage = (newLocale: string) => {
+    const segments = pathname.split("/").filter(Boolean);
+    const locales = ["en", "ru", "es", "fr", "de", "zh", "it", "ja", "pt", "ar"];
+    const rest = locales.includes(segments[0]) ? segments.slice(1) : segments;
+    router.replace(`/${newLocale}${rest.length ? "/" + rest.join("/") : ""}`);
+    setLangOpen(false);
   };
 
   return (
@@ -46,11 +73,47 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-4">
+          {/* Language Switcher */}
+          <div className="relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full"
+              onClick={() => setLangOpen((v) => !v)}
+              aria-label="Change language"
+            >
+              <Globe className="h-5 w-5" />
+            </Button>
+            <AnimatePresence>
+              {langOpen && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: -4 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: -4 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute right-0 top-12 z-50 w-40 rounded-2xl border bg-background/95 backdrop-blur-xl shadow-xl overflow-y-auto max-h-72"
+                  onMouseLeave={() => setLangOpen(false)}
+                >
+                  {languages.map(({ key, label, flag }) => (
+                    <button
+                      key={key}
+                      onClick={() => toggleLanguage(key)}
+                      className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors hover:bg-accent ${locale === key ? "text-primary font-semibold" : "text-muted-foreground"}`}
+                    >
+                      <span className="text-base">{flag}</span>
+                      {label}
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
           <Button 
             variant="ghost" 
             size="icon" 
             className="rounded-full"
-            onClick={() => router.push("/profile")}
+            onClick={() => router.push(`/${locale}/profile`)}
           >
             <User className="h-5 w-5" />
           </Button>
@@ -100,7 +163,7 @@ export function Navbar() {
             className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
           >
             <LogOut className="mr-2 h-4 w-4" />
-            Logout
+            {t("logout")}
           </Button>
         </div>
       </div>

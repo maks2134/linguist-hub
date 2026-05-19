@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Sparkles, Languages, ArrowRight, BrainCircuit, Rocket, Globe2, Loader2 } from "lucide-react";
 
 export default function Home() {
   const router = useRouter();
+  const t = useTranslations("HomePage");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -42,7 +44,7 @@ export default function Home() {
           className="flex items-center gap-2 mb-8 px-4 py-1.5 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 backdrop-blur-md"
         >
           <Sparkles className="h-4 w-4 text-yellow-500" />
-          <span className="text-sm font-medium text-slate-600 dark:text-slate-300 tracking-wide uppercase">AI-Powered Language Mastery</span>
+          <span className="text-sm font-medium text-slate-600 dark:text-slate-300 tracking-wide uppercase">{t("subtitle")}</span>
         </motion.div>
 
         <motion.div
@@ -54,7 +56,7 @@ export default function Home() {
             Linguist<span className="text-primary">AI</span>
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-12 leading-relaxed">
-            Experience the future of language learning. Our neural engine builds a personalized path just for you.
+            {t("description")}
           </p>
         </motion.div>
 
@@ -69,7 +71,7 @@ export default function Home() {
             onClick={() => router.push("/register")}
             className="h-16 px-10 rounded-full text-lg font-bold shadow-2xl shadow-primary/20 hover:scale-105 transition-transform"
           >
-            Start Journey
+            {t("startJourney")}
             <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
           <Button 
@@ -78,7 +80,7 @@ export default function Home() {
             onClick={() => router.push("/login")}
             className="h-16 px-10 rounded-full text-lg font-bold border-slate-200 dark:border-white/10 bg-white/50 dark:bg-white/5 backdrop-blur-md text-foreground hover:bg-slate-100 dark:hover:bg-white/10 hover:scale-105 transition-all"
           >
-            Sign In
+            {t("signIn")}
           </Button>
         </motion.div>
 
@@ -93,8 +95,8 @@ export default function Home() {
                 <BrainCircuit className="h-6 w-6" />
              </div>
              <div className="text-center">
-                <h3 className="text-foreground font-bold mb-1">Neural Tutor</h3>
-                <p className="text-muted-foreground text-sm">Adaptive AI that learns your patterns.</p>
+                <h3 className="text-foreground font-bold mb-1">{t("features.tutor.title")}</h3>
+                <p className="text-muted-foreground text-sm">{t("features.tutor.description")}</p>
              </div>
           </div>
           <div className="flex flex-col items-center gap-4 p-6 rounded-3xl bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/10 backdrop-blur-sm">
@@ -102,8 +104,8 @@ export default function Home() {
                 <Rocket className="h-6 w-6" />
              </div>
              <div className="text-center">
-                <h3 className="text-foreground font-bold mb-1">Fast Path</h3>
-                <p className="text-muted-foreground text-sm">Skip what you know, focus on growth.</p>
+                <h3 className="text-foreground font-bold mb-1">{t("features.fastPath.title")}</h3>
+                <p className="text-muted-foreground text-sm">{t("features.fastPath.description")}</p>
              </div>
           </div>
           <div className="flex flex-col items-center gap-4 p-6 rounded-3xl bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/10 backdrop-blur-sm">
@@ -111,8 +113,8 @@ export default function Home() {
                 <Globe2 className="h-6 w-6" />
              </div>
              <div className="text-center">
-                <h3 className="text-foreground font-bold mb-1">10+ Languages</h3>
-                <p className="text-muted-foreground text-sm">Master global tongues with ease.</p>
+                <h3 className="text-foreground font-bold mb-1">{t("features.languages.title")}</h3>
+                <p className="text-muted-foreground text-sm">{t("features.languages.description")}</p>
              </div>
           </div>
         </motion.div>

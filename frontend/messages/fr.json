@@ -1,0 +1,141 @@
+{
+  "HomePage": {
+    "title": "LinguistAI",
+    "subtitle": "Maîtrise des langues par l'IA",
+    "description": "Vivez l'avenir de l'apprentissage des langues. Notre moteur neuronal construit un parcours personnalisé rien que pour vous.",
+    "startJourney": "Commencer",
+    "signIn": "Se connecter",
+    "features": {
+      "tutor": {
+        "title": "Tuteur Neural",
+        "description": "IA adaptative qui apprend vos schémas."
+      },
+      "fastPath": {
+        "title": "Chemin rapide",
+        "description": "Sautez ce que vous savez, concentrez-vous sur la croissance."
+      },
+      "languages": {
+        "title": "10+ Langues",
+        "description": "Maîtrisez les langues mondiales avec facilité."
+      }
+    }
+  },
+  "Auth": {
+    "login": "Connexion",
+    "register": "S'inscrire",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "nickname": "Pseudo",
+    "dontHaveAccount": "Pas encore de compte ?",
+    "alreadyHaveAccount": "Vous avez déjà un compte ?",
+    "logout": "Se déconnecter",
+    "logIn": "Se connecter",
+    "signUp": "S'inscrire",
+    "createAccount": "Créer un compte",
+    "creatingAccount": "Création du compte...",
+    "loggingIn": "Connexion...",
+    "welcomeBack": "Bon retour",
+    "createAccountTitle": "Créer un compte",
+    "createAccountDesc": "Entrez vos informations pour commencer à apprendre avec l'IA",
+    "loginDesc": "Entrez vos identifiants pour accéder à votre compte",
+    "passwordsDoNotMatch": "Les mots de passe ne correspondent pas",
+    "passwordTooShort": "Le mot de passe doit contenir au moins 6 caractères",
+    "accountCreated": "Compte créé avec succès !",
+    "loginSuccess": "Connexion réussie !",
+    "registrationFailed": "Échec de l'inscription",
+    "loginFailed": "Échec de la connexion"
+  },
+  "Setup": {
+    "chooseNativeTitle": "Choisissez votre langue natale",
+    "chooseNativeDesc": "Nous l'utiliserons pour vous expliquer des sujets complexes et vous guider.",
+    "chooseLearningTitle": "Quelle langue voulez-vous maîtriser ?",
+    "chooseLearningDesc": "Votre tuteur IA construira un parcours spécifique pour cet objectif.",
+    "continue": "Continuer",
+    "startLearning": "Commencer à apprendre",
+    "initializing": "Initialisation...",
+    "goBack": "Retour",
+    "profileCreated": "Profil créé ! Démarrage de l'intégration...",
+    "profileFailed": "Échec de la configuration du profil"
+  },
+  "Navbar": {
+    "light": "Clair",
+    "dark": "Sombre",
+    "system": "Système"
+  },
+  "Dashboard": {
+    "title": "Mes langues",
+    "subtitle": "Suivez vos progrès et continuez à apprendre",
+    "addLanguage": "Ajouter une langue",
+    "continueLearning": "Continuer à apprendre",
+    "studyPlan": "Plan d'étude",
+    "level": "Niveau",
+    "noProfiles": "Aucun profil linguistique pour l'instant",
+    "noProfilesDesc": "Commencez votre parcours en ajoutant votre première langue.",
+    "startLearning": "Commencer à apprendre"
+  },
+  "Profile": {
+    "title": "Paramètres du profil",
+    "tabAccount": "Compte",
+    "tabSecurity": "Sécurité",
+    "publicProfile": "Profil public",
+    "publicProfileDesc": "Comment les autres vous voient sur LinguistAI",
+    "nickname": "Pseudo",
+    "nicknamePlaceholder": "Votre pseudo",
+    "learningLanguages": "Langues apprises",
+    "level": "Niveau",
+    "nativeLanguageLabel": "Langue natale (utilisée par le tuteur IA)",
+    "saveChanges": "Enregistrer",
+    "password": "Mot de passe",
+    "passwordDesc": "Changez votre mot de passe pour sécuriser votre compte",
+    "currentPassword": "Mot de passe actuel",
+    "newPassword": "Nouveau mot de passe",
+    "confirmNewPassword": "Confirmer le nouveau mot de passe",
+    "updatePassword": "Mettre à jour le mot de passe",
+    "profileUpdated": "Profil mis à jour !",
+    "passwordChanged": "Mot de passe changé avec succès !",
+    "passwordsMismatch": "Les nouveaux mots de passe ne correspondent pas",
+    "nativeUpdated": "Langue natale mise à jour !"
+  },
+  "Diagnostic": {
+    "backToDashboard": "Retour au tableau de bord",
+    "aiAssessment": "Évaluation de langue IA",
+    "aiAssessmentDesc": "Discutez avec notre IA pour déterminer votre niveau",
+    "startAssessment": "Commencez votre évaluation",
+    "startAssessmentDesc": "Envoyez un message pour commencer ! Dites bonjour et présentez-vous dans la langue que vous apprenez.",
+    "assessmentComplete": "Évaluation terminée !",
+    "assessmentCompleteDesc": "Nous avons analysé vos compétences et déterminé que votre niveau est",
+    "generatePlan": "Générer mon plan d'étude",
+    "levelAssessed": "Niveau évalué",
+    "messagePlaceholder": "Tapez votre message...",
+    "planGenerated": "Plan d'étude généré !",
+    "level": "Niveau"
+  },
+  "Tutor": {
+    "back": "Retour",
+    "topic": "Sujet",
+    "aiTutor": "Tuteur IA",
+    "activeSession": "Session active",
+    "readyToPractice": "Prêt à pratiquer ?",
+    "readyToPracticeDesc": "Je suis là pour vous aider à maîtriser {topic}. Commencez par dire bonjour !",
+    "messagePlaceholder": "Posez une question à votre tuteur..."
+  },
+  "Plan": {
+    "backToDashboard": "Retour au tableau de bord",
+    "personalizedRoadmap": "Feuille de route personnalisée",
+    "learningJourney": "Votre parcours d'apprentissage",
+    "learningJourneyDesc": "Un programme alimenté par l'IA conçu spécifiquement pour votre niveau et vos objectifs.",
+    "module": "Module",
+    "topics": "sujets",
+    "noPlanTitle": "Aucun plan d'étude trouvé",
+    "noPlanDesc": "Vous devez compléter l'évaluation diagnostique pour que nous puissions générer votre parcours.",
+    "goToDashboard": "Aller au tableau de bord"
+  },
+  "Common": {
+    "back": "Retour",
+    "continue": "Continuer",
+    "save": "Enregistrer",
+    "loading": "Chargement...",
+    "error": "Erreur"
+  }
+}

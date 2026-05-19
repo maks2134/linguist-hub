@@ -1,0 +1,141 @@
+{
+  "HomePage": {
+    "title": "LinguistAI",
+    "subtitle": "إتقان اللغات بالذكاء الاصطناعي",
+    "description": "جرّب مستقبل تعلم اللغات. يبني محركنا العصبي مساراً مخصصاً لك.",
+    "startJourney": "ابدأ الرحلة",
+    "signIn": "تسجيل الدخول",
+    "features": {
+      "tutor": {
+        "title": "المعلم العصبي",
+        "description": "ذكاء اصطناعي تكيفي يتعلم أنماطك."
+      },
+      "fastPath": {
+        "title": "المسار السريع",
+        "description": "تخطَّ ما تعرفه وركّز على النمو."
+      },
+      "languages": {
+        "title": "أكثر من 10 لغات",
+        "description": "أتقن لغات العالم بسهولة."
+      }
+    }
+  },
+  "Auth": {
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "nickname": "الاسم المستعار",
+    "dontHaveAccount": "ليس لديك حساب؟",
+    "alreadyHaveAccount": "لديك حساب بالفعل؟",
+    "logout": "تسجيل الخروج",
+    "logIn": "دخول",
+    "signUp": "تسجيل",
+    "createAccount": "إنشاء حساب",
+    "creatingAccount": "جارٍ إنشاء الحساب...",
+    "loggingIn": "جارٍ تسجيل الدخول...",
+    "welcomeBack": "مرحباً بعودتك",
+    "createAccountTitle": "إنشاء حساب",
+    "createAccountDesc": "أدخل بياناتك لبدء التعلم مع الذكاء الاصطناعي",
+    "loginDesc": "أدخل بيانات الاعتماد للوصول إلى حسابك",
+    "passwordsDoNotMatch": "كلمتا المرور غير متطابقتين",
+    "passwordTooShort": "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل",
+    "accountCreated": "تم إنشاء الحساب بنجاح!",
+    "loginSuccess": "تم تسجيل الدخول بنجاح!",
+    "registrationFailed": "فشل التسجيل",
+    "loginFailed": "فشل تسجيل الدخول"
+  },
+  "Setup": {
+    "chooseNativeTitle": "اختر لغتك الأم",
+    "chooseNativeDesc": "سنستخدمها لشرح الموضوعات المعقدة وإرشادك.",
+    "chooseLearningTitle": "أي لغة تريد إتقانها؟",
+    "chooseLearningDesc": "سيبني معلمك الذكي مساراً خاصاً لهذا الهدف.",
+    "continue": "متابعة",
+    "startLearning": "ابدأ التعلم",
+    "initializing": "جارٍ التهيئة...",
+    "goBack": "رجوع",
+    "profileCreated": "تم إنشاء الملف الشخصي! جارٍ بدء الإعداد...",
+    "profileFailed": "فشل إعداد الملف الشخصي"
+  },
+  "Navbar": {
+    "light": "فاتح",
+    "dark": "داكن",
+    "system": "النظام"
+  },
+  "Dashboard": {
+    "title": "لغاتي",
+    "subtitle": "تابع تقدمك وواصل التعلم",
+    "addLanguage": "إضافة لغة",
+    "continueLearning": "مواصلة التعلم",
+    "studyPlan": "خطة الدراسة",
+    "level": "المستوى",
+    "noProfiles": "لا توجد ملفات لغوية بعد",
+    "noProfilesDesc": "ابدأ رحلتك اللغوية بإضافة لغتك الأولى.",
+    "startLearning": "ابدأ التعلم"
+  },
+  "Profile": {
+    "title": "إعدادات الملف الشخصي",
+    "tabAccount": "الحساب",
+    "tabSecurity": "الأمان",
+    "publicProfile": "الملف الشخصي العام",
+    "publicProfileDesc": "كيف يراك الآخرون في LinguistAI",
+    "nickname": "الاسم المستعار",
+    "nicknamePlaceholder": "اسمك المستعار",
+    "learningLanguages": "اللغات التي تتعلمها",
+    "level": "المستوى",
+    "nativeLanguageLabel": "اللغة الأم (يستخدمها المعلم الذكي)",
+    "saveChanges": "حفظ التغييرات",
+    "password": "كلمة المرور",
+    "passwordDesc": "غيّر كلمة مرورك للحفاظ على أمان حسابك",
+    "currentPassword": "كلمة المرور الحالية",
+    "newPassword": "كلمة المرور الجديدة",
+    "confirmNewPassword": "تأكيد كلمة المرور الجديدة",
+    "updatePassword": "تحديث كلمة المرور",
+    "profileUpdated": "تم تحديث الملف الشخصي!",
+    "passwordChanged": "تم تغيير كلمة المرور بنجاح!",
+    "passwordsMismatch": "كلمتا المرور الجديدتان غير متطابقتين",
+    "nativeUpdated": "تم تحديث اللغة الأم!"
+  },
+  "Diagnostic": {
+    "backToDashboard": "العودة إلى لوحة التحكم",
+    "aiAssessment": "تقييم اللغة بالذكاء الاصطناعي",
+    "aiAssessmentDesc": "تحدث مع الذكاء الاصطناعي لتحديد مستواك",
+    "startAssessment": "ابدأ تقييمك",
+    "startAssessmentDesc": "أرسل رسالة للبدء! قدّم نفسك باللغة التي تتعلمها.",
+    "assessmentComplete": "اكتمل التقييم!",
+    "assessmentCompleteDesc": "لقد حللنا مهاراتك وحددنا أن مستواك هو",
+    "generatePlan": "إنشاء خطة الدراسة",
+    "levelAssessed": "تم تقييم المستوى",
+    "messagePlaceholder": "اكتب رسالتك...",
+    "planGenerated": "تم إنشاء خطة الدراسة!",
+    "level": "المستوى"
+  },
+  "Tutor": {
+    "back": "رجوع",
+    "topic": "الموضوع",
+    "aiTutor": "المعلم الذكي",
+    "activeSession": "جلسة نشطة",
+    "readyToPractice": "هل أنت مستعد للتدريب؟",
+    "readyToPracticeDesc": "أنا هنا لمساعدتك في إتقان {topic}. ابدأ بالتحية!",
+    "messagePlaceholder": "اسأل معلمك..."
+  },
+  "Plan": {
+    "backToDashboard": "العودة إلى لوحة التحكم",
+    "personalizedRoadmap": "خارطة الطريق الشخصية",
+    "learningJourney": "رحلتك التعليمية",
+    "learningJourneyDesc": "منهج مدعوم بالذكاء الاصطناعي مصمم خصيصاً لمستواك وأهدافك.",
+    "module": "الوحدة",
+    "topics": "مواضيع",
+    "noPlanTitle": "لم يتم العثور على خطة دراسة",
+    "noPlanDesc": "تحتاج إلى إكمال التقييم التشخيصي حتى نتمكن من إنشاء مسارك.",
+    "goToDashboard": "الذهاب إلى لوحة التحكم"
+  },
+  "Common": {
+    "back": "رجوع",
+    "continue": "متابعة",
+    "save": "حفظ",
+    "loading": "جارٍ التحميل...",
+    "error": "خطأ"
+  }
+}

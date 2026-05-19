@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,6 +28,7 @@ const NATIVE_LANGUAGES = [
 
 export default function ProfilePage() {
   const router = useRouter();
+  const t = useTranslations("Profile");
   const [user, setUser] = useState<User | null>(null);
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [nickname, setNickname] = useState("");
@@ -43,7 +45,7 @@ export default function ProfilePage() {
     try {
       const updated = await api.updateNativeLanguage(profileId, lang);
       setProfiles((prev) => prev.map((p) => p.id === profileId ? { ...p, native_language: lang } : p));
-      toast.success("Native language updated!");
+      toast.success(t("nativeUpdated"));
     } catch {
       toast.error("Failed to update native language");
     } finally {
@@ -73,7 +75,7 @@ export default function ProfilePage() {
     setLoading(true);
     try {
       await api.updateProfile(nickname);
-      toast.success("Profile updated!");
+      toast.success(t("profileUpdated"));
     } catch (error) {
       toast.error("Failed to update profile");
     } finally {
@@ -83,13 +85,13 @@ export default function ProfilePage() {
 
   const handleChangePassword = async () => {
     if (newPassword !== confirmPassword) {
-      toast.error("New passwords do not match");
+      toast.error(t("passwordsMismatch"));
       return;
     }
     setLoading(true);
     try {
       await api.changePassword(oldPassword, newPassword);
-      toast.success("Password changed successfully!");
+      toast.success(t("passwordChanged"));
       setOldPassword("");
       setNewPassword("");
       setConfirmPassword("");
@@ -113,7 +115,7 @@ export default function ProfilePage() {
                <Button variant="ghost" onClick={() => router.back()} className="rounded-full h-10 w-10 p-0">
                  <ArrowLeft size={20} />
                </Button>
-               <h1 className="text-3xl font-bold">Profile Settings</h1>
+               <h1 className="text-3xl font-bold">{t("title")}</h1>
             </div>
           </div>
 
@@ -130,7 +132,7 @@ export default function ProfilePage() {
                   }`}
                 >
                   {tab === "account" ? <UserIcon size={16} /> : <Lock size={16} />}
-                  {tab === "account" ? "Account" : "Security"}
+                  {tab === "account" ? t("tabAccount") : t("tabSecurity")}
                 </button>
               ))}
             </div>
@@ -138,17 +140,17 @@ export default function ProfilePage() {
             {activeTab === "account" && (
               <Card className="border-none shadow-xl bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl">
                 <CardHeader>
-                  <CardTitle>Public Profile</CardTitle>
-                  <CardDescription>How others see you on LinguistAI</CardDescription>
+                  <CardTitle>{t("publicProfile")}</CardTitle>
+                  <CardDescription>{t("publicProfileDesc")}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="space-y-2">
-                    <Label htmlFor="nickname">Nickname</Label>
+                    <Label htmlFor="nickname">{t("nickname")}</Label>
                     <div className="relative">
                       <UserIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
                         id="nickname"
-                        placeholder="Your nickname"
+                        placeholder={t("nicknamePlaceholder")}
                         className="pl-10"
                         value={nickname}
                         onChange={(e) => setNickname(e.target.value)}
@@ -157,7 +159,7 @@ export default function ProfilePage() {
                   </div>
 
                   <div className="space-y-4">
-                    <Label>Learning Languages</Label>
+                    <Label>{t("learningLanguages")}</Label>
                     <div className="grid gap-4">
                       {profiles.map((profile) => (
                         <div 
@@ -171,13 +173,13 @@ export default function ProfilePage() {
                               </div>
                               <div>
                                 <p className="font-bold capitalize">{profile.target_language}</p>
-                                <p className="text-xs text-muted-foreground">Level: {profile.current_level}</p>
+                                <p className="text-xs text-muted-foreground">{t("level")}: {profile.current_level}</p>
                               </div>
                             </div>
                           </div>
 
                           <div className="relative">
-                            <p className="text-xs font-medium text-muted-foreground mb-1">Native language (used by AI tutor)</p>
+                            <p className="text-xs font-medium text-muted-foreground mb-1">{t("nativeLanguageLabel")}</p>
                             <button
                               onClick={() => setNativeLangOpen(nativeLangOpen === profile.id ? null : profile.id)}
                               className="w-full flex items-center justify-between px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm hover:border-primary transition-colors"
@@ -220,7 +222,7 @@ export default function ProfilePage() {
                 <CardFooter>
                   <Button onClick={handleUpdateProfile} disabled={loading || !nickname}>
                     <Save className="mr-2 h-4 w-4" />
-                    Save Changes
+                    {t("saveChanges")}
                   </Button>
                 </CardFooter>
               </Card>
@@ -229,12 +231,12 @@ export default function ProfilePage() {
             {activeTab === "security" && (
               <Card className="border-none shadow-xl bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl">
                 <CardHeader>
-                  <CardTitle>Password</CardTitle>
-                  <CardDescription>Change your password to keep your account secure</CardDescription>
+                  <CardTitle>{t("password")}</CardTitle>
+                  <CardDescription>{t("passwordDesc")}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="old-password">Current Password</Label>
+                    <Label htmlFor="old-password">{t("currentPassword")}</Label>
                     <Input
                       id="old-password"
                       type="password"
@@ -243,7 +245,7 @@ export default function ProfilePage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="new-password">New Password</Label>
+                    <Label htmlFor="new-password">{t("newPassword")}</Label>
                     <Input
                       id="new-password"
                       type="password"
@@ -252,7 +254,7 @@ export default function ProfilePage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="confirm-password">Confirm New Password</Label>
+                    <Label htmlFor="confirm-password">{t("confirmNewPassword")}</Label>
                     <Input
                       id="confirm-password"
                       type="password"
@@ -264,7 +266,7 @@ export default function ProfilePage() {
                 <CardFooter>
                   <Button onClick={handleChangePassword} disabled={loading || !oldPassword || !newPassword}>
                     <KeyRound className="mr-2 h-4 w-4" />
-                    Update Password
+                    {t("updatePassword")}
                   </Button>
                 </CardFooter>
               </Card>

@@ -1,0 +1,141 @@
+{
+  "HomePage": {
+    "title": "LinguistAI",
+    "subtitle": "Мастерство языков с ИИ",
+    "description": "Ощутите будущее изучения языков. Наш нейронный движок строит персонализированный путь именно для вас.",
+    "startJourney": "Начать путь",
+    "signIn": "Войти",
+    "features": {
+      "tutor": {
+        "title": "Нейронный тьютор",
+        "description": "Адаптивный ИИ, который изучает ваши паттерны."
+      },
+      "fastPath": {
+        "title": "Быстрый путь",
+        "description": "Пропускайте то, что знаете, фокусируйтесь на росте."
+      },
+      "languages": {
+        "title": "10+ языков",
+        "description": "Осваивайте мировые языки с легкостью."
+      }
+    }
+  },
+  "Auth": {
+    "login": "Вход",
+    "register": "Регистрация",
+    "email": "Email",
+    "password": "Пароль",
+    "confirmPassword": "Подтвердите пароль",
+    "nickname": "Никнейм",
+    "dontHaveAccount": "Нет аккаунта?",
+    "alreadyHaveAccount": "Уже есть аккаунт?",
+    "logout": "Выйти",
+    "logIn": "Войти",
+    "signUp": "Зарегистрироваться",
+    "createAccount": "Создать аккаунт",
+    "creatingAccount": "Создаём аккаунт...",
+    "loggingIn": "Входим...",
+    "welcomeBack": "С возвращением",
+    "createAccountTitle": "Создайте аккаунт",
+    "createAccountDesc": "Введите данные, чтобы начать обучение с ИИ",
+    "loginDesc": "Введите данные для доступа к вашему аккаунту",
+    "passwordsDoNotMatch": "Пароли не совпадают",
+    "passwordTooShort": "Пароль должен содержать минимум 6 символов",
+    "accountCreated": "Аккаунт успешно создан!",
+    "loginSuccess": "Вход выполнен успешно!",
+    "registrationFailed": "Ошибка регистрации",
+    "loginFailed": "Ошибка входа"
+  },
+  "Setup": {
+    "chooseNativeTitle": "Выберите ваш родной язык",
+    "chooseNativeDesc": "Мы будем объяснять сложные темы на нём и помогать вам.",
+    "chooseLearningTitle": "Какой язык хотите освоить?",
+    "chooseLearningDesc": "ИИ-тьютор построит путь именно под эту цель.",
+    "continue": "Продолжить",
+    "startLearning": "Начать обучение",
+    "initializing": "Подготовка...",
+    "goBack": "Назад",
+    "profileCreated": "Профиль создан! Начинаем онбординг...",
+    "profileFailed": "Не удалось создать профиль"
+  },
+  "Navbar": {
+    "light": "Светлая",
+    "dark": "Тёмная",
+    "system": "Системная"
+  },
+  "Dashboard": {
+    "title": "Мои языки",
+    "subtitle": "Отслеживайте прогресс и продолжайте обучение",
+    "addLanguage": "Добавить язык",
+    "continueLearning": "Продолжить обучение",
+    "studyPlan": "План обучения",
+    "level": "Уровень",
+    "noProfiles": "Языковых профилей пока нет",
+    "noProfilesDesc": "Начните языковой путь, добавив первый язык.",
+    "startLearning": "Начать обучение"
+  },
+  "Profile": {
+    "title": "Настройки профиля",
+    "tabAccount": "Аккаунт",
+    "tabSecurity": "Безопасность",
+    "publicProfile": "Публичный профиль",
+    "publicProfileDesc": "Как вас видят другие в LinguistAI",
+    "nickname": "Никнейм",
+    "nicknamePlaceholder": "Ваш никнейм",
+    "learningLanguages": "Изучаемые языки",
+    "level": "Уровень",
+    "nativeLanguageLabel": "Родной язык (используется ИИ-тьютором)",
+    "saveChanges": "Сохранить",
+    "password": "Пароль",
+    "passwordDesc": "Измените пароль для защиты аккаунта",
+    "currentPassword": "Текущий пароль",
+    "newPassword": "Новый пароль",
+    "confirmNewPassword": "Подтвердите новый пароль",
+    "updatePassword": "Обновить пароль",
+    "profileUpdated": "Профиль обновлён!",
+    "passwordChanged": "Пароль успешно изменён!",
+    "passwordsMismatch": "Новые пароли не совпадают",
+    "nativeUpdated": "Родной язык обновлён!"
+  },
+  "Diagnostic": {
+    "backToDashboard": "На главную",
+    "aiAssessment": "Оценка уровня ИИ",
+    "aiAssessmentDesc": "Пообщайтесь с ИИ, чтобы определить ваш уровень",
+    "startAssessment": "Начните оценку",
+    "startAssessmentDesc": "Отправьте сообщение! Поздоровайтесь и представьтесь на изучаемом языке.",
+    "assessmentComplete": "Оценка завершена!",
+    "assessmentCompleteDesc": "Мы проанализировали ваши навыки. Ваш уровень:",
+    "generatePlan": "Создать план обучения",
+    "levelAssessed": "Уровень определён",
+    "messagePlaceholder": "Введите сообщение...",
+    "planGenerated": "План обучения создан!",
+    "level": "Уровень"
+  },
+  "Tutor": {
+    "back": "Назад",
+    "topic": "Тема",
+    "aiTutor": "ИИ-тьютор",
+    "activeSession": "Активная сессия",
+    "readyToPractice": "Готовы практиковаться?",
+    "readyToPracticeDesc": "Я помогу вам освоить {topic}. Начните с приветствия!",
+    "messagePlaceholder": "Спросите тьютора..."
+  },
+  "Plan": {
+    "backToDashboard": "На главную",
+    "personalizedRoadmap": "Персональный план",
+    "learningJourney": "Ваш путь обучения",
+    "learningJourneyDesc": "Учебная программа на базе ИИ, созданная под ваш уровень и цели.",
+    "module": "Модуль",
+    "topics": "тем",
+    "noPlanTitle": "План обучения не найден",
+    "noPlanDesc": "Пройдите диагностику, чтобы мы могли составить ваш план.",
+    "goToDashboard": "На главную"
+  },
+  "Common": {
+    "back": "Назад",
+    "continue": "Продолжить",
+    "save": "Сохранить",
+    "loading": "Загрузка...",
+    "error": "Ошибка"
+  }
+}
