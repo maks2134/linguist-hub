@@ -91,7 +91,7 @@ export default function DashboardPage() {
               {profiles.length > 0 ? (
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {profiles.map((profile, index) => {
-                    const lang = LANGUAGES.find((l) => l.code === profile.target_language);
+                    const lang = LANGUAGES.find((l) => l.code.toLowerCase() === profile.target_language.toLowerCase());
                     return (
                       <motion.div
                         key={profile.id}

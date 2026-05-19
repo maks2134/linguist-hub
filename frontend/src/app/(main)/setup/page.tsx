@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,7 @@ import { Card } from "@/components/ui/card";
 import { api } from "@/lib/api";
 import { Profile } from "@/types";
 import { toast } from "sonner";
-import { Globe, GraduationCap, ArrowRight, Check } from "lucide-react";
+import { Globe, GraduationCap, ArrowRight, Check, Loader2 } from "lucide-react";
 
 const NATIVE_LANGUAGES = [
   { code: "Russian", name: "Русский", flag: "🇷🇺" },
@@ -30,10 +30,23 @@ const TARGET_LANGUAGES = [
 
 export default function SetupPage() {
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
   const [step, setStep] = useState(1);
   const [nativeLanguage, setNativeLanguage] = useState("");
   const [targetLanguage, setTargetLanguage] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   const handleFinish = async () => {
     if (!nativeLanguage || !targetLanguage) return;
@@ -53,7 +66,7 @@ export default function SetupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 relative overflow-hidden text-foreground">
       {/* Background blobs */}
       <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 rounded-full blur-[120px] animate-pulse" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-500/10 rounded-full blur-[120px] animate-pulse" />
@@ -76,8 +89,8 @@ export default function SetupPage() {
                 >
                   <Globe size={32} />
                 </motion.div>
-                <h1 className="text-4xl md:text-5xl font-black text-white">Choose your native language</h1>
-                <p className="text-slate-400 text-lg">We&apos;ll use this to explain complex topics and guide you.</p>
+                <h1 className="text-4xl md:text-5xl font-black text-foreground">Choose your native language</h1>
+                <p className="text-muted-foreground text-lg">We&apos;ll use this to explain complex topics and guide you.</p>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -93,7 +106,7 @@ export default function SetupPage() {
                       className={`p-6 cursor-pointer transition-all duration-300 group border-2 relative overflow-hidden ${
                         nativeLanguage === lang.code 
                         ? "border-primary bg-primary/10 scale-105 shadow-[0_0_30px_-10px_rgba(59,130,246,0.5)]" 
-                        : "border-white/5 bg-white/5 hover:border-white/20 hover:bg-white/10"
+                        : "border-border bg-card/50 hover:border-primary/30 hover:bg-accent"
                       }`}
                     >
                       {nativeLanguage === lang.code && (
@@ -108,7 +121,7 @@ export default function SetupPage() {
                         <span className="text-4xl group-hover:scale-125 transition-transform duration-300">
                           {lang.flag}
                         </span>
-                        <span className="text-lg font-bold text-white">{lang.name}</span>
+                        <span className="text-lg font-bold text-foreground">{lang.name}</span>
                       </div>
                     </Card>
                   </motion.div>
@@ -141,12 +154,12 @@ export default function SetupPage() {
                 <motion.div 
                    initial={{ scale: 0 }}
                    animate={{ scale: 1 }}
-                   className="inline-flex p-3 rounded-2xl bg-purple-500/20 text-purple-400 mb-4"
+                   className="inline-flex p-3 rounded-2xl bg-purple-500/20 text-purple-600 dark:text-purple-400 mb-4"
                 >
                   <GraduationCap size={32} />
                 </motion.div>
-                <h1 className="text-4xl md:text-5xl font-black text-white">What language do you want to master?</h1>
-                <p className="text-slate-400 text-lg">Your AI tutor will build a path specifically for this goal.</p>
+                <h1 className="text-4xl md:text-5xl font-black text-foreground">What language do you want to master?</h1>
+                <p className="text-muted-foreground text-lg">Your AI tutor will build a path specifically for this goal.</p>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -162,13 +175,13 @@ export default function SetupPage() {
                       className={`p-6 cursor-pointer transition-all duration-300 group border-2 relative overflow-hidden ${
                         targetLanguage === lang.code 
                         ? "border-purple-500 bg-purple-500/10 scale-105 shadow-[0_0_30px_-10px_rgba(168,85,247,0.5)]" 
-                        : "border-white/5 bg-white/5 hover:border-white/20 hover:bg-white/10"
+                        : "border-border bg-card/50 hover:border-purple-500/30 hover:bg-accent"
                       }`}
                     >
                       {targetLanguage === lang.code && (
                         <motion.div 
                           layoutId="active-check-target"
-                          className="absolute top-2 right-2 text-purple-400"
+                          className="absolute top-2 right-2 text-purple-600 dark:text-purple-400"
                         >
                           <Check size={20} />
                         </motion.div>
@@ -177,7 +190,7 @@ export default function SetupPage() {
                         <span className="text-4xl group-hover:scale-125 transition-transform duration-300">
                           {lang.flag}
                         </span>
-                        <span className="text-lg font-bold text-white">{lang.name}</span>
+                        <span className="text-lg font-bold text-foreground">{lang.name}</span>
                       </div>
                     </Card>
                   </motion.div>
@@ -189,14 +202,14 @@ export default function SetupPage() {
                   size="lg"
                   disabled={!targetLanguage || loading}
                   onClick={handleFinish}
-                  className="h-14 px-12 rounded-full text-lg font-bold bg-purple-600 hover:bg-purple-700 shadow-xl shadow-purple-500/20 group"
+                  className="h-14 px-12 rounded-full text-lg font-bold bg-purple-600 hover:bg-purple-700 shadow-xl shadow-purple-500/20 group text-white"
                 >
                   {loading ? "Initializing..." : "Start Learning"}
                   {!loading && <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />}
                 </Button>
                 <button 
                   onClick={() => setStep(1)}
-                  className="text-slate-500 hover:text-slate-300 transition-colors"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Go back
                 </button>
