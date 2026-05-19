@@ -16,6 +16,16 @@ type AuthResponse struct {
 }
 
 type User struct {
-	ID    uint   `json:"id"`
-	Email string `json:"email"`
+	ID       uint   `json:"id"`
+	Email    string `json:"email"`
+	Nickname string `json:"nickname,omitempty"`
+}
+
+type UpdateProfileRequest struct {
+	Nickname string `json:"nickname"`
+}
+
+type ChangePasswordRequest struct {
+	OldPassword string `json:"old_password"`
+	NewPassword string `json:"new_password"`
 }

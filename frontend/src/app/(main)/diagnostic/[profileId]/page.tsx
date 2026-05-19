@@ -10,8 +10,9 @@ import { Badge } from "@/components/ui/badge";
 import { useWebSocket } from "@/hooks/useWebSocket";
 import { ChatMessage } from "@/types";
 import { api, ChatHistoryMessage } from "@/lib/api";
+import { Profile } from "@/types";
 import { toast } from "sonner";
-import { ArrowLeft, Send, Loader2, Sparkles, BrainCircuit, GraduationCap, CheckCircle2, MessageSquare } from "lucide-react";
+import { ArrowLeft, Send, Loader2, Sparkles, BrainCircuit, GraduationCap, CheckCircle2, MessageSquare, Compass } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function DiagnosticPage({
@@ -21,6 +22,7 @@ export default function DiagnosticPage({
 }) {
   const router = useRouter();
   const [profileId, setProfileId] = useState<string | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -37,20 +39,29 @@ export default function DiagnosticPage({
   useEffect(() => {
     if (!profileId) return;
 
-    const loadHistory = async () => {
+    const loadData = async () => {
       try {
-        const history = await api.getChatHistory(profileId, "diagnostic");
+        const profileData = await api.get<Profile>(`/api/profile/${profileId}`);
+        setProfile(profileData);
+        
+        const context = profileData.onboarding_phase === "completed" ? "diagnostic" : "onboarding";
+        const history = await api.getChatHistory(profileId, context);
         const formattedMessages: ChatMessage[] = history.map((msg: ChatHistoryMessage) => ({
           role: msg.role,
           content: msg.content,
         }));
         setMessages(formattedMessages);
+
+        if (profileData.onboarding_phase === "completed" && profileData.current_level !== "unknown") {
+          setAssessmentComplete(true);
+          setLevel(profileData.current_level);
+        }
       } catch (error) {
-        console.error("Failed to load chat history:", error);
+        console.error("Failed to load data:", error);
       }
     };
 
-    loadHistory();
+    loadData();
   }, [profileId]);
 
   useEffect(() => {
@@ -76,7 +87,7 @@ export default function DiagnosticPage({
         setStreamingContent("");
         setLoading(false);
 
-        if (response.is_assessment && response.level) {
+        if ((response.is_assessment || response.is_completed) && response.level) {
           setAssessmentComplete(true);
           setLevel(response.level);
           toast.success(`Level assessed: ${response.level}`);
@@ -88,7 +99,7 @@ export default function DiagnosticPage({
   }, [connected, onMessage, streamingContent]);
 
   const handleSend = () => {
-    if (!input.trim() || !profileId || !connected) return;
+    if (!input.trim() || !profileId || !connected || !profile) return;
 
     const userMessage: ChatMessage = {
       role: "user",
@@ -103,7 +114,7 @@ export default function DiagnosticPage({
 
     try {
       sendMessage({
-        type: "diagnostic",
+        type: profile.onboarding_phase === "completed" ? "diagnostic" : "onboarding",
         message: messageContent,
         profile_id: parseInt(profileId),
       });

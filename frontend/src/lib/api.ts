@@ -89,7 +89,7 @@ class ApiClient {
 
   async getChatHistory(
     profileId: string,
-    context: "diagnostic" | "tutor",
+    context: "diagnostic" | "tutor" | "onboarding",
     limit?: number,
     offset?: number
   ): Promise<ChatHistoryMessage[]> {
@@ -97,6 +97,22 @@ class ApiClient {
     if (limit) params.append("limit", limit.toString());
     if (offset) params.append("offset", offset.toString());
     return this.get<ChatHistoryMessage[]>(`/api/chat/history/${profileId}?${params.toString()}`);
+  }
+
+  async updateNativeLanguage(profileId: number, nativeLanguage: string) {
+    return this.put<any>(`/api/profile/${profileId}/native-language`, { native_language: nativeLanguage });
+  }
+
+  async onboardingChat(profileId: string, message: string) {
+    return this.post<any>(`/api/ai/onboarding/${profileId}`, { message });
+  }
+
+  async updateProfile(nickname: string) {
+    return this.put<any>("/api/auth/profile", { nickname });
+  }
+
+  async changePassword(old_password: string, new_password: string) {
+    return this.put<any>("/api/auth/password", { old_password, new_password });
   }
 }
 

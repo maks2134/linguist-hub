@@ -35,12 +35,12 @@ func (r *ProfileRepository) FindByID(id uint) (*models.LanguageProfile, error) {
 	return &profile, nil
 }
 
+func (r *ProfileRepository) Update(profile *models.LanguageProfile) error {
+	return r.db.Save(profile).Error
+}
+
 func (r *ProfileRepository) FindByUserID(userID uint) ([]models.LanguageProfile, error) {
 	var profiles []models.LanguageProfile
 	err := r.db.Where("user_id = ?", userID).Find(&profiles).Error
 	return profiles, err
-}
-
-func (r *ProfileRepository) Update(profile *models.LanguageProfile) error {
-	return r.db.Save(profile).Error
 }

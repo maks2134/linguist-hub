@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gofiber/contrib/websocket"
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/contrib/v3/websocket"
+	"github.com/gofiber/fiber/v3"
 	"github.com/makskozlov/linguist-hub/internal/services"
 )
 
@@ -26,6 +26,10 @@ type WebSocketResponse struct {
 	Level        string   `json:"level,omitempty"`
 	Weaknesses   []string `json:"weaknesses,omitempty"`
 	IsAssessment bool     `json:"is_assessment,omitempty"`
+	Phase        string   `json:"phase,omitempty"`
+	Goals        []string `json:"goals,omitempty"`
+	IsCompleted  bool     `json:"is_completed,omitempty"`
+	Plan         string   `json:"plan,omitempty"`
 	Error        string   `json:"error,omitempty"`
 	Done         bool     `json:"done,omitempty"`
 }
@@ -60,6 +64,8 @@ func (h *WebSocketHandler) HandleWebSocket() fiber.Handler {
 			}
 
 			switch req.Type {
+			case "onboarding":
+				h.handleOnboardingChat(c, userID, req)
 			case "diagnostic":
 				h.handleDiagnosticChat(c, userID, req)
 			case "tutor":
@@ -71,6 +77,48 @@ func (h *WebSocketHandler) HandleWebSocket() fiber.Handler {
 			}
 		}
 	})
+}
+
+func (h *WebSocketHandler) handleOnboardingChat(c *websocket.Conn, userID uint, req WebSocketMessage) {
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
+
+	resp, err := h.aiService.OnboardingChat(ctx, userID, req.ProfileID, req.Message)
+	if err != nil {
+		h.sendError(c, err.Error(), false)
+		return
+	}
+
+	words := splitIntoChunks(resp.Message, 5)
+	for _, chunk := range words {
+		if err := c.WriteJSON(WebSocketResponse{
+			Type:  "onboarding",
+			Chunk: chunk,
+			Done:  false,
+		}); err != nil {
+			slog.Error("websocket write error", "error", err)
+			return
+		}
+		time.Sleep(50 * time.Millisecond)
+	}
+
+	final := WebSocketResponse{
+		Type:        "onboarding",
+		Content:     resp.Message,
+		Phase:       resp.Phase,
+		Level:       resp.Level,
+		Goals:       resp.Goals,
+		Weaknesses:  resp.Weaknesses,
+		IsCompleted: resp.IsCompleted,
+		Done:        true,
+	}
+	if resp.Plan != nil {
+		planJSON, _ := json.Marshal(resp.Plan)
+		final.Plan = string(planJSON)
+	}
+	if err := c.WriteJSON(final); err != nil {
+		slog.Error("websocket write error", "error", err)
+	}
 }
 
 func (h *WebSocketHandler) handleDiagnosticChat(c *websocket.Conn, userID uint, req WebSocketMessage) {
@@ -224,7 +272,7 @@ func joinWords(words []string) string {
 }
 
 func wsAuthMiddleware() fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		token := c.Query("token")
 		if token != "" {
 			c.Request().Header.Set("Authorization", "Bearer "+token)

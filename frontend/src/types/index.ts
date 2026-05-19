@@ -1,6 +1,7 @@
 export interface User {
   id: number;
   email: string;
+  nickname?: string;
 }
 
 export interface AuthResponse {
@@ -12,7 +13,10 @@ export interface Profile {
   id: number;
   user_id: number;
   target_language: string;
+  native_language: string;
   current_level: string;
+  onboarding_phase: string;
+  goals?: string;
   progress_percentage: number;
 }
 

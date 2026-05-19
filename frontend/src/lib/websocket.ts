@@ -1,7 +1,7 @@
 const WS_URL = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8080";
 
 export interface WebSocketMessage {
-  type: "diagnostic" | "tutor" | "generate_plan";
+  type: "diagnostic" | "tutor" | "generate_plan" | "onboarding";
   message?: string;
   topic?: string;
   profile_id: number;
@@ -14,6 +14,10 @@ export interface WebSocketResponse {
   level?: string;
   weaknesses?: string[];
   is_assessment?: boolean;
+  phase?: string;
+  goals?: string[];
+  is_completed?: boolean;
+  plan?: string;
   error?: string;
   done?: boolean;
 }

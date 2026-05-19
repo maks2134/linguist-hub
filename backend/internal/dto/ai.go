@@ -12,7 +12,6 @@ type ChatResponse struct {
 	IsAssessment bool     `json:"is_assessment,omitempty"`
 }
 
-// ChatHistoryMessage represents a single chat message in history
 type ChatHistoryMessage struct {
 	ID        uint   `json:"id"`
 	UserID    uint   `json:"user_id"`
@@ -38,4 +37,14 @@ type Module struct {
 	Title       string   `json:"title"`
 	Description string   `json:"description"`
 	Topics      []string `json:"topics"`
+}
+
+type OnboardingChatResponse struct {
+	Message     string        `json:"message"`
+	Phase       string        `json:"phase"`
+	Level       string        `json:"level,omitempty"`
+	Goals       []string      `json:"goals,omitempty"`
+	Weaknesses  []string      `json:"weaknesses,omitempty"`
+	Plan        *PlanResponse `json:"plan,omitempty"`
+	IsCompleted bool          `json:"is_completed"`
 }

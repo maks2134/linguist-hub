@@ -54,12 +54,17 @@ func (s *GeminiService) Close() error {
 }
 
 func (s *GeminiService) DiagnosticChat(ctx context.Context, systemPrompt string, history []models.ChatMessage, userMessage string) (string, error) {
-	chat := s.model.StartChat()
-	chat.History = s.convertHistory(history)
+	model := s.model
+	model.SystemInstruction = &genai.Content{
+		Parts: []genai.Part{genai.Text(systemPrompt)},
+	}
 
-	prompt := fmt.Sprintf("System: %s\n\nUser: %s", systemPrompt, userMessage)
+	chat := model.StartChat()
+	if len(history) > 0 {
+		chat.History = s.convertHistory(history)
+	}
 
-	resp, err := chat.SendMessage(ctx, genai.Text(prompt))
+	resp, err := chat.SendMessage(ctx, genai.Text(userMessage))
 	if err != nil {
 		logGeminiError("DiagnosticChat", err)
 		return "", fmt.Errorf("failed to send message (check API key and quota): %w", err)
@@ -100,12 +105,17 @@ func (s *GeminiService) GeneratePlan(ctx context.Context, language, level string
 }
 
 func (s *GeminiService) TutorChat(ctx context.Context, systemPrompt string, history []models.ChatMessage, userMessage string) (string, error) {
-	chat := s.model.StartChat()
-	chat.History = s.convertHistory(history)
+	model := s.model
+	model.SystemInstruction = &genai.Content{
+		Parts: []genai.Part{genai.Text(systemPrompt)},
+	}
 
-	prompt := fmt.Sprintf("System: %s\n\nUser: %s", systemPrompt, userMessage)
+	chat := model.StartChat()
+	if len(history) > 0 {
+		chat.History = s.convertHistory(history)
+	}
 
-	resp, err := chat.SendMessage(ctx, genai.Text(prompt))
+	resp, err := chat.SendMessage(ctx, genai.Text(userMessage))
 	if err != nil {
 		logGeminiError("TutorChat", err)
 		return "", fmt.Errorf("failed to send message: %w", err)
@@ -136,6 +146,44 @@ func (s *GeminiService) convertHistory(messages []models.ChatMessage) []*genai.C
 type LevelAssessment struct {
 	Level      string   `json:"level"`
 	Weaknesses []string `json:"weaknesses"`
+}
+
+type OnboardingResult struct {
+	Phase      string   `json:"phase"`
+	Level      string   `json:"level"`
+	Goals      []string `json:"goals"`
+	Weaknesses []string `json:"weaknesses"`
+}
+
+func (s *GeminiService) ExtractOnboardingResult(response string) (*OnboardingResult, error) {
+	response = strings.TrimSpace(response)
+
+	startIdx := strings.LastIndex(response, "{")
+	endIdx := strings.LastIndex(response, "}")
+
+	if startIdx == -1 || endIdx == -1 || startIdx >= endIdx {
+		return nil, nil
+	}
+
+	jsonStr := response[startIdx : endIdx+1]
+
+	var result OnboardingResult
+	if err := json.Unmarshal([]byte(jsonStr), &result); err != nil {
+		return nil, nil
+	}
+
+	if result.Phase != "completed" {
+		return nil, nil
+	}
+
+	validLevels := map[string]bool{
+		"A1": true, "A2": true, "B1": true, "B2": true, "C1": true, "C2": true,
+	}
+	if !validLevels[result.Level] {
+		return nil, nil
+	}
+
+	return &result, nil
 }
 
 func (s *GeminiService) ExtractLevelFromResponse(response string) (*LevelAssessment, error) {

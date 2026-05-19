@@ -7,10 +7,11 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/swagger"
+	swagger "github.com/gofiber/contrib/v3/swaggo"
+	"github.com/gofiber/fiber/v3"
 	_ "github.com/makskozlov/linguist-hub/docs"
 	"github.com/makskozlov/linguist-hub/internal/config"
+	"github.com/makskozlov/linguist-hub/internal/constants"
 	"github.com/makskozlov/linguist-hub/internal/handlers"
 	"github.com/makskozlov/linguist-hub/internal/models"
 	"github.com/makskozlov/linguist-hub/internal/repository"
@@ -53,9 +54,9 @@ func New(cfg *config.Config, logger *slog.Logger) (*App, error) {
 	logger.Info("Gemini service initialized")
 
 	app := fiber.New(fiber.Config{
-		ErrorHandler: func(c *fiber.Ctx, err error) error {
+		ErrorHandler: func(c fiber.Ctx, err error) error {
 			logger.Error("fiber error", slog.Any("error", err))
-			return c.Status(500).JSON(fiber.Map{
+			return c.Status(constants.StatusInternalError).JSON(fiber.Map{
 				"success": false,
 				"error": fiber.Map{
 					"code":    "INTERNAL_SERVER_ERROR",
@@ -68,9 +69,9 @@ func New(cfg *config.Config, logger *slog.Logger) (*App, error) {
 	app.Use(middleware.RequestID())
 	app.Use(middleware.Recover(logger))
 	app.Use(middleware.Logger(logger))
-	app.Use(middleware.CORS(cfg.AllowedOrigins))
+	app.Use(middleware.CORS([]string{cfg.AllowedOrigins}))
 
-	app.Get("/healthz", func(c *fiber.Ctx) error {
+	app.Get("/healthz", func(c fiber.Ctx) error {
 		return c.JSON(fiber.Map{"status": "ok"})
 	})
 
@@ -95,7 +96,7 @@ func New(cfg *config.Config, logger *slog.Logger) (*App, error) {
 
 	wsHandler.RegisterRoutes(api, authMiddleware)
 
-	authHandler.RegisterRoutes(api)
+	authHandler.RegisterRoutes(api, authMiddleware)
 	profileHandler.RegisterRoutes(api, authMiddleware)
 	aiHandler.RegisterRoutes(api, authMiddleware)
 

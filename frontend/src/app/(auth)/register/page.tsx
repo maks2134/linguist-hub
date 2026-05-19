@@ -41,7 +41,7 @@ export default function RegisterPage() {
 
       localStorage.setItem("token", response.token);
       toast.success("Account created successfully!");
-      router.push("/dashboard");
+      router.push("/setup");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Registration failed");
     } finally {
