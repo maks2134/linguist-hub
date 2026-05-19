@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +18,7 @@ export default function PlanPage({
   params: Promise<{ profileId: string }>;
 }) {
   const router = useRouter();
+  const t = useTranslations("Plan");
   const [profileId, setProfileId] = useState<string | null>(null);
   const [plan, setPlan] = useState<StudyPlan | null>(null);
   const [loading, setLoading] = useState(true);
@@ -59,14 +61,14 @@ export default function PlanPage({
               <div className="h-16 w-16 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-4">
                 <Map className="h-8 w-8 text-slate-400" />
               </div>
-              <CardTitle className="text-2xl font-bold">No Study Plan Found</CardTitle>
+              <CardTitle className="text-2xl font-bold">{t("noPlanTitle")}</CardTitle>
               <CardDescription className="text-base">
-                You need to complete the diagnostic assessment so we can generate your path.
+                {t("noPlanDesc")}
               </CardDescription>
             </CardHeader>
             <CardContent className="flex justify-center pb-8">
               <Button onClick={() => router.push("/dashboard")} className="rounded-full px-8">
-                Go to Dashboard
+                {t("goToDashboard")}
               </Button>
             </CardContent>
           </Card>
@@ -85,7 +87,7 @@ export default function PlanPage({
           >
             <Button variant="ghost" onClick={() => router.push("/dashboard")} className="rounded-full mb-4 sm:mb-0">
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Dashboard
+              {t("backToDashboard")}
             </Button>
           </motion.div>
           <motion.div
@@ -94,7 +96,7 @@ export default function PlanPage({
              className="flex items-center gap-2 px-6 py-2 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm"
           >
              <GraduationCap className="h-5 w-5 text-primary" />
-             <span className="font-semibold text-sm">Personalized Roadmap</span>
+             <span className="font-semibold text-sm">{t("personalizedRoadmap")}</span>
           </motion.div>
         </div>
 
@@ -106,14 +108,14 @@ export default function PlanPage({
           >
             <div className="flex items-center gap-3 mb-2">
                <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-400 bg-clip-text text-transparent">
-                 Your Learning Journey
+                 {t("learningJourney")}
                </h1>
                <div className="h-10 w-10 rounded-xl bg-yellow-500/10 flex items-center justify-center">
                   <Sparkles className="h-6 w-6 text-yellow-500" />
                </div>
             </div>
             <p className="text-lg text-muted-foreground">
-              An AI-powered curriculum designed specifically for your current level and goals.
+              {t("learningJourneyDesc")}
             </p>
           </motion.div>
         </header>
@@ -139,11 +141,11 @@ export default function PlanPage({
                     <div className="space-y-1">
                       <div className="flex items-center gap-3">
                         <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 font-bold px-3">
-                          Module {module.id}
+                          {t("module")} {module.id}
                         </Badge>
                         <span className="text-sm text-muted-foreground font-medium flex items-center gap-1">
                            <BookOpen className="h-3 w-3" />
-                           {module.topics.length} topics
+                           {module.topics.length} {t("topics")}
                         </span>
                       </div>
                       <CardTitle className="text-2xl font-bold tracking-tight pt-2">

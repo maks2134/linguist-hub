@@ -1,0 +1,141 @@
+{
+  "HomePage": {
+    "title": "LinguistAI",
+    "subtitle": "AIによる言語習得",
+    "description": "言語学習の未来を体験してください。ニューラルエンジンがあなただけのパーソナライズされた学習パスを構築します。",
+    "startJourney": "始める",
+    "signIn": "ログイン",
+    "features": {
+      "tutor": {
+        "title": "ニューラルチューター",
+        "description": "あなたのパターンを学ぶ適応型AI。"
+      },
+      "fastPath": {
+        "title": "ファストパス",
+        "description": "知っていることはスキップして、成長に集中。"
+      },
+      "languages": {
+        "title": "10以上の言語",
+        "description": "世界の言語を簡単にマスター。"
+      }
+    }
+  },
+  "Auth": {
+    "login": "ログイン",
+    "register": "登録",
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "confirmPassword": "パスワードの確認",
+    "nickname": "ニックネーム",
+    "dontHaveAccount": "アカウントをお持ちでないですか？",
+    "alreadyHaveAccount": "すでにアカウントをお持ちですか？",
+    "logout": "ログアウト",
+    "logIn": "ログイン",
+    "signUp": "登録",
+    "createAccount": "アカウント作成",
+    "creatingAccount": "アカウントを作成中...",
+    "loggingIn": "ログイン中...",
+    "welcomeBack": "おかえりなさい",
+    "createAccountTitle": "アカウントを作成",
+    "createAccountDesc": "AIで学習を始めるために情報を入力してください",
+    "loginDesc": "アカウントにアクセスするための認証情報を入力してください",
+    "passwordsDoNotMatch": "パスワードが一致しません",
+    "passwordTooShort": "パスワードは6文字以上必要です",
+    "accountCreated": "アカウントが正常に作成されました！",
+    "loginSuccess": "ログインに成功しました！",
+    "registrationFailed": "登録に失敗しました",
+    "loginFailed": "ログインに失敗しました"
+  },
+  "Setup": {
+    "chooseNativeTitle": "母国語を選択してください",
+    "chooseNativeDesc": "複雑なトピックを説明し、あなたをガイドするために使用します。",
+    "chooseLearningTitle": "習得したい言語は？",
+    "chooseLearningDesc": "AIチューターがこの目標に特化したパスを構築します。",
+    "continue": "続ける",
+    "startLearning": "学習を始める",
+    "initializing": "初期化中...",
+    "goBack": "戻る",
+    "profileCreated": "プロフィールが作成されました！オンボーディングを開始します...",
+    "profileFailed": "プロフィールの設定に失敗しました"
+  },
+  "Navbar": {
+    "light": "ライト",
+    "dark": "ダーク",
+    "system": "システム"
+  },
+  "Dashboard": {
+    "title": "私の言語",
+    "subtitle": "進捗を追跡して学習を続けましょう",
+    "addLanguage": "言語を追加",
+    "continueLearning": "学習を続ける",
+    "studyPlan": "学習計画",
+    "level": "レベル",
+    "noProfiles": "言語プロフィールはまだありません",
+    "noProfilesDesc": "最初の言語を追加して言語学習の旅を始めましょう。",
+    "startLearning": "学習を始める"
+  },
+  "Profile": {
+    "title": "プロフィール設定",
+    "tabAccount": "アカウント",
+    "tabSecurity": "セキュリティ",
+    "publicProfile": "公開プロフィール",
+    "publicProfileDesc": "LinguistAIでの他のユーザーからの見え方",
+    "nickname": "ニックネーム",
+    "nicknamePlaceholder": "ニックネームを入力",
+    "learningLanguages": "学習言語",
+    "level": "レベル",
+    "nativeLanguageLabel": "母国語（AIチューターが使用）",
+    "saveChanges": "変更を保存",
+    "password": "パスワード",
+    "passwordDesc": "アカウントを安全に保つためにパスワードを変更してください",
+    "currentPassword": "現在のパスワード",
+    "newPassword": "新しいパスワード",
+    "confirmNewPassword": "新しいパスワードを確認",
+    "updatePassword": "パスワードを更新",
+    "profileUpdated": "プロフィールを更新しました！",
+    "passwordChanged": "パスワードを正常に変更しました！",
+    "passwordsMismatch": "新しいパスワードが一致しません",
+    "nativeUpdated": "母国語を更新しました！"
+  },
+  "Diagnostic": {
+    "backToDashboard": "ダッシュボードに戻る",
+    "aiAssessment": "AI言語評価",
+    "aiAssessmentDesc": "AIとチャットしてレベルを確認しましょう",
+    "startAssessment": "評価を開始",
+    "startAssessmentDesc": "メッセージを送って始めましょう！学んでいる言語で挨拶して自己紹介してください。",
+    "assessmentComplete": "評価完了！",
+    "assessmentCompleteDesc": "スキルを分析し、あなたのレベルを判定しました：",
+    "generatePlan": "学習プランを生成",
+    "levelAssessed": "レベル評価済み",
+    "messagePlaceholder": "メッセージを入力...",
+    "planGenerated": "学習プランが生成されました！",
+    "level": "レベル"
+  },
+  "Tutor": {
+    "back": "戻る",
+    "topic": "トピック",
+    "aiTutor": "AIチューター",
+    "activeSession": "アクティブセッション",
+    "readyToPractice": "練習する準備はできていますか？",
+    "readyToPracticeDesc": "{topic}をマスターするお手伝いをします。挨拶から始めましょう！",
+    "messagePlaceholder": "チューターに質問する..."
+  },
+  "Plan": {
+    "backToDashboard": "ダッシュボードに戻る",
+    "personalizedRoadmap": "パーソナライズされたロードマップ",
+    "learningJourney": "あなたの学習の旅",
+    "learningJourneyDesc": "あなたの現在のレベルと目標に合わせて設計されたAI駆動のカリキュラム。",
+    "module": "モジュール",
+    "topics": "トピック",
+    "noPlanTitle": "学習プランが見つかりません",
+    "noPlanDesc": "パスを生成するには、診断評価を完了する必要があります。",
+    "goToDashboard": "ダッシュボードへ"
+  },
+  "Common": {
+    "back": "戻る",
+    "continue": "続ける",
+    "save": "保存",
+    "loading": "読み込み中...",
+    "error": "エラー"
+  }
+}

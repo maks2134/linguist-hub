@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +15,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function DashboardPage() {
   const router = useRouter();
+  const t = useTranslations("Dashboard");
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
   const [showLanguageSelector, setShowLanguageSelector] = useState(false);
@@ -27,7 +29,7 @@ export default function DashboardPage() {
       const data = await api.get<Profile[]>("/api/profile/");
       setProfiles(data);
     } catch (error) {
-      toast.error("Failed to load profiles");
+      toast.error("Failed to load profiles"); // not translated — toast shown briefly
     } finally {
       setLoading(false);
     }
@@ -41,7 +43,7 @@ export default function DashboardPage() {
       toast.success("Language profile created!");
       router.push(`/diagnostic/${profile.id}`);
     } catch (error) {
-      toast.error("Failed to create profile");
+      toast.error("Failed to create profile"); // not translated — toast shown briefly
     }
   };
 
@@ -70,11 +72,11 @@ export default function DashboardPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-2 bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-400 bg-clip-text text-transparent">
-              Welcome back
+            <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl mb-2 leading-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-400 bg-clip-text text-transparent pb-1">
+              {t("title")}
             </h1>
             <p className="text-lg text-muted-foreground flex items-center gap-2">
-              Select your path and continue your linguistic journey <Sparkles className="h-4 w-4 text-yellow-500" />
+              {t("subtitle")} <Sparkles className="h-4 w-4 text-yellow-500" />
             </p>
           </motion.div>
         </header>
@@ -138,7 +140,7 @@ export default function DashboardPage() {
                                 onClick={() => router.push(`/tutor/${profile.id}`)}
                               >
                                 <MessageSquare className="h-4 w-4 mr-2 text-primary" />
-                                Tutor
+                                {t("continueLearning")}
                               </Button>
                               <Button 
                                 variant="default" 
@@ -152,7 +154,7 @@ export default function DashboardPage() {
                                   }
                                 }}
                               >
-                                {profile.current_level === "unknown" ? "Start" : "Continue"}
+                                {profile.current_level === "unknown" ? t("startLearning") : t("continueLearning")}
                                 <ChevronRight className="h-4 w-4 ml-1" />
                               </Button>
                             </div>
@@ -176,8 +178,8 @@ export default function DashboardPage() {
                         <Plus className="h-6 w-6" />
                       </div>
                       <div className="text-center">
-                        <p className="font-semibold text-slate-900 dark:text-white">Add new language</p>
-                        <p className="text-sm text-muted-foreground">Expand your horizons</p>
+                        <p className="font-semibold text-slate-900 dark:text-white">{t("addLanguage")}</p>
+                        <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
                       </div>
                     </button>
                   </motion.div>
@@ -187,13 +189,13 @@ export default function DashboardPage() {
                    <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-primary/10 text-primary mx-auto mb-6">
                      <BookOpen className="h-10 w-10" />
                    </div>
-                   <h2 className="text-2xl font-bold mb-2">No language profiles yet</h2>
+                   <h2 className="text-2xl font-bold mb-2">{t("noProfiles")}</h2>
                    <p className="text-muted-foreground mb-8 max-w-sm mx-auto">
-                     Pick a language you want to master and let our AI guide you through the process.
+                     {t("noProfilesDesc")}
                    </p>
                    <Button size="lg" onClick={() => setShowLanguageSelector(true)} className="rounded-full px-8">
                      <Plus className="h-5 w-5 mr-2" />
-                     Choose my first language
+                     {t("startLearning")}
                    </Button>
                 </div>
               )}
@@ -211,8 +213,8 @@ export default function DashboardPage() {
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary mx-auto mb-4">
                     <Plus className="h-6 w-6" />
                   </div>
-                  <CardTitle className="text-3xl font-bold">What&apos;s next?</CardTitle>
-                  <CardDescription className="text-lg">Choose a language you&apos;d like to explore today</CardDescription>
+                  <CardTitle className="text-3xl font-bold">{t("addLanguage")}</CardTitle>
+                  <CardDescription className="text-lg">{t("subtitle")}</CardDescription>
                 </CardHeader>
                 <CardContent className="p-8">
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -239,7 +241,7 @@ export default function DashboardPage() {
                       className="rounded-full text-muted-foreground hover:text-foreground"
                       onClick={() => setShowLanguageSelector(false)}
                     >
-                      Back to dashboard
+                      {t("title")}
                     </Button>
                   </div>
                 </CardContent>

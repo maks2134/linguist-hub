@@ -1,0 +1,141 @@
+{
+  "HomePage": {
+    "title": "LinguistAI",
+    "subtitle": "Dominio de idiomas con IA",
+    "description": "Experimenta el futuro del aprendizaje de idiomas. Nuestro motor neuronal construye un camino personalizado para ti.",
+    "startJourney": "Comenzar",
+    "signIn": "Iniciar sesión",
+    "features": {
+      "tutor": {
+        "title": "Tutor Neural",
+        "description": "IA adaptativa que aprende tus patrones."
+      },
+      "fastPath": {
+        "title": "Camino rápido",
+        "description": "Salta lo que sabes, céntrate en crecer."
+      },
+      "languages": {
+        "title": "10+ Idiomas",
+        "description": "Domina lenguas del mundo con facilidad."
+      }
+    }
+  },
+  "Auth": {
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "nickname": "Apodo",
+    "dontHaveAccount": "¿No tienes cuenta?",
+    "alreadyHaveAccount": "¿Ya tienes cuenta?",
+    "logout": "Cerrar sesión",
+    "logIn": "Entrar",
+    "signUp": "Registrarse",
+    "createAccount": "Crear cuenta",
+    "creatingAccount": "Creando cuenta...",
+    "loggingIn": "Entrando...",
+    "welcomeBack": "Bienvenido de nuevo",
+    "createAccountTitle": "Crea una cuenta",
+    "createAccountDesc": "Ingresa tus datos para comenzar a aprender con IA",
+    "loginDesc": "Ingresa tus credenciales para acceder a tu cuenta",
+    "passwordsDoNotMatch": "Las contraseñas no coinciden",
+    "passwordTooShort": "La contraseña debe tener al menos 6 caracteres",
+    "accountCreated": "¡Cuenta creada con éxito!",
+    "loginSuccess": "¡Sesión iniciada con éxito!",
+    "registrationFailed": "Error en el registro",
+    "loginFailed": "Error al iniciar sesión"
+  },
+  "Setup": {
+    "chooseNativeTitle": "Elige tu idioma nativo",
+    "chooseNativeDesc": "Lo usaremos para explicarte temas complejos y guiarte.",
+    "chooseLearningTitle": "¿Qué idioma quieres dominar?",
+    "chooseLearningDesc": "Tu tutor de IA construirá un camino específico para esta meta.",
+    "continue": "Continuar",
+    "startLearning": "Empezar a aprender",
+    "initializing": "Inicializando...",
+    "goBack": "Volver",
+    "profileCreated": "¡Perfil creado! Iniciando incorporación...",
+    "profileFailed": "Error al configurar el perfil"
+  },
+  "Navbar": {
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Sistema"
+  },
+  "Dashboard": {
+    "title": "Mis idiomas",
+    "subtitle": "Sigue tu progreso y continúa aprendiendo",
+    "addLanguage": "Agregar idioma",
+    "continueLearning": "Continuar aprendiendo",
+    "studyPlan": "Plan de estudio",
+    "level": "Nivel",
+    "noProfiles": "Aún no hay perfiles de idioma",
+    "noProfilesDesc": "Comienza tu viaje añadiendo tu primer idioma.",
+    "startLearning": "Empezar a aprender"
+  },
+  "Profile": {
+    "title": "Configuración de perfil",
+    "tabAccount": "Cuenta",
+    "tabSecurity": "Seguridad",
+    "publicProfile": "Perfil público",
+    "publicProfileDesc": "Cómo te ven otros en LinguistAI",
+    "nickname": "Apodo",
+    "nicknamePlaceholder": "Tu apodo",
+    "learningLanguages": "Idiomas que aprendes",
+    "level": "Nivel",
+    "nativeLanguageLabel": "Idioma nativo (usado por el tutor IA)",
+    "saveChanges": "Guardar cambios",
+    "password": "Contraseña",
+    "passwordDesc": "Cambia tu contraseña para mantener tu cuenta segura",
+    "currentPassword": "Contraseña actual",
+    "newPassword": "Nueva contraseña",
+    "confirmNewPassword": "Confirmar nueva contraseña",
+    "updatePassword": "Actualizar contraseña",
+    "profileUpdated": "¡Perfil actualizado!",
+    "passwordChanged": "¡Contraseña cambiada con éxito!",
+    "passwordsMismatch": "Las nuevas contraseñas no coinciden",
+    "nativeUpdated": "¡Idioma nativo actualizado!"
+  },
+  "Diagnostic": {
+    "backToDashboard": "Volver al panel",
+    "aiAssessment": "Evaluación de idioma IA",
+    "aiAssessmentDesc": "Chatea con nuestra IA para determinar tu nivel",
+    "startAssessment": "Inicia tu evaluación",
+    "startAssessmentDesc": "¡Envía un mensaje para comenzar! Saluda y preséntate en el idioma que aprendes.",
+    "assessmentComplete": "¡Evaluación completa!",
+    "assessmentCompleteDesc": "Hemos analizado tus habilidades y determinado que tu nivel es",
+    "generatePlan": "Generar mi plan de estudio",
+    "levelAssessed": "Nivel evaluado",
+    "messagePlaceholder": "Escribe tu mensaje...",
+    "planGenerated": "¡Plan de estudio generado!",
+    "level": "Nivel"
+  },
+  "Tutor": {
+    "back": "Volver",
+    "topic": "Tema",
+    "aiTutor": "Tutor IA",
+    "activeSession": "Sesión activa",
+    "readyToPractice": "¿Listo para practicar?",
+    "readyToPracticeDesc": "Estoy aquí para ayudarte a dominar {topic}. ¡Empieza saludando!",
+    "messagePlaceholder": "Pregunta a tu tutor..."
+  },
+  "Plan": {
+    "backToDashboard": "Volver al panel",
+    "personalizedRoadmap": "Hoja de ruta personalizada",
+    "learningJourney": "Tu camino de aprendizaje",
+    "learningJourneyDesc": "Un currículo impulsado por IA diseñado específicamente para tu nivel y objetivos.",
+    "module": "Módulo",
+    "topics": "temas",
+    "noPlanTitle": "Plan de estudio no encontrado",
+    "noPlanDesc": "Necesitas completar la evaluación diagnóstica para que podamos generar tu ruta.",
+    "goToDashboard": "Ir al panel"
+  },
+  "Common": {
+    "back": "Volver",
+    "continue": "Continuar",
+    "save": "Guardar",
+    "loading": "Cargando...",
+    "error": "Error"
+  }
+}

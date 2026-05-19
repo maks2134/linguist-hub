@@ -1,0 +1,141 @@
+{
+  "HomePage": {
+    "title": "LinguistAI",
+    "subtitle": "KI-gestützte Sprachbeherrschung",
+    "description": "Erleben Sie die Zukunft des Sprachenlernens. Unsere neuronale Engine erstellt einen personalisierten Pfad nur für Sie.",
+    "startJourney": "Starten",
+    "signIn": "Anmelden",
+    "features": {
+      "tutor": {
+        "title": "Neuraler Tutor",
+        "description": "Adaptive KI, die Ihre Muster erlernt."
+      },
+      "fastPath": {
+        "title": "Schneller Pfad",
+        "description": "Überspringen Sie Bekanntes, fokussieren Sie auf Wachstum."
+      },
+      "languages": {
+        "title": "10+ Sprachen",
+        "description": "Meistern Sie Weltsprachen mit Leichtigkeit."
+      }
+    }
+  },
+  "Auth": {
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "nickname": "Spitzname",
+    "dontHaveAccount": "Noch kein Konto?",
+    "alreadyHaveAccount": "Bereits ein Konto?",
+    "logout": "Abmelden",
+    "logIn": "Einloggen",
+    "signUp": "Registrieren",
+    "createAccount": "Konto erstellen",
+    "creatingAccount": "Konto wird erstellt...",
+    "loggingIn": "Anmelden...",
+    "welcomeBack": "Willkommen zurück",
+    "createAccountTitle": "Ein Konto erstellen",
+    "createAccountDesc": "Geben Sie Ihre Daten ein, um mit KI zu lernen",
+    "loginDesc": "Geben Sie Ihre Zugangsdaten ein, um auf Ihr Konto zuzugreifen",
+    "passwordsDoNotMatch": "Passwörter stimmen nicht überein",
+    "passwordTooShort": "Das Passwort muss mindestens 6 Zeichen lang sein",
+    "accountCreated": "Konto erfolgreich erstellt!",
+    "loginSuccess": "Erfolgreich angemeldet!",
+    "registrationFailed": "Registrierung fehlgeschlagen",
+    "loginFailed": "Anmeldung fehlgeschlagen"
+  },
+  "Setup": {
+    "chooseNativeTitle": "Wählen Sie Ihre Muttersprache",
+    "chooseNativeDesc": "Wir nutzen diese, um komplexe Themen zu erklären und Sie zu begleiten.",
+    "chooseLearningTitle": "Welche Sprache möchten Sie meistern?",
+    "chooseLearningDesc": "Ihr KI-Tutor erstellt einen spezifischen Pfad für dieses Ziel.",
+    "continue": "Weiter",
+    "startLearning": "Lernen beginnen",
+    "initializing": "Initialisierung...",
+    "goBack": "Zurück",
+    "profileCreated": "Profil erstellt! Onboarding wird gestartet...",
+    "profileFailed": "Profil-Setup fehlgeschlagen"
+  },
+  "Navbar": {
+    "light": "Hell",
+    "dark": "Dunkel",
+    "system": "System"
+  },
+  "Dashboard": {
+    "title": "Meine Sprachen",
+    "subtitle": "Verfolgen Sie Ihren Fortschritt und lernen Sie weiter",
+    "addLanguage": "Sprache hinzufügen",
+    "continueLearning": "Weiterlernen",
+    "studyPlan": "Lernplan",
+    "level": "Niveau",
+    "noProfiles": "Noch keine Sprachprofile",
+    "noProfilesDesc": "Beginnen Sie Ihre Sprachreise mit Ihrer ersten Sprache.",
+    "startLearning": "Lernen beginnen"
+  },
+  "Profile": {
+    "title": "Profileinstellungen",
+    "tabAccount": "Konto",
+    "tabSecurity": "Sicherheit",
+    "publicProfile": "Öffentliches Profil",
+    "publicProfileDesc": "So sehen andere Sie auf LinguistAI",
+    "nickname": "Spitzname",
+    "nicknamePlaceholder": "Ihr Spitzname",
+    "learningLanguages": "Lernsprachen",
+    "level": "Niveau",
+    "nativeLanguageLabel": "Muttersprache (vom KI-Tutor verwendet)",
+    "saveChanges": "Änderungen speichern",
+    "password": "Passwort",
+    "passwordDesc": "Ändern Sie Ihr Passwort für mehr Sicherheit",
+    "currentPassword": "Aktuelles Passwort",
+    "newPassword": "Neues Passwort",
+    "confirmNewPassword": "Neues Passwort bestätigen",
+    "updatePassword": "Passwort aktualisieren",
+    "profileUpdated": "Profil aktualisiert!",
+    "passwordChanged": "Passwort erfolgreich geändert!",
+    "passwordsMismatch": "Die neuen Passwörter stimmen nicht überein",
+    "nativeUpdated": "Muttersprache aktualisiert!"
+  },
+  "Diagnostic": {
+    "backToDashboard": "Zurück zum Dashboard",
+    "aiAssessment": "KI-Sprachbewertung",
+    "aiAssessmentDesc": "Chatten Sie mit unserer KI, um Ihr Niveau zu bestimmen",
+    "startAssessment": "Starten Sie Ihre Bewertung",
+    "startAssessmentDesc": "Senden Sie eine Nachricht, um zu beginnen! Begrüßen Sie uns auf der Sprache, die Sie lernen.",
+    "assessmentComplete": "Bewertung abgeschlossen!",
+    "assessmentCompleteDesc": "Wir haben Ihre Fähigkeiten analysiert und Ihr Niveau bestimmt:",
+    "generatePlan": "Meinen Lernplan erstellen",
+    "levelAssessed": "Niveau bewertet",
+    "messagePlaceholder": "Geben Sie Ihre Nachricht ein...",
+    "planGenerated": "Lernplan erstellt!",
+    "level": "Niveau"
+  },
+  "Tutor": {
+    "back": "Zurück",
+    "topic": "Thema",
+    "aiTutor": "KI-Tutor",
+    "activeSession": "Aktive Sitzung",
+    "readyToPractice": "Bereit zu üben?",
+    "readyToPracticeDesc": "Ich helfe Ihnen, {topic} zu meistern. Fangen Sie mit einer Begrüßung an!",
+    "messagePlaceholder": "Fragen Sie Ihren Tutor..."
+  },
+  "Plan": {
+    "backToDashboard": "Zurück zum Dashboard",
+    "personalizedRoadmap": "Personalisierter Fahrplan",
+    "learningJourney": "Ihre Lernreise",
+    "learningJourneyDesc": "Ein KI-gestützter Lehrplan, der speziell für Ihr Niveau und Ihre Ziele entwickelt wurde.",
+    "module": "Modul",
+    "topics": "Themen",
+    "noPlanTitle": "Kein Lernplan gefunden",
+    "noPlanDesc": "Sie müssen die Diagnosebewertung abschließen, damit wir Ihren Pfad generieren können.",
+    "goToDashboard": "Zum Dashboard"
+  },
+  "Common": {
+    "back": "Zurück",
+    "continue": "Weiter",
+    "save": "Speichern",
+    "loading": "Laden...",
+    "error": "Fehler"
+  }
+}

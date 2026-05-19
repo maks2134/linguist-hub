@@ -1,0 +1,141 @@
+{
+  "HomePage": {
+    "title": "LinguistAI",
+    "subtitle": "AI驱动的语言精通",
+    "description": "体验语言学习的未来。我们的神经引擎为您量身打造个性化路径。",
+    "startJourney": "开始旅程",
+    "signIn": "登录",
+    "features": {
+      "tutor": {
+        "title": "神经导师",
+        "description": "自适应AI，学习您的学习模式。"
+      },
+      "fastPath": {
+        "title": "快速路径",
+        "description": "跳过已知内容，专注成长。"
+      },
+      "languages": {
+        "title": "10+种语言",
+        "description": "轻松掌握全球语言。"
+      }
+    }
+  },
+  "Auth": {
+    "login": "登录",
+    "register": "注册",
+    "email": "电子邮件",
+    "password": "密码",
+    "confirmPassword": "确认密码",
+    "nickname": "昵称",
+    "dontHaveAccount": "还没有账号？",
+    "alreadyHaveAccount": "已有账号？",
+    "logout": "退出登录",
+    "logIn": "登录",
+    "signUp": "注册",
+    "createAccount": "创建账号",
+    "creatingAccount": "正在创建账号...",
+    "loggingIn": "正在登录...",
+    "welcomeBack": "欢迎回来",
+    "createAccountTitle": "创建账号",
+    "createAccountDesc": "输入您的信息，开始AI语言学习",
+    "loginDesc": "输入您的凭据以访问您的账号",
+    "passwordsDoNotMatch": "密码不匹配",
+    "passwordTooShort": "密码至少需要6个字符",
+    "accountCreated": "账号创建成功！",
+    "loginSuccess": "登录成功！",
+    "registrationFailed": "注册失败",
+    "loginFailed": "登录失败"
+  },
+  "Setup": {
+    "chooseNativeTitle": "选择您的母语",
+    "chooseNativeDesc": "我们将用它来解释复杂主题并引导您。",
+    "chooseLearningTitle": "您想掌握哪种语言？",
+    "chooseLearningDesc": "您的AI导师将专门为此目标制定路径。",
+    "continue": "继续",
+    "startLearning": "开始学习",
+    "initializing": "初始化中...",
+    "goBack": "返回",
+    "profileCreated": "档案已创建！正在启动入门引导...",
+    "profileFailed": "档案设置失败"
+  },
+  "Navbar": {
+    "light": "浅色",
+    "dark": "深色",
+    "system": "系统"
+  },
+  "Dashboard": {
+    "title": "我的语言",
+    "subtitle": "跟踪您的进度并继续学习",
+    "addLanguage": "添加语言",
+    "continueLearning": "继续学习",
+    "studyPlan": "学习计划",
+    "level": "级别",
+    "noProfiles": "暂无语言档案",
+    "noProfilesDesc": "添加第一门语言，开始您的语言旅程。",
+    "startLearning": "开始学习"
+  },
+  "Profile": {
+    "title": "个人资料设置",
+    "tabAccount": "账号",
+    "tabSecurity": "安全",
+    "publicProfile": "公开资料",
+    "publicProfileDesc": "其他人在LinguistAI上看到的您",
+    "nickname": "昵称",
+    "nicknamePlaceholder": "您的昵称",
+    "learningLanguages": "学习语言",
+    "level": "级别",
+    "nativeLanguageLabel": "母语（AI导师使用）",
+    "saveChanges": "保存更改",
+    "password": "密码",
+    "passwordDesc": "更改密码以保护您的账号安全",
+    "currentPassword": "当前密码",
+    "newPassword": "新密码",
+    "confirmNewPassword": "确认新密码",
+    "updatePassword": "更新密码",
+    "profileUpdated": "资料已更新！",
+    "passwordChanged": "密码修改成功！",
+    "passwordsMismatch": "新密码不匹配",
+    "nativeUpdated": "母语已更新！"
+  },
+  "Diagnostic": {
+    "backToDashboard": "返回首页",
+    "aiAssessment": "AI语言评估",
+    "aiAssessmentDesc": "与我们的AI交流以确定您的水平",
+    "startAssessment": "开始评估",
+    "startAssessmentDesc": "发送消息开始！用您正在学习的语言打招呼并介绍自己。",
+    "assessmentComplete": "评估完成！",
+    "assessmentCompleteDesc": "我们已分析您的技能，确定您的水平为",
+    "generatePlan": "生成我的学习计划",
+    "levelAssessed": "已评估水平",
+    "messagePlaceholder": "输入您的消息...",
+    "planGenerated": "学习计划已生成！",
+    "level": "级别"
+  },
+  "Tutor": {
+    "back": "返回",
+    "topic": "主题",
+    "aiTutor": "AI导师",
+    "activeSession": "活跃课程",
+    "readyToPractice": "准备好练习了吗？",
+    "readyToPracticeDesc": "我在这里帮助您掌握{topic}。先打个招呼吧！",
+    "messagePlaceholder": "向导师提问..."
+  },
+  "Plan": {
+    "backToDashboard": "返回首页",
+    "personalizedRoadmap": "个性化路线图",
+    "learningJourney": "您的学习旅程",
+    "learningJourneyDesc": "专为您的当前水平和目标设计的AI驱动课程。",
+    "module": "模块",
+    "topics": "个主题",
+    "noPlanTitle": "未找到学习计划",
+    "noPlanDesc": "您需要完成诊断评估，我们才能生成您的路径。",
+    "goToDashboard": "前往首页"
+  },
+  "Common": {
+    "back": "返回",
+    "continue": "继续",
+    "save": "保存",
+    "loading": "加载中...",
+    "error": "错误"
+  }
+}

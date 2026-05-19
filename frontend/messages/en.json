@@ -1,0 +1,141 @@
+{
+  "HomePage": {
+    "title": "LinguistAI",
+    "subtitle": "AI-Powered Language Mastery",
+    "description": "Experience the future of language learning. Our neural engine builds a personalized path just for you.",
+    "startJourney": "Start Journey",
+    "signIn": "Sign In",
+    "features": {
+      "tutor": {
+        "title": "Neural Tutor",
+        "description": "Adaptive AI that learns your patterns."
+      },
+      "fastPath": {
+        "title": "Fast Path",
+        "description": "Skip what you know, focus on growth."
+      },
+      "languages": {
+        "title": "10+ Languages",
+        "description": "Master global tongues with ease."
+      }
+    }
+  },
+  "Auth": {
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "nickname": "Nickname",
+    "dontHaveAccount": "Don't have an account?",
+    "alreadyHaveAccount": "Already have an account?",
+    "logout": "Logout",
+    "logIn": "Log in",
+    "signUp": "Sign up",
+    "createAccount": "Create account",
+    "creatingAccount": "Creating account...",
+    "loggingIn": "Logging in...",
+    "welcomeBack": "Welcome back",
+    "createAccountTitle": "Create an account",
+    "createAccountDesc": "Enter your information to start learning with AI",
+    "loginDesc": "Enter your credentials to access your account",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "passwordTooShort": "Password must be at least 6 characters",
+    "accountCreated": "Account created successfully!",
+    "loginSuccess": "Successfully logged in!",
+    "registrationFailed": "Registration failed",
+    "loginFailed": "Login failed"
+  },
+  "Setup": {
+    "chooseNativeTitle": "Choose your native language",
+    "chooseNativeDesc": "We'll use this to explain complex topics and guide you.",
+    "chooseLearningTitle": "What language do you want to master?",
+    "chooseLearningDesc": "Your AI tutor will build a path specifically for this goal.",
+    "continue": "Continue",
+    "startLearning": "Start Learning",
+    "initializing": "Initializing...",
+    "goBack": "Go back",
+    "profileCreated": "Profile created! Starting onboarding...",
+    "profileFailed": "Failed to setup profile"
+  },
+  "Navbar": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "Dashboard": {
+    "title": "My Languages",
+    "subtitle": "Track your progress and continue learning",
+    "addLanguage": "Add Language",
+    "continueLearning": "Continue Learning",
+    "studyPlan": "Study Plan",
+    "level": "Level",
+    "noProfiles": "No language profiles yet",
+    "noProfilesDesc": "Start your language learning journey by adding your first language.",
+    "startLearning": "Start Learning"
+  },
+  "Profile": {
+    "title": "Profile Settings",
+    "tabAccount": "Account",
+    "tabSecurity": "Security",
+    "publicProfile": "Public Profile",
+    "publicProfileDesc": "How others see you on LinguistAI",
+    "nickname": "Nickname",
+    "nicknamePlaceholder": "Your nickname",
+    "learningLanguages": "Learning Languages",
+    "level": "Level",
+    "nativeLanguageLabel": "Native language (used by AI tutor)",
+    "saveChanges": "Save Changes",
+    "password": "Password",
+    "passwordDesc": "Change your password to keep your account secure",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "updatePassword": "Update Password",
+    "profileUpdated": "Profile updated!",
+    "passwordChanged": "Password changed successfully!",
+    "passwordsMismatch": "New passwords do not match",
+    "nativeUpdated": "Native language updated!"
+  },
+  "Diagnostic": {
+    "backToDashboard": "Back to Dashboard",
+    "aiAssessment": "AI Language Assessment",
+    "aiAssessmentDesc": "Chat with our AI to determine your level",
+    "startAssessment": "Start your assessment",
+    "startAssessmentDesc": "Send a message to begin! Say hello and introduce yourself in the language you're learning.",
+    "assessmentComplete": "Assessment Complete!",
+    "assessmentCompleteDesc": "We've analyzed your skills and determined your level is",
+    "generatePlan": "Generate My Study Plan",
+    "levelAssessed": "Level assessed",
+    "messagePlaceholder": "Type your message...",
+    "planGenerated": "Study plan generated!",
+    "level": "Level"
+  },
+  "Tutor": {
+    "back": "Back",
+    "topic": "Topic",
+    "aiTutor": "AI Tutor",
+    "activeSession": "Active Session",
+    "readyToPractice": "Ready to practice?",
+    "readyToPracticeDesc": "I'm here to help you master {topic}. Start by saying hello!",
+    "messagePlaceholder": "Ask your tutor anything..."
+  },
+  "Plan": {
+    "backToDashboard": "Back to Dashboard",
+    "personalizedRoadmap": "Personalized Roadmap",
+    "learningJourney": "Your Learning Journey",
+    "learningJourneyDesc": "An AI-powered curriculum designed specifically for your current level and goals.",
+    "module": "Module",
+    "topics": "topics",
+    "noPlanTitle": "No Study Plan Found",
+    "noPlanDesc": "You need to complete the diagnostic assessment so we can generate your path.",
+    "goToDashboard": "Go to Dashboard"
+  },
+  "Common": {
+    "back": "Back",
+    "continue": "Continue",
+    "save": "Save",
+    "loading": "Loading...",
+    "error": "Error"
+  }
+}

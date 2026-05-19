@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -12,24 +13,33 @@ import { Globe, GraduationCap, ArrowRight, Check, Loader2 } from "lucide-react";
 
 const NATIVE_LANGUAGES = [
   { code: "Russian", name: "Русский", flag: "🇷🇺" },
-  { code: "English", name: "English", flag: "🇺🇸" },
+  { code: "English", name: "English", flag: "🇬🇧" },
   { code: "Spanish", name: "Español", flag: "🇪🇸" },
   { code: "French", name: "Français", flag: "🇫🇷" },
   { code: "German", name: "Deutsch", flag: "🇩🇪" },
   { code: "Chinese", name: "中文", flag: "🇨🇳" },
+  { code: "Italian", name: "Italiano", flag: "🇮🇹" },
+  { code: "Japanese", name: "日本語", flag: "🇯🇵" },
+  { code: "Portuguese", name: "Português", flag: "🇵🇹" },
+  { code: "Arabic", name: "العربية", flag: "🇸🇦" },
 ];
 
 const TARGET_LANGUAGES = [
-  { code: "English", name: "English", flag: "🇺🇸" },
-  { code: "Spanish", name: "Spanish", flag: "🇪🇸" },
-  { code: "French", name: "French", flag: "🇫🇷" },
-  { code: "German", name: "German", flag: "🇩🇪" },
-  { code: "Italian", name: "Italian", flag: "🇮🇹" },
-  { code: "Japanese", name: "Japanese", flag: "🇯🇵" },
+  { code: "English", name: "English", flag: "🇬🇧" },
+  { code: "Spanish", name: "Español", flag: "🇪🇸" },
+  { code: "French", name: "Français", flag: "🇫🇷" },
+  { code: "German", name: "Deutsch", flag: "🇩🇪" },
+  { code: "Italian", name: "Italiano", flag: "🇮🇹" },
+  { code: "Japanese", name: "日本語", flag: "🇯🇵" },
+  { code: "Portuguese", name: "Português", flag: "🇵🇹" },
+  { code: "Arabic", name: "العربية", flag: "🇸🇦" },
+  { code: "Chinese", name: "中文", flag: "🇨🇳" },
+  { code: "Russian", name: "Русский", flag: "🇷🇺" },
 ];
 
 export default function SetupPage() {
   const router = useRouter();
+  const t = useTranslations("Setup");
   const [mounted, setMounted] = useState(false);
   const [step, setStep] = useState(1);
   const [nativeLanguage, setNativeLanguage] = useState("");
@@ -56,10 +66,10 @@ export default function SetupPage() {
         language: targetLanguage,
         native_language: nativeLanguage,
       });
-      toast.success("Profile created! Starting onboarding...");
+      toast.success(t("profileCreated"));
       router.push(`/diagnostic/${profile.id}`);
     } catch (error) {
-      toast.error("Failed to setup profile");
+      toast.error(t("profileFailed"));
     } finally {
       setLoading(false);
     }
@@ -89,8 +99,8 @@ export default function SetupPage() {
                 >
                   <Globe size={32} />
                 </motion.div>
-                <h1 className="text-4xl md:text-5xl font-black text-foreground">Choose your native language</h1>
-                <p className="text-muted-foreground text-lg">We&apos;ll use this to explain complex topics and guide you.</p>
+                <h1 className="text-4xl md:text-5xl font-black text-foreground">{t("chooseNativeTitle")}</h1>
+                <p className="text-muted-foreground text-lg">{t("chooseNativeDesc")}</p>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -135,7 +145,7 @@ export default function SetupPage() {
                   onClick={() => setStep(2)}
                   className="h-14 px-12 rounded-full text-lg font-bold group"
                 >
-                  Continue
+                  {t("continue")}
                   <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </div>
@@ -158,8 +168,8 @@ export default function SetupPage() {
                 >
                   <GraduationCap size={32} />
                 </motion.div>
-                <h1 className="text-4xl md:text-5xl font-black text-foreground">What language do you want to master?</h1>
-                <p className="text-muted-foreground text-lg">Your AI tutor will build a path specifically for this goal.</p>
+                <h1 className="text-4xl md:text-5xl font-black text-foreground">{t("chooseLearningTitle")}</h1>
+                <p className="text-muted-foreground text-lg">{t("chooseLearningDesc")}</p>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -204,14 +214,14 @@ export default function SetupPage() {
                   onClick={handleFinish}
                   className="h-14 px-12 rounded-full text-lg font-bold bg-purple-600 hover:bg-purple-700 shadow-xl shadow-purple-500/20 group text-white"
                 >
-                  {loading ? "Initializing..." : "Start Learning"}
+                  {loading ? t("initializing") : t("startLearning")}
                   {!loading && <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />}
                 </Button>
                 <button 
                   onClick={() => setStep(1)}
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Go back
+                  {t("goBack")}
                 </button>
               </div>
             </motion.div>

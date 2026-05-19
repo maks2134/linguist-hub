@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,6 +22,7 @@ export default function DiagnosticPage({
   params: Promise<{ profileId: string }>;
 }) {
   const router = useRouter();
+  const t = useTranslations("Diagnostic");
   const [profileId, setProfileId] = useState<string | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -90,7 +92,7 @@ export default function DiagnosticPage({
         if ((response.is_assessment || response.is_completed) && response.level) {
           setAssessmentComplete(true);
           setLevel(response.level);
-          toast.success(`Level assessed: ${response.level}`);
+          toast.success(`${t("levelAssessed")}: ${response.level}`);
         }
       }
     });
@@ -132,7 +134,7 @@ export default function DiagnosticPage({
         type: "generate_plan",
         profile_id: parseInt(profileId),
       });
-      toast.success("Study plan generated!");
+      toast.success(t("planGenerated"));
       setTimeout(() => router.push(`/plan/${profileId}`), 1000);
     } catch (error) {
       toast.error("Failed to generate plan");
@@ -151,7 +153,7 @@ export default function DiagnosticPage({
         <div className="mb-6 flex items-center justify-between">
           <Button variant="ghost" onClick={() => router.push("/dashboard")} className="rounded-full">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Dashboard
+            {t("backToDashboard")}
           </Button>
           {level && (
             <Badge variant="default" className="text-lg px-6 py-1.5 rounded-full bg-primary shadow-lg shadow-primary/20 border-none">
@@ -168,10 +170,10 @@ export default function DiagnosticPage({
                   <BrainCircuit className="h-7 w-7" />
                </div>
                <div>
-                  <CardTitle className="text-xl">AI Language Assessment</CardTitle>
+                  <CardTitle className="text-xl">{t("aiAssessment")}</CardTitle>
                   <p className="text-sm text-muted-foreground flex items-center gap-1">
                     <Sparkles className="h-3 w-3 text-yellow-500" />
-                    Chat with our AI to determine your level
+                    {t("aiAssessmentDesc")}
                   </p>
                </div>
             </div>
@@ -191,9 +193,9 @@ export default function DiagnosticPage({
                         <div className="h-16 w-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto text-slate-400">
                           <MessageSquare className="h-8 w-8" />
                         </div>
-                        <h3 className="font-semibold text-lg">Start your assessment</h3>
+                        <h3 className="font-semibold text-lg">{t("startAssessment")}</h3>
                         <p className="text-muted-foreground text-sm">
-                          Send a message to begin! Say hello and introduce yourself in the language you&apos;re learning.
+                          {t("startAssessmentDesc")}
                         </p>
                       </div>
                     </motion.div>
@@ -261,7 +263,7 @@ export default function DiagnosticPage({
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyPress={(e) => e.key === "Enter" && handleSend()}
-                        placeholder="Type your message..."
+                        placeholder={t("messagePlaceholder")}
                         disabled={loading}
                         className="h-12 rounded-full px-6 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-primary shadow-inner"
                       />
@@ -285,12 +287,12 @@ export default function DiagnosticPage({
                       <div className="h-12 w-12 rounded-full bg-green-500 text-white flex items-center justify-center mb-4">
                         <CheckCircle2 className="w-7 h-7" />
                       </div>
-                      <h3 className="text-xl font-bold text-green-700 dark:text-green-400">Assessment Complete!</h3>
+                      <h3 className="text-xl font-bold text-green-700 dark:text-green-400">{t("assessmentComplete")}</h3>
                       <p className="text-muted-foreground mt-1">
-                        We&apos;ve analyzed your skills and determined your level is <strong>{level}</strong>.
+                        {t("assessmentCompleteDesc")} <strong>{level}</strong>.
                       </p>
                       <Button onClick={handleGeneratePlan} size="lg" className="mt-6 w-full sm:w-auto px-10 rounded-full shadow-lg shadow-primary/20">
-                        Generate My Study Plan
+                        {t("generatePlan")}
                       </Button>
                     </div>
                   </motion.div>
