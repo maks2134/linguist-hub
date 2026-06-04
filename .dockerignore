@@ -1,0 +1,12 @@
+# Frontend image (repo root context)
+frontend/node_modules
+frontend/.next
+backend/bin
+backend/tmp
+.git
+.idea
+**/.env
+**/.env.local
+*.md
+.agents
+skills

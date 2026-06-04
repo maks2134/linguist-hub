@@ -8,6 +8,7 @@ import (
 	"github.com/makskozlov/linguist-hub/internal/models"
 	"github.com/makskozlov/linguist-hub/internal/repository"
 	"github.com/makskozlov/linguist-hub/pkg/apierror"
+	langpkg "github.com/makskozlov/linguist-hub/pkg/language"
 	"gorm.io/gorm"
 )
 
@@ -32,15 +33,28 @@ func profileToDTO(p *models.LanguageProfile) *dto.ProfileResponse {
 	}
 }
 
-func (s *ProfileService) SelectLanguage(userID uint, language, nativeLanguage string) (*dto.ProfileResponse, error) {
-	if language == "" {
+func (s *ProfileService) SelectLanguage(userID uint, targetLanguage, nativeLanguage string) (*dto.ProfileResponse, error) {
+	if targetLanguage == "" {
 		return nil, apierror.ErrBadRequest
 	}
-	if nativeLanguage == "" {
-		nativeLanguage = "English"
+
+	target, err := langpkg.ParseLearningTarget(targetLanguage)
+	if err != nil {
+		return nil, apierror.ErrInvalidLanguage
 	}
 
-	existingProfile, err := s.profileRepo.FindByUserIDAndLanguage(userID, language)
+	native := langpkg.DefaultNative
+	if nativeLanguage != "" {
+		native, err = langpkg.ParseNative(nativeLanguage)
+		if err != nil {
+			return nil, apierror.ErrInvalidLanguage
+		}
+	}
+
+	targetStr := string(target)
+	nativeStr := string(native)
+
+	existingProfile, err := s.profileRepo.FindByUserIDAndLanguage(userID, targetStr)
 	if err == nil {
 		return profileToDTO(existingProfile), nil
 	}
@@ -51,8 +65,8 @@ func (s *ProfileService) SelectLanguage(userID uint, language, nativeLanguage st
 
 	profile := &models.LanguageProfile{
 		UserID:             userID,
-		TargetLanguage:     language,
-		NativeLanguage:     nativeLanguage,
+		TargetLanguage:     targetStr,
+		NativeLanguage:     nativeStr,
 		CurrentLevel:       "unknown",
 		OnboardingPhase:    "goals",
 		ProgressPercentage: 0,
@@ -84,6 +98,11 @@ func (s *ProfileService) UpdateNativeLanguage(userID, profileID uint, nativeLang
 		return nil, apierror.ErrBadRequest
 	}
 
+	native, err := langpkg.ParseNative(nativeLanguage)
+	if err != nil {
+		return nil, apierror.ErrInvalidLanguage
+	}
+
 	profile, err := s.profileRepo.FindByID(profileID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -96,7 +115,7 @@ func (s *ProfileService) UpdateNativeLanguage(userID, profileID uint, nativeLang
 		return nil, apierror.ErrForbidden
 	}
 
-	profile.NativeLanguage = nativeLanguage
+	profile.NativeLanguage = string(native)
 	if err := s.profileRepo.Update(profile); err != nil {
 		return nil, apierror.Wrap(err, constants.StatusInternalError, "DB_ERROR")
 	}

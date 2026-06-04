@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "test -f ../shared/languages.json && cp ../shared/languages.json src/lib/language/catalog.json || true",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

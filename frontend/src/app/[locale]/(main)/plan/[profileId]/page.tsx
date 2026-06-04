@@ -19,6 +19,7 @@ export default function PlanPage({
 }) {
   const router = useRouter();
   const t = useTranslations("Plan");
+  const tToast = useTranslations("Toast");
   const [profileId, setProfileId] = useState<string | null>(null);
   const [plan, setPlan] = useState<StudyPlan | null>(null);
   const [loading, setLoading] = useState(true);
@@ -35,7 +36,7 @@ export default function PlanPage({
       const data = await api.get<StudyPlan>(`/api/ai/plan/${id}`);
       setPlan(data);
     } catch (error) {
-      toast.error("Failed to load study plan");
+      toast.error(tToast("loadPlanFailed"));
     } finally {
       setLoading(false);
     }

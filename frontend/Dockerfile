@@ -2,7 +2,7 @@ FROM node:20-alpine AS deps
 
 WORKDIR /app
 
-COPY package.json package-lock.json* ./
+COPY frontend/package.json frontend/package-lock.json* ./
 RUN npm ci
 
 FROM node:20-alpine AS builder
@@ -10,7 +10,8 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+COPY shared/languages.json ./src/lib/language/catalog.json
+COPY frontend/ .
 
 RUN npm run build
 

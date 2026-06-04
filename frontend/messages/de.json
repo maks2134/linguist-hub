@@ -118,7 +118,8 @@
     "activeSession": "Aktive Sitzung",
     "readyToPractice": "Bereit zu üben?",
     "readyToPracticeDesc": "Ich helfe Ihnen, {topic} zu meistern. Fangen Sie mit einer Begrüßung an!",
-    "messagePlaceholder": "Fragen Sie Ihren Tutor..."
+    "messagePlaceholder": "Fragen Sie Ihren Tutor...",
+    "defaultTopic": "Allgemeines Gespräch"
   },
   "Plan": {
     "backToDashboard": "Zurück zum Dashboard",
@@ -137,5 +138,29 @@
     "save": "Speichern",
     "loading": "Laden...",
     "error": "Fehler"
+  },
+  "Toast": {
+    "loadProfilesFailed": "Profile konnten nicht geladen werden",
+    "profileCreated": "Sprachprofil erstellt!",
+    "profileCreateFailed": "Profil konnte nicht erstellt werden",
+    "loadProfileFailed": "Profil konnte nicht geladen werden",
+    "nativeUpdateFailed": "Muttersprache konnte nicht aktualisiert werden",
+    "updateProfileFailed": "Profil konnte nicht aktualisiert werden",
+    "loadPlanFailed": "Lernplan konnte nicht geladen werden",
+    "sendMessageFailed": "Nachricht konnte nicht gesendet werden",
+    "generatePlanFailed": "Plan konnte nicht erstellt werden"
+  },
+  "Errors": {
+    "invalidLanguage": "Ungültige Sprache",
+    "badRequest": "Ungültige Anfrage",
+    "unauthorized": "Nicht autorisiert",
+    "forbidden": "Zugriff verweigert",
+    "notFound": "Nicht gefunden",
+    "internal": "Interner Fehler",
+    "invalidCredentials": "Ungültige Anmeldedaten",
+    "emailExists": "E-Mail bereits registriert",
+    "levelRequired": "Bitte zuerst Diagnose abschließen",
+    "onboardingComplete": "Onboarding bereits abgeschlossen",
+    "generic": "Etwas ist schiefgelaufen"
   }
 }

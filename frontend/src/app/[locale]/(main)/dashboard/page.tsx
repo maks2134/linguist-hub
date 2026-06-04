@@ -2,20 +2,26 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "@/i18n/routing";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/api";
 import { Profile } from "@/types";
 import { LANGUAGES } from "@/lib/constants";
+import { findLanguage, suggestNativeFromUILocale } from "@/lib/language";
+import { ApiRequestError } from "@/lib/api";
+import { translationKeyForApiError } from "@/lib/errors";
 import { toast } from "sonner";
 import { Plus, Sparkles, BookOpen, MessageSquare, Target, ChevronRight, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function DashboardPage() {
   const router = useRouter();
+  const locale = useLocale();
   const t = useTranslations("Dashboard");
+  const tToast = useTranslations("Toast");
+  const tErrors = useTranslations("Errors");
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
   const [showLanguageSelector, setShowLanguageSelector] = useState(false);
@@ -28,8 +34,8 @@ export default function DashboardPage() {
     try {
       const data = await api.get<Profile[]>("/api/profile/");
       setProfiles(data);
-    } catch (error) {
-      toast.error("Failed to load profiles"); // not translated — toast shown briefly
+    } catch {
+      toast.error(tToast("loadProfilesFailed"));
     } finally {
       setLoading(false);
     }
@@ -37,13 +43,21 @@ export default function DashboardPage() {
 
   const handleSelectLanguage = async (languageCode: string) => {
     try {
+      const native =
+        suggestNativeFromUILocale(locale) ?? "english";
       const profile = await api.post<Profile>("/api/profile/select", {
         language: languageCode,
+        native_language: native,
       });
-      toast.success("Language profile created!");
+      toast.success(tToast("profileCreated"));
       router.push(`/diagnostic/${profile.id}`);
     } catch (error) {
-      toast.error("Failed to create profile"); // not translated — toast shown briefly
+      if (error instanceof ApiRequestError) {
+        const key = translationKeyForApiError(error.code);
+        toast.error(key ? tErrors(key) : tToast("profileCreateFailed"));
+      } else {
+        toast.error(tToast("profileCreateFailed"));
+      }
     }
   };
 
@@ -93,7 +107,7 @@ export default function DashboardPage() {
               {profiles.length > 0 ? (
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {profiles.map((profile, index) => {
-                    const lang = LANGUAGES.find((l) => l.code.toLowerCase() === profile.target_language.toLowerCase());
+                    const lang = findLanguage(profile.target_language);
                     return (
                       <motion.div
                         key={profile.id}
@@ -114,7 +128,7 @@ export default function DashboardPage() {
                             <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300 w-fit">
                               {lang?.flag}
                             </div>
-                            <CardTitle className="text-2xl font-bold">{lang?.name}</CardTitle>
+                            <CardTitle className="text-2xl font-bold">{lang?.endonym ?? lang?.promptName ?? profile.target_language}</CardTitle>
                             <CardDescription className="flex items-center gap-2">
                               <Target className="h-3 w-3" />
                               Progress: {profile.progress_percentage.toFixed(0)}%
@@ -230,7 +244,7 @@ export default function DashboardPage() {
                         className="flex flex-col items-center gap-3 p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-primary hover:shadow-lg hover:shadow-primary/5 transition-all"
                       >
                         <span className="text-4xl">{lang.flag}</span>
-                        <span className="font-medium text-sm">{lang.name}</span>
+                        <span className="font-medium text-sm">{lang.endonym}</span>
                       </motion.button>
                     ))}
                   </div>

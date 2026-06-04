@@ -118,7 +118,8 @@
     "activeSession": "Активная сессия",
     "readyToPractice": "Готовы практиковаться?",
     "readyToPracticeDesc": "Я помогу вам освоить {topic}. Начните с приветствия!",
-    "messagePlaceholder": "Спросите тьютора..."
+    "messagePlaceholder": "Спросите тьютора...",
+    "defaultTopic": "Общий разговор"
   },
   "Plan": {
     "backToDashboard": "На главную",
@@ -137,5 +138,29 @@
     "save": "Сохранить",
     "loading": "Загрузка...",
     "error": "Ошибка"
+  },
+  "Toast": {
+    "loadProfilesFailed": "Не удалось загрузить профили",
+    "profileCreated": "Профиль языка создан!",
+    "profileCreateFailed": "Не удалось создать профиль",
+    "loadProfileFailed": "Не удалось загрузить профиль",
+    "nativeUpdateFailed": "Не удалось обновить родной язык",
+    "updateProfileFailed": "Не удалось обновить профиль",
+    "loadPlanFailed": "Не удалось загрузить план",
+    "sendMessageFailed": "Не удалось отправить сообщение",
+    "generatePlanFailed": "Не удалось сгенерировать план"
+  },
+  "Errors": {
+    "invalidLanguage": "Недопустимый или неподдерживаемый язык",
+    "badRequest": "Неверный запрос",
+    "unauthorized": "Требуется вход",
+    "forbidden": "Доступ запрещён",
+    "notFound": "Не найдено",
+    "internal": "Внутренняя ошибка",
+    "invalidCredentials": "Неверный email или пароль",
+    "emailExists": "Email уже зарегистрирован",
+    "levelRequired": "Сначала пройдите диагностику",
+    "onboardingComplete": "Онбординг уже завершён",
+    "generic": "Что-то пошло не так"
   }
 }

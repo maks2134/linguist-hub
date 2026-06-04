@@ -118,7 +118,8 @@
     "activeSession": "Active Session",
     "readyToPractice": "Ready to practice?",
     "readyToPracticeDesc": "I'm here to help you master {topic}. Start by saying hello!",
-    "messagePlaceholder": "Ask your tutor anything..."
+    "messagePlaceholder": "Ask your tutor anything...",
+    "defaultTopic": "General conversation"
   },
   "Plan": {
     "backToDashboard": "Back to Dashboard",
@@ -137,5 +138,29 @@
     "save": "Save",
     "loading": "Loading...",
     "error": "Error"
+  },
+  "Toast": {
+    "loadProfilesFailed": "Failed to load profiles",
+    "profileCreated": "Language profile created!",
+    "profileCreateFailed": "Failed to create profile",
+    "loadProfileFailed": "Failed to load profile data",
+    "nativeUpdateFailed": "Failed to update native language",
+    "updateProfileFailed": "Failed to update profile",
+    "loadPlanFailed": "Failed to load study plan",
+    "sendMessageFailed": "Failed to send message",
+    "generatePlanFailed": "Failed to generate plan"
+  },
+  "Errors": {
+    "invalidLanguage": "Invalid or unsupported language",
+    "badRequest": "Bad request",
+    "unauthorized": "Unauthorized",
+    "forbidden": "Access denied",
+    "notFound": "Resource not found",
+    "internal": "Internal server error",
+    "invalidCredentials": "Invalid email or password",
+    "emailExists": "Email already registered",
+    "levelRequired": "Please complete diagnostic first",
+    "onboardingComplete": "Onboarding already completed",
+    "generic": "Something went wrong"
   }
 }

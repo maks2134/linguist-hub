@@ -22,8 +22,9 @@ export default function TutorPage({
 }) {
   const router = useRouter();
   const t = useTranslations("Tutor");
+  const tToast = useTranslations("Toast");
   const searchParams = useSearchParams();
-  const topic = searchParams.get("topic") || "General conversation";
+  const topic = searchParams.get("topic") || t("defaultTopic");
   const [profileId, setProfileId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
@@ -105,7 +106,7 @@ export default function TutorPage({
         profile_id: parseInt(profileId),
       });
     } catch (error) {
-      toast.error("Failed to send message");
+      toast.error(tToast("sendMessageFailed"));
       setLoading(false);
     }
   };

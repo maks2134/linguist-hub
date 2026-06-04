@@ -1,0 +1,94 @@
+{
+  "uiLocales": ["en", "ru", "es", "fr", "de", "zh", "it", "ja", "pt", "ar"],
+  "uiLocaleToNative": {
+    "en": "english",
+    "ru": "russian",
+    "es": "spanish",
+    "fr": "french",
+    "de": "german",
+    "zh": "chinese",
+    "it": "italian",
+    "ja": "japanese",
+    "pt": "portuguese",
+    "ar": "arabic"
+  },
+  "languages": [
+    {
+      "code": "english",
+      "promptName": "English",
+      "flag": "🇬🇧",
+      "roles": ["learning", "native"],
+      "endonym": "English"
+    },
+    {
+      "code": "german",
+      "promptName": "German",
+      "flag": "🇩🇪",
+      "roles": ["learning", "native"],
+      "endonym": "Deutsch"
+    },
+    {
+      "code": "french",
+      "promptName": "French",
+      "flag": "🇫🇷",
+      "roles": ["learning", "native"],
+      "endonym": "Français"
+    },
+    {
+      "code": "spanish",
+      "promptName": "Spanish",
+      "flag": "🇪🇸",
+      "roles": ["learning", "native"],
+      "endonym": "Español"
+    },
+    {
+      "code": "italian",
+      "promptName": "Italian",
+      "flag": "🇮🇹",
+      "roles": ["learning", "native"],
+      "endonym": "Italiano"
+    },
+    {
+      "code": "portuguese",
+      "promptName": "Portuguese",
+      "flag": "🇵🇹",
+      "roles": ["learning", "native"],
+      "endonym": "Português"
+    },
+    {
+      "code": "russian",
+      "promptName": "Russian",
+      "flag": "🇷🇺",
+      "roles": ["learning", "native"],
+      "endonym": "Русский"
+    },
+    {
+      "code": "chinese",
+      "promptName": "Chinese",
+      "flag": "🇨🇳",
+      "roles": ["learning", "native"],
+      "endonym": "中文"
+    },
+    {
+      "code": "japanese",
+      "promptName": "Japanese",
+      "flag": "🇯🇵",
+      "roles": ["learning", "native"],
+      "endonym": "日本語"
+    },
+    {
+      "code": "korean",
+      "promptName": "Korean",
+      "flag": "🇰🇷",
+      "roles": ["learning"],
+      "endonym": "한국어"
+    },
+    {
+      "code": "arabic",
+      "promptName": "Arabic",
+      "flag": "🇸🇦",
+      "roles": ["learning", "native"],
+      "endonym": "العربية"
+    }
+  ]
+}
