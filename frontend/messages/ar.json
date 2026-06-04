@@ -118,7 +118,8 @@
     "activeSession": "جلسة نشطة",
     "readyToPractice": "هل أنت مستعد للتدريب؟",
     "readyToPracticeDesc": "أنا هنا لمساعدتك في إتقان {topic}. ابدأ بالتحية!",
-    "messagePlaceholder": "اسأل معلمك..."
+    "messagePlaceholder": "اسأل معلمك...",
+    "defaultTopic": "محادثة عامة"
   },
   "Plan": {
     "backToDashboard": "العودة إلى لوحة التحكم",
@@ -137,5 +138,29 @@
     "save": "حفظ",
     "loading": "جارٍ التحميل...",
     "error": "خطأ"
+  },
+  "Toast": {
+    "loadProfilesFailed": "فشل تحميل الملفات",
+    "profileCreated": "تم إنشاء الملف!",
+    "profileCreateFailed": "فشل إنشاء الملف",
+    "loadProfileFailed": "فشل تحميل الملف",
+    "nativeUpdateFailed": "فشل تحديث اللغة الأم",
+    "updateProfileFailed": "فشل تحديث الملف",
+    "loadPlanFailed": "فشل تحميل الخطة",
+    "sendMessageFailed": "فشل إرسال الرسالة",
+    "generatePlanFailed": "فشل إنشاء الخطة"
+  },
+  "Errors": {
+    "invalidLanguage": "لغة غير صالحة",
+    "badRequest": "طلب غير صالح",
+    "unauthorized": "غير مصرح",
+    "forbidden": "الوصول مرفوض",
+    "notFound": "غير موجود",
+    "internal": "خطأ داخلي",
+    "invalidCredentials": "بريد أو كلمة مرور غير صحيحة",
+    "emailExists": "البريد مسجل مسبقاً",
+    "levelRequired": "أكمل التشخيص أولاً",
+    "onboardingComplete": "اكتمل الإعداد",
+    "generic": "حدث خطأ"
   }
 }

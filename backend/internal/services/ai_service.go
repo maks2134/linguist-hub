@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"log/slog"
 	"strings"
@@ -12,6 +13,7 @@ import (
 	"github.com/makskozlov/linguist-hub/internal/models"
 	"github.com/makskozlov/linguist-hub/internal/repository"
 	"github.com/makskozlov/linguist-hub/pkg/apierror"
+	"github.com/makskozlov/linguist-hub/pkg/language"
 	"gorm.io/gorm"
 )
 
@@ -33,6 +35,30 @@ func NewAIService(
 		chatRepo:      chatRepo,
 		profileRepo:   profileRepo,
 		planRepo:      planRepo,
+	}
+}
+
+func nativeLanguageFor(profile *models.LanguageProfile) string {
+	if profile.NativeLanguage != "" {
+		return profile.NativeLanguage
+	}
+	return string(language.DefaultNative)
+}
+
+func planToDTO(plan *models.StudyPlan) *dto.PlanResponse {
+	dtoModules := make([]dto.Module, len(plan.Structure))
+	for i, m := range plan.Structure {
+		dtoModules[i] = dto.Module{
+			ID:          m.ID,
+			Title:       m.Title,
+			Description: m.Description,
+			Topics:      m.Topics,
+		}
+	}
+	return &dto.PlanResponse{
+		ID:        plan.ID,
+		ProfileID: plan.ProfileID,
+		Modules:   dtoModules,
 	}
 }
 
@@ -128,31 +154,22 @@ func (s *AIService) GeneratePlan(ctx context.Context, userID, profileID uint) (*
 
 	existingPlan, err := s.planRepo.FindByProfileID(profileID)
 	if err == nil {
-		modules, _ := existingPlan.GetModules()
-		dtoModules := make([]dto.Module, len(modules))
-		for i, m := range modules {
-			dtoModules[i] = dto.Module{
-				ID:          m.ID,
-				Title:       m.Title,
-				Description: m.Description,
-				Topics:      m.Topics,
-			}
-		}
-		return &dto.PlanResponse{
-			ID:        existingPlan.ID,
-			ProfileID: existingPlan.ProfileID,
-			Modules:   dtoModules,
-		}, nil
+		return planToDTO(existingPlan), nil
 	}
 
-	planJSON, err := s.geminiService.GeneratePlan(ctx, profile.TargetLanguage, profile.CurrentLevel)
+	planJSON, err := s.geminiService.GeneratePlan(ctx, profile.TargetLanguage, nativeLanguageFor(profile), profile.CurrentLevel)
 	if err != nil {
 		return nil, apierror.Wrap(err, constants.StatusInternalError, "AI_ERROR")
 	}
 
+	var modules models.Modules
+	if err := json.Unmarshal(planJSON, &modules); err != nil {
+		return nil, apierror.Wrap(err, constants.StatusInternalError, "PARSE_ERROR")
+	}
+
 	plan := &models.StudyPlan{
 		ProfileID:   profileID,
-		Structure:   models.JSONB(planJSON),
+		Structure:   modules,
 		IsGenerated: true,
 	}
 
@@ -160,22 +177,7 @@ func (s *AIService) GeneratePlan(ctx context.Context, userID, profileID uint) (*
 		return nil, apierror.Wrap(err, constants.StatusInternalError, "DB_ERROR")
 	}
 
-	modules, _ := plan.GetModules()
-	dtoModules := make([]dto.Module, len(modules))
-	for i, m := range modules {
-		dtoModules[i] = dto.Module{
-			ID:          m.ID,
-			Title:       m.Title,
-			Description: m.Description,
-			Topics:      m.Topics,
-		}
-	}
-
-	return &dto.PlanResponse{
-		ID:        plan.ID,
-		ProfileID: plan.ProfileID,
-		Modules:   dtoModules,
-	}, nil
+	return planToDTO(plan), nil
 }
 
 func (s *AIService) TutorChat(ctx context.Context, userID, profileID uint, message, topic string) (*dto.ChatResponse, error) {
@@ -188,11 +190,7 @@ func (s *AIService) TutorChat(ctx context.Context, userID, profileID uint, messa
 	if err != nil {
 		return nil, apierror.Wrap(err, constants.StatusInternalError, "DB_ERROR")
 	}
-	nativeLang := profile.NativeLanguage
-	if nativeLang == "" {
-		nativeLang = "English"
-	}
-	systemPrompt := GetTutorSystemPrompt(profile.TargetLanguage, nativeLang, topic, profile.CurrentLevel)
+	systemPrompt := GetTutorSystemPrompt(profile.TargetLanguage, nativeLanguageFor(profile), topic, profile.CurrentLevel)
 
 	response, err := s.geminiService.TutorChat(ctx, systemPrompt, history, message)
 	if err != nil {
@@ -243,11 +241,7 @@ func (s *AIService) OnboardingChat(ctx context.Context, userID, profileID uint, 
 		return nil, apierror.Wrap(err, constants.StatusInternalError, "DB_ERROR")
 	}
 
-	nativeLang := profile.NativeLanguage
-	if nativeLang == "" {
-		nativeLang = "English"
-	}
-	systemPrompt := GetOnboardingSystemPrompt(profile.TargetLanguage, nativeLang)
+	systemPrompt := GetOnboardingSystemPrompt(profile.TargetLanguage, nativeLanguageFor(profile))
 
 	response, err := s.geminiService.DiagnosticChat(ctx, systemPrompt, history, message)
 	if err != nil {
@@ -289,28 +283,17 @@ func (s *AIService) OnboardingChat(ctx context.Context, userID, profileID uint, 
 		}
 
 		var planResp *dto.PlanResponse
-		planJSON, planErr := s.geminiService.GeneratePlan(ctx, profile.TargetLanguage, profile.CurrentLevel)
+		planJSON, planErr := s.geminiService.GeneratePlan(ctx, profile.TargetLanguage, nativeLanguageFor(profile), profile.CurrentLevel)
 		if planErr == nil {
-			plan := &models.StudyPlan{
-				ProfileID:   profileID,
-				Structure:   models.JSONB(planJSON),
-				IsGenerated: true,
-			}
-			if createErr := s.planRepo.Create(plan); createErr == nil {
-				modules, _ := plan.GetModules()
-				dtoModules := make([]dto.Module, len(modules))
-				for i, m := range modules {
-					dtoModules[i] = dto.Module{
-						ID:          m.ID,
-						Title:       m.Title,
-						Description: m.Description,
-						Topics:      m.Topics,
-					}
+			var modules models.Modules
+			if parseErr := json.Unmarshal(planJSON, &modules); parseErr == nil {
+				plan := &models.StudyPlan{
+					ProfileID:   profileID,
+					Structure:   modules,
+					IsGenerated: true,
 				}
-				planResp = &dto.PlanResponse{
-					ID:        plan.ID,
-					ProfileID: plan.ProfileID,
-					Modules:   dtoModules,
+				if createErr := s.planRepo.Create(plan); createErr == nil {
+					planResp = planToDTO(plan)
 				}
 			}
 		}
@@ -347,22 +330,7 @@ func (s *AIService) GetPlan(userID, profileID uint) (*dto.PlanResponse, error) {
 		return nil, apierror.Wrap(err, constants.StatusInternalError, "DB_ERROR")
 	}
 
-	modules, _ := plan.GetModules()
-	dtoModules := make([]dto.Module, len(modules))
-	for i, m := range modules {
-		dtoModules[i] = dto.Module{
-			ID:          m.ID,
-			Title:       m.Title,
-			Description: m.Description,
-			Topics:      m.Topics,
-		}
-	}
-
-	return &dto.PlanResponse{
-		ID:        plan.ID,
-		ProfileID: plan.ProfileID,
-		Modules:   dtoModules,
-	}, nil
+	return planToDTO(plan), nil
 }
 
 func (s *AIService) GetChatHistory(userID, profileID uint, context string, limit, offset int) ([]dto.ChatHistoryMessage, error) {

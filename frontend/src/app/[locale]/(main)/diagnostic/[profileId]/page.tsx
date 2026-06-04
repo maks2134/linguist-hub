@@ -23,6 +23,7 @@ export default function DiagnosticPage({
 }) {
   const router = useRouter();
   const t = useTranslations("Diagnostic");
+  const tToast = useTranslations("Toast");
   const [profileId, setProfileId] = useState<string | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -121,7 +122,7 @@ export default function DiagnosticPage({
         profile_id: parseInt(profileId),
       });
     } catch (error) {
-      toast.error("Failed to send message");
+      toast.error(tToast("sendMessageFailed"));
       setLoading(false);
     }
   };
@@ -137,7 +138,7 @@ export default function DiagnosticPage({
       toast.success(t("planGenerated"));
       setTimeout(() => router.push(`/plan/${profileId}`), 1000);
     } catch (error) {
-      toast.error("Failed to generate plan");
+      toast.error(tToast("generatePlanFailed"));
     }
   };
 

@@ -12,9 +12,8 @@ import (
 	_ "github.com/makskozlov/linguist-hub/docs"
 	"github.com/makskozlov/linguist-hub/internal/config"
 	"github.com/makskozlov/linguist-hub/internal/constants"
-	"github.com/makskozlov/linguist-hub/internal/handlers"
+	"github.com/makskozlov/linguist-hub/internal/containers"
 	"github.com/makskozlov/linguist-hub/internal/models"
-	"github.com/makskozlov/linguist-hub/internal/repository"
 	"github.com/makskozlov/linguist-hub/internal/services"
 	"github.com/makskozlov/linguist-hub/pkg/middleware"
 	"github.com/makskozlov/linguist-hub/pkg/postgres"
@@ -77,28 +76,12 @@ func New(cfg *config.Config, logger *slog.Logger) (*App, error) {
 
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
-	userRepo := repository.NewUserRepository(db)
-	profileRepo := repository.NewProfileRepository(db)
-	planRepo := repository.NewPlanRepository(db)
-	chatRepo := repository.NewChatRepository(db)
-
-	authService := services.NewAuthService(userRepo, cfg.JWTSecret)
-	profileService := services.NewProfileService(profileRepo)
-	aiService := services.NewAIService(geminiService, chatRepo, profileRepo, planRepo)
-
-	authHandler := handlers.NewAuthHandler(authService)
-	profileHandler := handlers.NewProfileHandler(profileService)
-	aiHandler := handlers.NewAIHandler(aiService)
-	wsHandler := handlers.NewWebSocketHandler(aiService)
+	container := containers.NewContainer(db, geminiService, cfg.JWTSecret)
 
 	api := app.Group("/api")
 	authMiddleware := middleware.JWTAuth(cfg.JWTSecret)
 
-	wsHandler.RegisterRoutes(api, authMiddleware)
-
-	authHandler.RegisterRoutes(api, authMiddleware)
-	profileHandler.RegisterRoutes(api, authMiddleware)
-	aiHandler.RegisterRoutes(api, authMiddleware)
+	container.RegisterRoutes(api, authMiddleware)
 
 	logger.Info("Routes registered")
 

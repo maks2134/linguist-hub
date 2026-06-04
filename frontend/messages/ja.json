@@ -118,7 +118,8 @@
     "activeSession": "アクティブセッション",
     "readyToPractice": "練習する準備はできていますか？",
     "readyToPracticeDesc": "{topic}をマスターするお手伝いをします。挨拶から始めましょう！",
-    "messagePlaceholder": "チューターに質問する..."
+    "messagePlaceholder": "チューターに質問する...",
+    "defaultTopic": "一般会話"
   },
   "Plan": {
     "backToDashboard": "ダッシュボードに戻る",
@@ -137,5 +138,29 @@
     "save": "保存",
     "loading": "読み込み中...",
     "error": "エラー"
+  },
+  "Toast": {
+    "loadProfilesFailed": "プロフィールの読み込みに失敗",
+    "profileCreated": "言語プロフィールを作成しました！",
+    "profileCreateFailed": "プロフィールの作成に失敗",
+    "loadProfileFailed": "プロフィールの読み込みに失敗",
+    "nativeUpdateFailed": "母国語の更新に失敗",
+    "updateProfileFailed": "プロフィールの更新に失敗",
+    "loadPlanFailed": "学習プランの読み込みに失敗",
+    "sendMessageFailed": "メッセージの送信に失敗",
+    "generatePlanFailed": "プランの生成に失敗"
+  },
+  "Errors": {
+    "invalidLanguage": "無効または未対応の言語",
+    "badRequest": "不正なリクエスト",
+    "unauthorized": "認証が必要です",
+    "forbidden": "アクセス拒否",
+    "notFound": "見つかりません",
+    "internal": "サーバーエラー",
+    "invalidCredentials": "メールまたはパスワードが正しくありません",
+    "emailExists": "メールは登録済みです",
+    "levelRequired": "まず診断を完了してください",
+    "onboardingComplete": "オンボーディングは完了済みです",
+    "generic": "エラーが発生しました"
   }
 }

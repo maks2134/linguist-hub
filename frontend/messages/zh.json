@@ -118,7 +118,8 @@
     "activeSession": "活跃课程",
     "readyToPractice": "准备好练习了吗？",
     "readyToPracticeDesc": "我在这里帮助您掌握{topic}。先打个招呼吧！",
-    "messagePlaceholder": "向导师提问..."
+    "messagePlaceholder": "向导师提问...",
+    "defaultTopic": "日常对话"
   },
   "Plan": {
     "backToDashboard": "返回首页",
@@ -137,5 +138,29 @@
     "save": "保存",
     "loading": "加载中...",
     "error": "错误"
+  },
+  "Toast": {
+    "loadProfilesFailed": "无法加载档案",
+    "profileCreated": "语言档案已创建！",
+    "profileCreateFailed": "无法创建档案",
+    "loadProfileFailed": "无法加载档案",
+    "nativeUpdateFailed": "无法更新母语",
+    "updateProfileFailed": "无法更新档案",
+    "loadPlanFailed": "无法加载学习计划",
+    "sendMessageFailed": "无法发送消息",
+    "generatePlanFailed": "无法生成计划"
+  },
+  "Errors": {
+    "invalidLanguage": "无效或不支持的语言",
+    "badRequest": "请求无效",
+    "unauthorized": "未授权",
+    "forbidden": "禁止访问",
+    "notFound": "未找到",
+    "internal": "服务器错误",
+    "invalidCredentials": "邮箱或密码错误",
+    "emailExists": "邮箱已注册",
+    "levelRequired": "请先完成诊断",
+    "onboardingComplete": "入门已完成",
+    "generic": "出现错误"
   }
 }

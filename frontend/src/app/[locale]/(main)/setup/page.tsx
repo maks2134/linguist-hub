@@ -10,40 +10,15 @@ import { api } from "@/lib/api";
 import { Profile } from "@/types";
 import { toast } from "sonner";
 import { Globe, GraduationCap, ArrowRight, Check, Loader2 } from "lucide-react";
-
-const NATIVE_LANGUAGES = [
-  { code: "Russian", name: "Русский", flag: "🇷🇺" },
-  { code: "English", name: "English", flag: "🇬🇧" },
-  { code: "Spanish", name: "Español", flag: "🇪🇸" },
-  { code: "French", name: "Français", flag: "🇫🇷" },
-  { code: "German", name: "Deutsch", flag: "🇩🇪" },
-  { code: "Chinese", name: "中文", flag: "🇨🇳" },
-  { code: "Italian", name: "Italiano", flag: "🇮🇹" },
-  { code: "Japanese", name: "日本語", flag: "🇯🇵" },
-  { code: "Portuguese", name: "Português", flag: "🇵🇹" },
-  { code: "Arabic", name: "العربية", flag: "🇸🇦" },
-];
-
-const TARGET_LANGUAGES = [
-  { code: "English", name: "English", flag: "🇬🇧" },
-  { code: "Spanish", name: "Español", flag: "🇪🇸" },
-  { code: "French", name: "Français", flag: "🇫🇷" },
-  { code: "German", name: "Deutsch", flag: "🇩🇪" },
-  { code: "Italian", name: "Italiano", flag: "🇮🇹" },
-  { code: "Japanese", name: "日本語", flag: "🇯🇵" },
-  { code: "Portuguese", name: "Português", flag: "🇵🇹" },
-  { code: "Arabic", name: "العربية", flag: "🇸🇦" },
-  { code: "Chinese", name: "中文", flag: "🇨🇳" },
-  { code: "Russian", name: "Русский", flag: "🇷🇺" },
-];
+import { LEARNING_LANGUAGES, NATIVE_LANGUAGES, type LangCode } from "@/lib/language";
 
 export default function SetupPage() {
   const router = useRouter();
   const t = useTranslations("Setup");
   const [mounted, setMounted] = useState(false);
   const [step, setStep] = useState(1);
-  const [nativeLanguage, setNativeLanguage] = useState("");
-  const [targetLanguage, setTargetLanguage] = useState("");
+  const [nativeLanguage, setNativeLanguage] = useState<LangCode | "">("");
+  const [targetLanguage, setTargetLanguage] = useState<LangCode | "">("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -131,7 +106,7 @@ export default function SetupPage() {
                         <span className="text-4xl group-hover:scale-125 transition-transform duration-300">
                           {lang.flag}
                         </span>
-                        <span className="text-lg font-bold text-foreground">{lang.name}</span>
+                        <span className="text-lg font-bold text-foreground">{lang.endonym}</span>
                       </div>
                     </Card>
                   </motion.div>
@@ -173,7 +148,7 @@ export default function SetupPage() {
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {TARGET_LANGUAGES.map((lang, idx) => (
+                {LEARNING_LANGUAGES.map((lang, idx) => (
                   <motion.div
                     key={lang.code}
                     initial={{ opacity: 0, y: 20 }}
@@ -200,7 +175,7 @@ export default function SetupPage() {
                         <span className="text-4xl group-hover:scale-125 transition-transform duration-300">
                           {lang.flag}
                         </span>
-                        <span className="text-lg font-bold text-foreground">{lang.name}</span>
+                        <span className="text-lg font-bold text-foreground">{lang.endonym}</span>
                       </div>
                     </Card>
                   </motion.div>

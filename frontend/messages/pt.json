@@ -118,7 +118,8 @@
     "activeSession": "Sessão ativa",
     "readyToPractice": "Pronto para praticar?",
     "readyToPracticeDesc": "Estou aqui para ajudá-lo a dominar {topic}. Comece dizendo olá!",
-    "messagePlaceholder": "Pergunte ao seu tutor..."
+    "messagePlaceholder": "Pergunte ao seu tutor...",
+    "defaultTopic": "Conversa geral"
   },
   "Plan": {
     "backToDashboard": "Voltar ao painel",
@@ -137,5 +138,29 @@
     "save": "Salvar",
     "loading": "Carregando...",
     "error": "Erro"
+  },
+  "Toast": {
+    "loadProfilesFailed": "Falha ao carregar perfis",
+    "profileCreated": "Perfil criado!",
+    "profileCreateFailed": "Falha ao criar perfil",
+    "loadProfileFailed": "Falha ao carregar perfil",
+    "nativeUpdateFailed": "Falha ao atualizar idioma nativo",
+    "updateProfileFailed": "Falha ao atualizar perfil",
+    "loadPlanFailed": "Falha ao carregar plano",
+    "sendMessageFailed": "Falha ao enviar mensagem",
+    "generatePlanFailed": "Falha ao gerar plano"
+  },
+  "Errors": {
+    "invalidLanguage": "Idioma inválido",
+    "badRequest": "Pedido inválido",
+    "unauthorized": "Não autorizado",
+    "forbidden": "Acesso negado",
+    "notFound": "Não encontrado",
+    "internal": "Erro interno",
+    "invalidCredentials": "Email ou senha inválidos",
+    "emailExists": "Email já registado",
+    "levelRequired": "Complete o diagnóstico primeiro",
+    "onboardingComplete": "Onboarding já concluído",
+    "generic": "Algo correu mal"
   }
 }

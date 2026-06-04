@@ -19,7 +19,7 @@ func (r *ProfileRepository) Create(profile *models.LanguageProfile) error {
 
 func (r *ProfileRepository) FindByUserIDAndLanguage(userID uint, language string) (*models.LanguageProfile, error) {
 	var profile models.LanguageProfile
-	err := r.db.Where("user_id = ? AND target_language = ?", userID, language).First(&profile).Error
+	err := r.db.Where("user_id = ? AND LOWER(target_language) = LOWER(?)", userID, language).First(&profile).Error
 	if err != nil {
 		return nil, err
 	}

@@ -1,0 +1,39 @@
+---
+description: Делегирование Go-задач субагентам go-explorer, go-architect, go-coder, go-tester
+globs: backend/**/*
+alwaysApply: true
+---
+
+# Go subagents (Linguist-hub)
+
+В этом репозитории для работы с **backend/** используйте проектные субагенты из `.cursor/agents/`:
+
+| Агент | Когда вызывать |
+|-------|----------------|
+| **go-explorer** | Исследование кода, data flow, интерфейсы, риск import cycle — **без правок** |
+| **go-architect** | Новая фича, API, БД, рефакторинг пакетов — **план до кода** |
+| **go-coder** | Реализация по шагам плана go-architect |
+| **go-tester** | Тесты и `go test -race` после go-coder |
+
+## Контекст проекта
+
+- Go-модуль: `github.com/makskozlov/linguist-hub`, корень кода: `backend/`
+- Стек: Fiber v3, GORM + PostgreSQL, Swagger, JWT, Google Generative AI
+- `frontend/` — отдельно; go-агенты не применяются к TS/React
+
+## Типовой цикл
+
+1. Неясный контекст → `Use go-explorer subagent to ...`, вставить отчёт в следующий шаг
+2. Архитектура / несколько пакетов → `Use go-architect subagent to ...` + отчёт explorer при наличии
+3. Код → `Use go-coder subagent to ...` + раздел «План для go-coder» из architect
+4. Верификация → `Use go-tester subagent to ...` по затронутым пакетам
+
+Субагенты **не делят** контекст чата — передавайте резюме и планы текстом между вызовами.
+
+## Проактивное делегирование
+
+- Перед крупным рефакторингом или новым API в `backend/` — предложите или вызовите **go-architect**
+- Перед правками в незнакомом пакете — **go-explorer**
+- После существенных изменений Go-кода — **go-tester**
+
+Явный вызов надёжнее авто-делегирования: `Use go-architect subagent to ...`

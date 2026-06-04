@@ -77,8 +77,8 @@ func (s *GeminiService) DiagnosticChat(ctx context.Context, systemPrompt string,
 	return fmt.Sprintf("%v", resp.Candidates[0].Content.Parts[0]), nil
 }
 
-func (s *GeminiService) GeneratePlan(ctx context.Context, language, level string) ([]byte, error) {
-	prompt := GetPlanGenerationPrompt(language, level)
+func (s *GeminiService) GeneratePlan(ctx context.Context, targetLanguage, nativeLanguage, level string) ([]byte, error) {
+	prompt := GetPlanGenerationPrompt(targetLanguage, nativeLanguage, level)
 
 	resp, err := s.model.GenerateContent(ctx, genai.Text(prompt))
 	if err != nil {

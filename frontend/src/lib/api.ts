@@ -1,4 +1,16 @@
+import { getLocaleFromPathname } from "./errors";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+
+export class ApiRequestError extends Error {
+  code?: string;
+
+  constructor(message: string, code?: string) {
+    super(message);
+    this.name = "ApiRequestError";
+    this.code = code;
+  }
+}
 
 interface ApiResponse<T> {
   success: boolean;
@@ -56,10 +68,14 @@ class ApiClient {
       if (response.status === 401) {
         if (typeof window !== "undefined") {
           localStorage.removeItem("token");
-          window.location.href = "/login";
+          const locale = getLocaleFromPathname();
+          window.location.href = `/${locale}/login`;
         }
       }
-      throw new Error(data.error?.message || "API request failed");
+      throw new ApiRequestError(
+        data.error?.message || "API request failed",
+        data.error?.code
+      );
     }
 
     return data.data as T;

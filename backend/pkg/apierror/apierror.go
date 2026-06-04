@@ -36,4 +36,5 @@ var (
 	ErrInternalServer     = New(500, "INTERNAL_SERVER_ERROR", "Internal server error")
 	ErrInvalidCredentials = New(401, "INVALID_CREDENTIALS", "Invalid email or password")
 	ErrEmailAlreadyExists = New(400, "EMAIL_EXISTS", "Email already registered")
+	ErrInvalidLanguage    = New(400, "INVALID_LANGUAGE", "Invalid or unsupported language")
 )

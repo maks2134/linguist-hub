@@ -12,23 +12,12 @@ import { api } from "@/lib/api";
 import { User, Profile } from "@/types";
 import { toast } from "sonner";
 import { User as UserIcon, Lock, Languages, Save, KeyRound, ArrowLeft, ChevronDown, Check } from "lucide-react";
-
-const NATIVE_LANGUAGES = [
-  { code: "Russian", name: "Русский", flag: "🇷🇺" },
-  { code: "English", name: "English", flag: "🇬🇧" },
-  { code: "Spanish", name: "Español", flag: "🇪🇸" },
-  { code: "French", name: "Français", flag: "🇫🇷" },
-  { code: "German", name: "Deutsch", flag: "🇩🇪" },
-  { code: "Chinese", name: "中文", flag: "🇨🇳" },
-  { code: "Italian", name: "Italiano", flag: "🇮🇹" },
-  { code: "Japanese", name: "日本語", flag: "🇯🇵" },
-  { code: "Portuguese", name: "Português", flag: "🇵🇹" },
-  { code: "Arabic", name: "العربية", flag: "🇸🇦" },
-];
+import { NATIVE_LANGUAGES, findLanguage } from "@/lib/language";
 
 export default function ProfilePage() {
   const router = useRouter();
   const t = useTranslations("Profile");
+  const tToast = useTranslations("Toast");
   const [user, setUser] = useState<User | null>(null);
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [nickname, setNickname] = useState("");
@@ -47,7 +36,7 @@ export default function ProfilePage() {
       setProfiles((prev) => prev.map((p) => p.id === profileId ? { ...p, native_language: lang } : p));
       toast.success(t("nativeUpdated"));
     } catch {
-      toast.error("Failed to update native language");
+      toast.error(tToast("nativeUpdateFailed"));
     } finally {
       setSavingNative(null);
       setNativeLangOpen(null);
@@ -64,7 +53,7 @@ export default function ProfilePage() {
         const profilesData = await api.get<Profile[]>("/api/profile/");
         setProfiles(profilesData);
       } catch (error) {
-        toast.error("Failed to load profile data");
+        toast.error(tToast("loadProfileFailed"));
       }
     };
     loadData();
@@ -77,7 +66,7 @@ export default function ProfilePage() {
       await api.updateProfile(nickname);
       toast.success(t("profileUpdated"));
     } catch (error) {
-      toast.error("Failed to update profile");
+      toast.error(tToast("updateProfileFailed"));
     } finally {
       setLoading(false);
     }
@@ -172,7 +161,7 @@ export default function ProfilePage() {
                                 <Languages size={20} />
                               </div>
                               <div>
-                                <p className="font-bold capitalize">{profile.target_language}</p>
+                                <p className="font-bold">{findLanguage(profile.target_language)?.endonym ?? profile.target_language}</p>
                                 <p className="text-xs text-muted-foreground">{t("level")}: {profile.current_level}</p>
                               </div>
                             </div>
@@ -185,8 +174,8 @@ export default function ProfilePage() {
                               className="w-full flex items-center justify-between px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm hover:border-primary transition-colors"
                             >
                               <span>
-                                {NATIVE_LANGUAGES.find(l => l.code === profile.native_language)?.flag ?? "🌐"}{" "}
-                                {profile.native_language}
+                                {findLanguage(profile.native_language)?.flag ?? "🌐"}{" "}
+                                {findLanguage(profile.native_language)?.endonym ?? profile.native_language}
                               </span>
                               <ChevronDown size={14} className={`transition-transform ${nativeLangOpen === profile.id ? "rotate-180" : ""}`} />
                             </button>
@@ -207,7 +196,7 @@ export default function ProfilePage() {
                                     }`}
                                   >
                                     <span className="text-base">{lang.flag}</span>
-                                    <span>{lang.name}</span>
+                                    <span>{lang.endonym}</span>
                                     {profile.native_language === lang.code && <Check size={14} className="ml-auto" />}
                                   </button>
                                 ))}
