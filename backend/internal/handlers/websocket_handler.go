@@ -10,6 +10,8 @@ import (
 	"github.com/gofiber/contrib/v3/websocket"
 	"github.com/gofiber/fiber/v3"
 	"github.com/makskozlov/linguist-hub/internal/services"
+	"github.com/makskozlov/linguist-hub/internal/services/speech"
+	"github.com/makskozlov/linguist-hub/pkg/audio"
 )
 
 type WebSocketMessage struct {
@@ -17,29 +19,47 @@ type WebSocketMessage struct {
 	Message   string `json:"message"`
 	Topic     string `json:"topic"`
 	ProfileID uint   `json:"profile_id"`
+	Locale    string `json:"locale,omitempty"`
+	LessonID  uint   `json:"lesson_id,omitempty"`
+	ModuleID  int    `json:"module_id,omitempty"`
+	AudioB64  string `json:"audio_b64,omitempty"`
+	AudioMIME string `json:"audio_mime,omitempty"`
+	Seq       int    `json:"seq,omitempty"`
+	Final     bool   `json:"final,omitempty"`
 }
 
 type WebSocketResponse struct {
-	Type         string   `json:"type"`
-	Content      string   `json:"content,omitempty"`
-	Chunk        string   `json:"chunk,omitempty"`
-	Level        string   `json:"level,omitempty"`
-	Weaknesses   []string `json:"weaknesses,omitempty"`
-	IsAssessment bool     `json:"is_assessment,omitempty"`
-	Phase        string   `json:"phase,omitempty"`
-	Goals        []string `json:"goals,omitempty"`
-	IsCompleted  bool     `json:"is_completed,omitempty"`
-	Plan         string   `json:"plan,omitempty"`
-	Error        string   `json:"error,omitempty"`
-	Done         bool     `json:"done,omitempty"`
+	Type          string   `json:"type"`
+	Content       string   `json:"content,omitempty"`
+	Chunk         string   `json:"chunk,omitempty"`
+	UserText      string   `json:"user_text,omitempty"`
+	Level         string   `json:"level,omitempty"`
+	Weaknesses    []string `json:"weaknesses,omitempty"`
+	IsAssessment  bool     `json:"is_assessment,omitempty"`
+	Phase         string   `json:"phase,omitempty"`
+	Goals         []string `json:"goals,omitempty"`
+	IsCompleted   bool     `json:"is_completed,omitempty"`
+	Plan          string   `json:"plan,omitempty"`
+	Error         string   `json:"error,omitempty"`
+	Done          bool     `json:"done,omitempty"`
+	Corrections   any      `json:"corrections,omitempty"`
+	LessonID      uint     `json:"lesson_id,omitempty"`
+	Stage         string   `json:"stage,omitempty"`
+	StageIndex    int      `json:"stage_index,omitempty"`
+	StageTotal    int      `json:"stage_total,omitempty"`
+	Prompt        string   `json:"prompt,omitempty"`
+	TargetPhrases []string `json:"target_phrases,omitempty"`
+	HitPhrases    []string `json:"hit_phrases,omitempty"`
+	Score         any      `json:"score,omitempty"`
 }
 
 type WebSocketHandler struct {
-	aiService *services.AIService
+	aiService    *services.AIService
+	voiceService *services.VoiceService
 }
 
-func NewWebSocketHandler(aiService *services.AIService) *WebSocketHandler {
-	return &WebSocketHandler{aiService: aiService}
+func NewWebSocketHandler(aiService *services.AIService, voiceService *services.VoiceService) *WebSocketHandler {
+	return &WebSocketHandler{aiService: aiService, voiceService: voiceService}
 }
 
 func (h *WebSocketHandler) HandleWebSocket() fiber.Handler {
@@ -72,6 +92,16 @@ func (h *WebSocketHandler) HandleWebSocket() fiber.Handler {
 				h.handleTutorChat(c, userID, req)
 			case "generate_plan":
 				h.handleGeneratePlan(c, userID, req)
+			case "voice_tutor_turn":
+				h.handleVoiceTutorTurn(c, userID, req)
+			case "voice_tutor_audio":
+				h.handleVoiceTutorAudio(c, userID, req)
+			case "voice_lesson_start":
+				h.handleVoiceLessonStart(c, userID, req)
+			case "voice_lesson_turn":
+				h.handleVoiceLessonTurn(c, userID, req)
+			case "voice_lesson_abandon":
+				h.handleVoiceLessonAbandon(c, userID, req)
 			default:
 				h.sendError(c, "unknown message type: "+req.Type, false)
 			}
@@ -156,6 +186,155 @@ func (h *WebSocketHandler) handleDiagnosticChat(c *websocket.Conn, userID uint, 
 	if err := c.WriteJSON(finalResp); err != nil {
 		slog.Error("websocket write error", "error", err)
 	}
+}
+
+func (h *WebSocketHandler) streamSentences(c *websocket.Conn, msgType, text string) {
+	for _, chunk := range SplitBySentences(text) {
+		if err := c.WriteJSON(WebSocketResponse{
+			Type: msgType, Chunk: chunk, Done: false,
+		}); err != nil {
+			slog.Error("websocket write error", "error", err)
+			return
+		}
+		time.Sleep(30 * time.Millisecond)
+	}
+}
+
+func (h *WebSocketHandler) handleVoiceTutorTurn(c *websocket.Conn, userID uint, req WebSocketMessage) {
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
+
+	resp, err := h.voiceService.TutorTurn(ctx, userID, req.ProfileID, req.Message, req.Topic, req.Locale, nil)
+	if err != nil {
+		h.sendError(c, err.Error(), false)
+		return
+	}
+
+	h.streamSentences(c, "voice_tutor_chunk", resp.Assistant)
+	_ = c.WriteJSON(WebSocketResponse{
+		Type:        "voice_tutor_final",
+		Content:     resp.Assistant,
+		UserText:    resp.UserText,
+		Corrections: resp.Corrections,
+		Done:        true,
+	})
+}
+
+func (h *WebSocketHandler) handleVoiceTutorAudio(c *websocket.Conn, userID uint, req WebSocketMessage) {
+	if !req.Final {
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 90*time.Second)
+	defer cancel()
+
+	var blob *speech.AudioBlob
+	if req.AudioB64 != "" {
+		data, err := audio.DecodeBase64(req.AudioB64)
+		if err != nil {
+			h.sendError(c, "invalid audio_b64", false)
+			return
+		}
+		mime := req.AudioMIME
+		if mime == "" {
+			mime = "audio/webm;codecs=opus"
+		}
+		if err := audio.Validate(mime, len(data)); err != nil {
+			h.sendError(c, err.Error(), false)
+			return
+		}
+		blob = &speech.AudioBlob{Data: data, MIMEType: mime}
+	}
+
+	resp, err := h.voiceService.TutorTurn(ctx, userID, req.ProfileID, req.Message, req.Topic, req.Locale, blob)
+	if err != nil {
+		h.sendError(c, err.Error(), false)
+		return
+	}
+	h.streamSentences(c, "voice_tutor_chunk", resp.Assistant)
+	_ = c.WriteJSON(WebSocketResponse{
+		Type:        "voice_tutor_final",
+		Content:     resp.Assistant,
+		UserText:    resp.UserText,
+		Corrections: resp.Corrections,
+		Done:        true,
+	})
+}
+
+func (h *WebSocketHandler) handleVoiceLessonStart(c *websocket.Conn, userID uint, req WebSocketMessage) {
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
+
+	resp, err := h.voiceService.LessonStart(ctx, userID, req.ProfileID, req.ModuleID, req.Topic, req.Locale)
+	if err != nil {
+		h.sendError(c, err.Error(), false)
+		return
+	}
+	h.streamSentences(c, "voice_lesson_stage", resp.Prompt)
+	_ = c.WriteJSON(WebSocketResponse{
+		Type:          "voice_lesson_stage",
+		LessonID:      resp.LessonID,
+		Stage:         resp.Stage,
+		StageIndex:    resp.StageIndex,
+		StageTotal:    resp.StageTotal,
+		Prompt:        resp.Prompt,
+		TargetPhrases: resp.TargetPhrases,
+		HitPhrases:    resp.HitPhrases,
+		Done:          true,
+	})
+}
+
+func (h *WebSocketHandler) handleVoiceLessonTurn(c *websocket.Conn, userID uint, req WebSocketMessage) {
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
+
+	lessonID := req.LessonID
+	if lessonID == 0 {
+		h.sendError(c, "lesson_id required", false)
+		return
+	}
+	resp, err := h.voiceService.LessonTurn(ctx, userID, lessonID, req.Message, req.Locale)
+	if err != nil {
+		h.sendError(c, err.Error(), false)
+		return
+	}
+
+	if resp.Stage == "completed" && resp.Score != nil {
+		h.streamSentences(c, "voice_lesson_stage", resp.Prompt)
+		_ = c.WriteJSON(WebSocketResponse{
+			Type:     "voice_lesson_complete",
+			LessonID: resp.LessonID,
+			Stage:    resp.Stage,
+			Prompt:   resp.Prompt,
+			Score:    resp.Score,
+			Done:     true,
+		})
+		return
+	}
+
+	h.streamSentences(c, "voice_lesson_stage", resp.Prompt)
+	_ = c.WriteJSON(WebSocketResponse{
+		Type:          "voice_lesson_stage",
+		LessonID:      resp.LessonID,
+		Stage:         resp.Stage,
+		StageIndex:    resp.StageIndex,
+		StageTotal:    resp.StageTotal,
+		Prompt:        resp.Prompt,
+		TargetPhrases: resp.TargetPhrases,
+		HitPhrases:    resp.HitPhrases,
+		Done:          true,
+	})
+}
+
+func (h *WebSocketHandler) handleVoiceLessonAbandon(c *websocket.Conn, userID uint, req WebSocketMessage) {
+	if req.LessonID == 0 {
+		h.sendError(c, "lesson_id required", false)
+		return
+	}
+	if err := h.voiceService.LessonAbandon(context.Background(), userID, req.LessonID); err != nil {
+		h.sendError(c, err.Error(), false)
+		return
+	}
+	_ = c.WriteJSON(WebSocketResponse{Type: "voice_lesson_abandon", Done: true})
 }
 
 func (h *WebSocketHandler) handleTutorChat(c *websocket.Conn, userID uint, req WebSocketMessage) {

@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/api";
 import { StudyPlan } from "@/types";
 import { toast } from "sonner";
-import { ArrowLeft, BookOpen, Map, Sparkles, ChevronRight, GraduationCap, Loader2 } from "lucide-react";
+import { ArrowLeft, BookOpen, Map, Sparkles, ChevronRight, GraduationCap, Loader2, Mic } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function PlanPage({
@@ -162,19 +162,33 @@ export default function PlanPage({
                   <div className="space-y-4">
                     <div className="flex flex-wrap gap-2 pt-2">
                       {module.topics.map((topic, idx) => (
-                        <motion.button
-                          key={idx}
-                          whileHover={{ y: -2 }}
-                          whileTap={{ scale: 0.98 }}
-                          onClick={() =>
-                            router.push(`/tutor/${profileId}?topic=${encodeURIComponent(topic)}`)
-                          }
-                          className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all group"
-                        >
-                          <div className="h-2 w-2 rounded-full bg-slate-300 group-hover:bg-primary transition-colors" />
-                          <span className="text-sm font-medium pr-1">{topic}</span>
-                          <ChevronRight className="h-4 w-4 text-slate-400 group-hover:text-primary transition-colors" />
-                        </motion.button>
+                        <div key={idx} className="flex flex-wrap items-center gap-2">
+                          <motion.button
+                            whileHover={{ y: -2 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() =>
+                              router.push(`/tutor/${profileId}?topic=${encodeURIComponent(topic)}`)
+                            }
+                            className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all group"
+                          >
+                            <div className="h-2 w-2 rounded-full bg-slate-300 group-hover:bg-primary transition-colors" />
+                            <span className="text-sm font-medium pr-1">{topic}</span>
+                            <ChevronRight className="h-4 w-4 text-slate-400 group-hover:text-primary transition-colors" />
+                          </motion.button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="rounded-xl"
+                            onClick={() =>
+                              router.push(
+                                `/voice/lesson/${profileId}?topic=${encodeURIComponent(topic)}&moduleId=${module.id}`
+                              )
+                            }
+                          >
+                            <Mic className="h-3 w-3 mr-1" />
+                            {t("voiceLesson")}
+                          </Button>
+                        </div>
                       ))}
                     </div>
                   </div>

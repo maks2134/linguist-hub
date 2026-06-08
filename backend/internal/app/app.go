@@ -39,6 +39,7 @@ func New(cfg *config.Config, logger *slog.Logger) (*App, error) {
 		&models.LanguageProfile{},
 		&models.StudyPlan{},
 		&models.ChatMessage{},
+		&models.VoiceLesson{},
 	); err != nil {
 		return nil, fmt.Errorf("failed to run migrations: %w", err)
 	}
@@ -76,7 +77,7 @@ func New(cfg *config.Config, logger *slog.Logger) (*App, error) {
 
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
-	container := containers.NewContainer(db, geminiService, cfg.JWTSecret)
+	container := containers.NewContainer(db, geminiService, cfg.JWTSecret, cfg.FeatureServerSTT)
 
 	api := app.Group("/api")
 	authMiddleware := middleware.JWTAuth(cfg.JWTSecret)

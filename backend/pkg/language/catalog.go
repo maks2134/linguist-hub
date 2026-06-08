@@ -22,6 +22,7 @@ type languageEntry struct {
 	Flag       string   `json:"flag"`
 	Roles      []string `json:"roles"`
 	Endonym    string   `json:"endonym"`
+	LocaleTags []string `json:"localeTags"`
 }
 
 var (

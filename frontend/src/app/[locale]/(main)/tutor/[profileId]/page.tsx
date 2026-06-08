@@ -12,7 +12,7 @@ import { useWebSocket } from "@/hooks/useWebSocket";
 import { ChatMessage } from "@/types";
 import { api, ChatHistoryMessage } from "@/lib/api";
 import { toast } from "sonner";
-import { ArrowLeft, Send, Loader2, Sparkles, Languages, MessageSquare, BookOpen, UserCircle2 } from "lucide-react";
+import { ArrowLeft, Send, Loader2, Sparkles, Languages, MessageSquare, BookOpen, UserCircle2, Mic } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function TutorPage({
@@ -125,11 +125,24 @@ export default function TutorPage({
             <ArrowLeft className="w-4 h-4 mr-2" />
             {t("back")}
           </Button>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
              <div className="h-8 px-4 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center gap-2 text-sm font-medium">
                 <BookOpen className="h-4 w-4 text-primary" />
                 {t("topic")}: {topic}
              </div>
+             {profileId && (
+               <Button
+                 variant="outline"
+                 size="sm"
+                 className="rounded-full"
+                 onClick={() =>
+                   router.push(`/voice/${profileId}?topic=${encodeURIComponent(topic)}`)
+                 }
+               >
+                 <Mic className="h-4 w-4 mr-1" />
+                 {t("voiceMode")}
+               </Button>
+             )}
           </div>
         </div>
 

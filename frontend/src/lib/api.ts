@@ -103,9 +103,15 @@ class ApiClient {
     return this.request<T>(endpoint, { method: "DELETE" });
   }
 
+  async getVoiceLocales(profileId: string) {
+    return this.get<{ primary: string; fallback?: string[] }>(
+      `/api/voice/locales/${profileId}`
+    );
+  }
+
   async getChatHistory(
     profileId: string,
-    context: "diagnostic" | "tutor" | "onboarding",
+    context: "diagnostic" | "tutor" | "onboarding" | "voice_tutor",
     limit?: number,
     offset?: number
   ): Promise<ChatHistoryMessage[]> {

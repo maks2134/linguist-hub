@@ -1,16 +1,47 @@
 const WS_URL = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8080";
 
+export interface VoiceCorrection {
+  original: string;
+  suggested: string;
+  reason: string;
+}
+
+export interface LessonScore {
+  fluency: number;
+  grammar: number;
+  vocabulary: number;
+  pronunciation: number;
+  notes: string;
+}
+
 export interface WebSocketMessage {
-  type: "diagnostic" | "tutor" | "generate_plan" | "onboarding";
+  type:
+    | "diagnostic"
+    | "tutor"
+    | "generate_plan"
+    | "onboarding"
+    | "voice_tutor_turn"
+    | "voice_tutor_audio"
+    | "voice_lesson_start"
+    | "voice_lesson_turn"
+    | "voice_lesson_abandon";
   message?: string;
   topic?: string;
   profile_id: number;
+  locale?: string;
+  lesson_id?: number;
+  module_id?: number;
+  audio_b64?: string;
+  audio_mime?: string;
+  seq?: number;
+  final?: boolean;
 }
 
 export interface WebSocketResponse {
   type: string;
   content?: string;
   chunk?: string;
+  user_text?: string;
   level?: string;
   weaknesses?: string[];
   is_assessment?: boolean;
@@ -20,6 +51,15 @@ export interface WebSocketResponse {
   plan?: string;
   error?: string;
   done?: boolean;
+  corrections?: VoiceCorrection[];
+  lesson_id?: number;
+  stage?: string;
+  stage_index?: number;
+  stage_total?: number;
+  prompt?: string;
+  target_phrases?: string[];
+  hit_phrases?: string[];
+  score?: LessonScore;
 }
 
 export type MessageHandler = (response: WebSocketResponse) => void;

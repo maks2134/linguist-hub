@@ -21,6 +21,19 @@ func (r *ChatRepository) FindByUserIDAndContext(userID uint, context string, pro
 	return r.FindByUserIDAndContextPaginated(userID, context, profileID, 0, 0)
 }
 
+func (r *ChatRepository) FindByContexts(userID uint, contexts []string, profileID uint) ([]models.ChatMessage, error) {
+	if len(contexts) == 0 {
+		return nil, nil
+	}
+	var messages []models.ChatMessage
+	query := r.db.Where("user_id = ? AND context IN ?", userID, contexts)
+	if profileID > 0 {
+		query = query.Where("profile_id = ?", profileID)
+	}
+	err := query.Order("created_at ASC").Find(&messages).Error
+	return messages, err
+}
+
 func (r *ChatRepository) FindByUserIDAndContextPaginated(userID uint, context string, profileID uint, limit, offset int) ([]models.ChatMessage, error) {
 	var messages []models.ChatMessage
 	query := r.db.Where("user_id = ? AND context = ?", userID, context)

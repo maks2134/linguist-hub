@@ -65,3 +65,29 @@ func TestPromptName(t *testing.T) {
 		t.Fatalf("PromptName() = %q", got)
 	}
 }
+
+func TestLocaleTags_english(t *testing.T) {
+	tags := LangCode("english").LocaleTags()
+	if tags.Primary != "en-US" {
+		t.Fatalf("Primary = %q, want en-US", tags.Primary)
+	}
+	if len(tags.Fallback) == 0 || tags.Fallback[0] != "en-GB" {
+		t.Fatalf("Fallback = %v", tags.Fallback)
+	}
+}
+
+func TestParseAcceptLocale(t *testing.T) {
+	code, ok := ParseAcceptLocale("de-DE")
+	if !ok || code != "german" {
+		t.Fatalf("ParseAcceptLocale(de-DE) = %q, %v", code, ok)
+	}
+}
+
+func TestValidateLocale(t *testing.T) {
+	if !ValidateLocale("fr-FR", "french") {
+		t.Fatal("fr-FR should be valid for french")
+	}
+	if ValidateLocale("de-DE", "french") {
+		t.Fatal("de-DE should not be valid for french")
+	}
+}

@@ -83,6 +83,44 @@ Generate 5-8 modules covering a progressive learning path appropriate for %s lev
 Respond ONLY with valid JSON array, no additional text.`, target, level, native, native, target, level)
 }
 
+func GetVoiceTutorSystemPrompt(targetLanguage, nativeLanguage, topic, level string) string {
+	target := promptNameFor(targetLanguage)
+	native := promptNameFor(nativeLanguage)
+	return fmt.Sprintf(`You are a friendly %s language tutor in a live voice conversation. Topic: %s. Student level: %s.
+Rules:
+1) Reply in 1-3 short spoken sentences suitable for text-to-speech.
+2) Conduct primarily in %s; use %s only for brief clarifications.
+3) Correct mistakes gently in the same reply.
+4) Encourage the student to keep speaking in %s.
+5) At the end of your reply, on a new line, append JSON only if there are corrections:
+{"corrections":[{"original":"...","suggested":"...","reason":"..."}]}
+If no corrections, omit the JSON line.`, target, topic, level, target, native, target)
+}
+
+func GetVoiceLessonStagePrompt(targetLanguage, nativeLanguage, level, stage, topic string, targetPhrases, hitPhrases []string) string {
+	target := promptNameFor(targetLanguage)
+	native := promptNameFor(nativeLanguage)
+	return fmt.Sprintf(`You are a %s voice lesson tutor. Stage: %s. Topic: %s. Level: %s.
+Native language for hints: %s.
+Target phrases to practice: %v
+Phrases already used by student: %v
+Give ONE short spoken instruction or question (1-3 sentences) for this stage.
+Warmup: greet and ask a simple oral question.
+Drills: prompt the student to use a target phrase.
+Free_talk: open conversation on the topic.
+Recap: summarise progress; append final JSON on its own line:
+{"score":{"fluency":0.8,"grammar":0.7,"vocabulary":0.8,"pronunciation":0.0,"notes":"..."}}
+Valid score fields 0.0-1.0. pronunciation may be 0 if unknown.`, target, stage, topic, level, native, targetPhrases, hitPhrases)
+}
+
+func GetVoiceLessonInitPrompt(targetLanguage, nativeLanguage, topic, level string) string {
+	target := promptNameFor(targetLanguage)
+	native := promptNameFor(nativeLanguage)
+	return fmt.Sprintf(`Generate 4 short target phrases (in %s) for a voice lesson on topic "%s" for level %s.
+Respond ONLY with JSON: {"phrases":["phrase1","phrase2","phrase3","phrase4"],"opening":"one short warmup question in %s"}
+Student native: %s.`, target, topic, level, target, native)
+}
+
 func GetTutorSystemPrompt(targetLanguage, nativeLanguage, topic, level string) string {
 	target := promptNameFor(targetLanguage)
 	native := promptNameFor(nativeLanguage)

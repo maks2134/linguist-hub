@@ -22,5 +22,7 @@ const (
 	StatusUnauthorized    = 401
 	StatusForbidden       = 403
 	StatusNotFound        = 404
+	StatusConflict        = 409
+	StatusTooManyRequests = 429
 	StatusInternalError   = 500
 )

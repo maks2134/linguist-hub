@@ -53,11 +53,16 @@ func (s *GeminiService) Close() error {
 	return s.client.Close()
 }
 
-func (s *GeminiService) DiagnosticChat(ctx context.Context, systemPrompt string, history []models.ChatMessage, userMessage string) (string, error) {
-	model := s.model
+func (s *GeminiService) modelWithInstruction(systemPrompt string) *genai.GenerativeModel {
+	model := *s.model
 	model.SystemInstruction = &genai.Content{
 		Parts: []genai.Part{genai.Text(systemPrompt)},
 	}
+	return &model
+}
+
+func (s *GeminiService) DiagnosticChat(ctx context.Context, systemPrompt string, history []models.ChatMessage, userMessage string) (string, error) {
+	model := s.modelWithInstruction(systemPrompt)
 
 	chat := model.StartChat()
 	if len(history) > 0 {
@@ -105,10 +110,7 @@ func (s *GeminiService) GeneratePlan(ctx context.Context, targetLanguage, native
 }
 
 func (s *GeminiService) TutorChat(ctx context.Context, systemPrompt string, history []models.ChatMessage, userMessage string) (string, error) {
-	model := s.model
-	model.SystemInstruction = &genai.Content{
-		Parts: []genai.Part{genai.Text(systemPrompt)},
-	}
+	model := s.modelWithInstruction(systemPrompt)
 
 	chat := model.StartChat()
 	if len(history) > 0 {
@@ -126,6 +128,26 @@ func (s *GeminiService) TutorChat(ctx context.Context, systemPrompt string, hist
 	}
 
 	return fmt.Sprintf("%v", resp.Candidates[0].Content.Parts[0]), nil
+}
+
+func (s *GeminiService) TranscribeBlob(ctx context.Context, data []byte, mimeType, locale string) (string, error) {
+	if len(data) == 0 {
+		return "", fmt.Errorf("empty audio data")
+	}
+	prompt := fmt.Sprintf("Transcribe the following audio accurately in locale %s. Return only the transcript text, no commentary.", locale)
+	model := s.modelWithInstruction(prompt)
+	resp, err := model.GenerateContent(ctx,
+		genai.Blob{MIMEType: mimeType, Data: data},
+		genai.Text("Transcribe."),
+	)
+	if err != nil {
+		logGeminiError("TranscribeBlob", err)
+		return "", fmt.Errorf("transcription failed: %w", err)
+	}
+	if len(resp.Candidates) == 0 || len(resp.Candidates[0].Content.Parts) == 0 {
+		return "", fmt.Errorf("no transcription from Gemini")
+	}
+	return strings.TrimSpace(fmt.Sprintf("%v", resp.Candidates[0].Content.Parts[0])), nil
 }
 
 func (s *GeminiService) convertHistory(messages []models.ChatMessage) []*genai.Content {

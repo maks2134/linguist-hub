@@ -4,24 +4,28 @@ import (
 	h "github.com/makskozlov/linguist-hub/internal/handlers"
 	r "github.com/makskozlov/linguist-hub/internal/repository"
 	s "github.com/makskozlov/linguist-hub/internal/services"
+	"github.com/makskozlov/linguist-hub/internal/services/speech"
+	"github.com/makskozlov/linguist-hub/pkg/middleware"
 
 	"github.com/gofiber/fiber/v3"
 	"gorm.io/gorm"
 )
 
 type Repositories struct {
-	userRepo    *r.UserRepository
-	profileRepo *r.ProfileRepository
-	planRepo    *r.PlanRepository
-	chatRepo    *r.ChatRepository
+	userRepo        *r.UserRepository
+	profileRepo     *r.ProfileRepository
+	planRepo        *r.PlanRepository
+	chatRepo        *r.ChatRepository
+	voiceLessonRepo *r.VoiceLessonRepository
 }
 
 func newRepositories(db *gorm.DB) *Repositories {
 	return &Repositories{
-		userRepo:    r.NewUserRepository(db),
-		profileRepo: r.NewProfileRepository(db),
-		planRepo:    r.NewPlanRepository(db),
-		chatRepo:    r.NewChatRepository(db),
+		userRepo:        r.NewUserRepository(db),
+		profileRepo:     r.NewProfileRepository(db),
+		planRepo:        r.NewPlanRepository(db),
+		chatRepo:        r.NewChatRepository(db),
+		voiceLessonRepo: r.NewVoiceLessonRepository(db),
 	}
 }
 
@@ -29,13 +33,24 @@ type Services struct {
 	authService    *s.AuthService
 	profileService *s.ProfileService
 	aiService      *s.AIService
+	voiceService   *s.VoiceService
 }
 
-func (c *Container) newServices(jwtSecret string) *Services {
+func (c *Container) newServices(jwtSecret string, serverSTT bool) *Services {
+	ai := s.NewAIService(c.geminiService, c.repos.chatRepo, c.repos.profileRepo, c.repos.planRepo)
+	var recognizer speech.Recognizer = speech.NewPassthroughRecognizer()
+	if serverSTT {
+		recognizer = speech.NewGeminiRecognizer(c.geminiService)
+	}
 	return &Services{
 		authService:    s.NewAuthService(c.repos.userRepo, jwtSecret),
 		profileService: s.NewProfileService(c.repos.profileRepo),
-		aiService:      s.NewAIService(c.geminiService, c.repos.chatRepo, c.repos.profileRepo, c.repos.planRepo),
+		aiService:      ai,
+		voiceService: s.NewVoiceService(
+			ai, c.geminiService, c.repos.voiceLessonRepo,
+			c.repos.chatRepo, c.repos.profileRepo, c.repos.planRepo,
+			recognizer,
+		),
 	}
 }
 
@@ -43,15 +58,22 @@ type Handlers struct {
 	authHandler      *h.AuthHandler
 	profileHandler   *h.ProfileHandler
 	aiHandler        *h.AIHandler
+	voiceHandler     *h.VoiceHandler
 	webSocketHandler *h.WebSocketHandler
 }
 
-func (c *Container) newHandlers() *Handlers {
+func (c *Container) newHandlers(serverSTT bool) *Handlers {
+	vh := h.NewVoiceHandler(c.services.voiceService)
+	if serverSTT {
+		var recognizer speech.Recognizer = speech.NewGeminiRecognizer(c.geminiService)
+		vh = h.NewVoiceHandlerWithSTT(c.services.voiceService, recognizer)
+	}
 	return &Handlers{
 		authHandler:      h.NewAuthHandler(c.services.authService),
 		profileHandler:   h.NewProfileHandler(c.services.profileService),
 		aiHandler:        h.NewAIHandler(c.services.aiService),
-		webSocketHandler: h.NewWebSocketHandler(c.services.aiService),
+		voiceHandler:     vh,
+		webSocketHandler: h.NewWebSocketHandler(c.services.aiService, c.services.voiceService),
 	}
 }
 
@@ -62,17 +84,19 @@ type Container struct {
 	geminiService *s.GeminiService
 }
 
-func NewContainer(db *gorm.DB, geminiService *s.GeminiService, jwtSecret string) *Container {
+func NewContainer(db *gorm.DB, geminiService *s.GeminiService, jwtSecret string, serverSTT bool) *Container {
 	c := &Container{geminiService: geminiService}
 	c.repos = newRepositories(db)
-	c.services = c.newServices(jwtSecret)
-	c.handlers = c.newHandlers()
+	c.services = c.newServices(jwtSecret, serverSTT)
+	c.handlers = c.newHandlers(serverSTT)
 	return c
 }
 
 func (c *Container) RegisterRoutes(api fiber.Router, authMiddleware fiber.Handler) {
+	voiceRL := middleware.VoiceRateLimit(middleware.DefaultVoiceRateLimitConfig())
 	c.handlers.webSocketHandler.RegisterRoutes(api, authMiddleware)
 	c.handlers.authHandler.RegisterRoutes(api, authMiddleware)
 	c.handlers.profileHandler.RegisterRoutes(api, authMiddleware)
 	c.handlers.aiHandler.RegisterRoutes(api, authMiddleware)
+	c.handlers.voiceHandler.RegisterRoutes(api, authMiddleware, voiceRL)
 }

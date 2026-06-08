@@ -180,6 +180,65 @@ func (s *AIService) GeneratePlan(ctx context.Context, userID, profileID uint) (*
 	return planToDTO(plan), nil
 }
 
+func (s *AIService) VoiceTutorChat(ctx context.Context, userID, profileID uint, message, topic, locale string) (*dto.VoiceTutorResponse, error) {
+	profile, err := s.validateProfileAccess(userID, profileID)
+	if err != nil {
+		return nil, err
+	}
+
+	targetCode, ok := language.NormalizeLangCode(profile.TargetLanguage)
+	if !ok {
+		return nil, apierror.ErrInvalidLanguage
+	}
+	if locale != "" && !language.ValidateLocale(locale, targetCode) {
+		return nil, apierror.New(constants.StatusBadRequest, "INVALID_LOCALE", "Unsupported locale for this profile")
+	}
+	resolvedLocale := locale
+	if resolvedLocale == "" {
+		resolvedLocale = targetCode.LocaleTags().Primary
+	}
+
+	history, err := s.chatRepo.FindByContexts(userID, []string{"tutor", "voice_tutor"}, profileID)
+	if err != nil {
+		return nil, apierror.Wrap(err, constants.StatusInternalError, "DB_ERROR")
+	}
+
+	if topic == "" {
+		topic = "general conversation"
+	}
+	systemPrompt := GetVoiceTutorSystemPrompt(profile.TargetLanguage, nativeLanguageFor(profile), topic, profile.CurrentLevel)
+
+	rawResponse, err := s.geminiService.TutorChat(ctx, systemPrompt, history, message)
+	if err != nil {
+		return nil, apierror.Wrap(err, constants.StatusInternalError, "AI_ERROR")
+	}
+
+	assistantText, corrections := splitAssistantAndCorrections(rawResponse)
+
+	now := time.Now()
+	userMsg := &models.ChatMessage{
+		UserID: userID, ProfileID: profileID, Role: "user",
+		Context: "voice_tutor", Content: message, CreatedAt: now,
+	}
+	if err := s.chatRepo.Create(userMsg); err != nil {
+		return nil, apierror.Wrap(err, constants.StatusInternalError, "DB_ERROR")
+	}
+	assistantMsg := &models.ChatMessage{
+		UserID: userID, ProfileID: profileID, Role: "assistant",
+		Context: "voice_tutor", Content: assistantText, CreatedAt: now,
+	}
+	if err := s.chatRepo.Create(assistantMsg); err != nil {
+		return nil, apierror.Wrap(err, constants.StatusInternalError, "DB_ERROR")
+	}
+
+	return &dto.VoiceTutorResponse{
+		UserText:    message,
+		Assistant:   assistantText,
+		Corrections: corrections,
+		Locale:      resolvedLocale,
+	}, nil
+}
+
 func (s *AIService) TutorChat(ctx context.Context, userID, profileID uint, message, topic string) (*dto.ChatResponse, error) {
 	profile, err := s.validateProfileAccess(userID, profileID)
 	if err != nil {

@@ -119,7 +119,35 @@
     "readyToPractice": "Ready to practice?",
     "readyToPracticeDesc": "I'm here to help you master {topic}. Start by saying hello!",
     "messagePlaceholder": "Ask your tutor anything...",
-    "defaultTopic": "General conversation"
+    "defaultTopic": "General conversation",
+    "voiceMode": "Voice mode"
+  },
+  "Voice": {
+    "title": "Voice Tutor",
+    "subtitle": "Hold the button and speak — the AI will reply with voice",
+    "back": "Back",
+    "defaultTopic": "General conversation",
+    "holdToTalk": "Hold to talk",
+    "releaseToSend": "Release to send",
+    "pttHint": "Uses browser speech recognition. Works best in Chrome.",
+    "corrections": "Corrections",
+    "speechNotSupported": "Speech recognition is not supported in this browser. Use Chrome or switch to text tutor."
+  },
+  "Lesson": {
+    "title": "Voice Lesson",
+    "back": "Back",
+    "defaultTopic": "Practice",
+    "holdToTalk": "Hold to talk",
+    "releaseToSend": "Release to send",
+    "stage": "Stage",
+    "targetPhrases": "Target phrases",
+    "startLesson": "Start lesson",
+    "lessonComplete": "Lesson complete",
+    "fluency": "Fluency",
+    "grammar": "Grammar",
+    "vocabulary": "Vocabulary",
+    "pronunciation": "Pronunciation",
+    "speechNotSupported": "Speech recognition is not supported in this browser."
   },
   "Plan": {
     "backToDashboard": "Back to Dashboard",
@@ -128,6 +156,7 @@
     "learningJourneyDesc": "An AI-powered curriculum designed specifically for your current level and goals.",
     "module": "Module",
     "topics": "topics",
+    "voiceLesson": "Voice lesson",
     "noPlanTitle": "No Study Plan Found",
     "noPlanDesc": "You need to complete the diagnostic assessment so we can generate your path.",
     "goToDashboard": "Go to Dashboard"

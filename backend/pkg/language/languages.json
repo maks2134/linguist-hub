@@ -18,77 +18,88 @@
       "promptName": "English",
       "flag": "🇬🇧",
       "roles": ["learning", "native"],
-      "endonym": "English"
+      "endonym": "English",
+      "localeTags": ["en-US", "en-GB"]
     },
     {
       "code": "german",
       "promptName": "German",
       "flag": "🇩🇪",
       "roles": ["learning", "native"],
-      "endonym": "Deutsch"
+      "endonym": "Deutsch",
+      "localeTags": ["de-DE"]
     },
     {
       "code": "french",
       "promptName": "French",
       "flag": "🇫🇷",
       "roles": ["learning", "native"],
-      "endonym": "Français"
+      "endonym": "Français",
+      "localeTags": ["fr-FR"]
     },
     {
       "code": "spanish",
       "promptName": "Spanish",
       "flag": "🇪🇸",
       "roles": ["learning", "native"],
-      "endonym": "Español"
+      "endonym": "Español",
+      "localeTags": ["es-ES", "es-MX"]
     },
     {
       "code": "italian",
       "promptName": "Italian",
       "flag": "🇮🇹",
       "roles": ["learning", "native"],
-      "endonym": "Italiano"
+      "endonym": "Italiano",
+      "localeTags": ["it-IT"]
     },
     {
       "code": "portuguese",
       "promptName": "Portuguese",
       "flag": "🇵🇹",
       "roles": ["learning", "native"],
-      "endonym": "Português"
+      "endonym": "Português",
+      "localeTags": ["pt-PT", "pt-BR"]
     },
     {
       "code": "russian",
       "promptName": "Russian",
       "flag": "🇷🇺",
       "roles": ["learning", "native"],
-      "endonym": "Русский"
+      "endonym": "Русский",
+      "localeTags": ["ru-RU"]
     },
     {
       "code": "chinese",
       "promptName": "Chinese",
       "flag": "🇨🇳",
       "roles": ["learning", "native"],
-      "endonym": "中文"
+      "endonym": "中文",
+      "localeTags": ["zh-CN"]
     },
     {
       "code": "japanese",
       "promptName": "Japanese",
       "flag": "🇯🇵",
       "roles": ["learning", "native"],
-      "endonym": "日本語"
+      "endonym": "日本語",
+      "localeTags": ["ja-JP"]
     },
     {
       "code": "korean",
       "promptName": "Korean",
       "flag": "🇰🇷",
       "roles": ["learning"],
-      "endonym": "한국어"
+      "endonym": "한국어",
+      "localeTags": ["ko-KR"]
     },
     {
       "code": "arabic",
       "promptName": "Arabic",
       "flag": "🇸🇦",
       "roles": ["learning", "native"],
-      "endonym": "العربية"
+      "endonym": "العربية",
+      "localeTags": ["ar-SA"]
     }
   ]
 }
