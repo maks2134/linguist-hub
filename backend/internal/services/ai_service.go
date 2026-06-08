@@ -48,11 +48,26 @@ func nativeLanguageFor(profile *models.LanguageProfile) string {
 func planToDTO(plan *models.StudyPlan) *dto.PlanResponse {
 	dtoModules := make([]dto.Module, len(plan.Structure))
 	for i, m := range plan.Structure {
+		locked := ModuleLocked(plan.Structure, i)
+		completedSet := make(map[string]bool, len(m.CompletedTopics))
+		for _, ct := range m.CompletedTopics {
+			completedSet[normalizeTopic(ct)] = true
+		}
+		topics := make([]dto.Topic, len(m.Topics))
+		for j, t := range m.Topics {
+			norm := normalizeTopic(t)
+			topics[j] = dto.Topic{
+				Name:      norm,
+				Completed: completedSet[norm],
+				Locked:    locked,
+			}
+		}
 		dtoModules[i] = dto.Module{
 			ID:          m.ID,
 			Title:       m.Title,
 			Description: m.Description,
-			Topics:      m.Topics,
+			Topics:      topics,
+			Locked:      locked,
 		}
 	}
 	return &dto.PlanResponse{
@@ -124,6 +139,7 @@ func (s *AIService) DiagnosticChat(ctx context.Context, userID, profileID uint, 
 	assessment, err := s.geminiService.ExtractLevelFromResponse(response)
 	if err == nil && assessment != nil {
 		profile.CurrentLevel = assessment.Level
+		profile.Weaknesses = models.JSONStringList(assessment.Weaknesses)
 		if err := s.profileRepo.Update(profile); err != nil {
 			return nil, apierror.Wrap(err, constants.StatusInternalError, "DB_ERROR")
 		}
@@ -206,7 +222,7 @@ func (s *AIService) VoiceTutorChat(ctx context.Context, userID, profileID uint, 
 	if topic == "" {
 		topic = "general conversation"
 	}
-	systemPrompt := GetVoiceTutorSystemPrompt(profile.TargetLanguage, nativeLanguageFor(profile), topic, profile.CurrentLevel)
+	systemPrompt := GetVoiceTutorSystemPrompt(profile.TargetLanguage, nativeLanguageFor(profile), topic, profile.CurrentLevel, []string(profile.Weaknesses))
 
 	rawResponse, err := s.geminiService.TutorChat(ctx, systemPrompt, history, message)
 	if err != nil {
@@ -249,7 +265,7 @@ func (s *AIService) TutorChat(ctx context.Context, userID, profileID uint, messa
 	if err != nil {
 		return nil, apierror.Wrap(err, constants.StatusInternalError, "DB_ERROR")
 	}
-	systemPrompt := GetTutorSystemPrompt(profile.TargetLanguage, nativeLanguageFor(profile), topic, profile.CurrentLevel)
+	systemPrompt := GetTutorSystemPrompt(profile.TargetLanguage, nativeLanguageFor(profile), topic, profile.CurrentLevel, []string(profile.Weaknesses))
 
 	response, err := s.geminiService.TutorChat(ctx, systemPrompt, history, message)
 	if err != nil {
@@ -337,6 +353,7 @@ func (s *AIService) OnboardingChat(ctx context.Context, userID, profileID uint, 
 		profile.CurrentLevel = result.Level
 		profile.OnboardingPhase = "completed"
 		profile.Goals = strings.Join(result.Goals, ", ")
+		profile.Weaknesses = models.JSONStringList(result.Weaknesses)
 		if err := s.profileRepo.Update(profile); err != nil {
 			return nil, apierror.Wrap(err, constants.StatusInternalError, "DB_ERROR")
 		}

@@ -72,7 +72,8 @@
     "level": "Уровень",
     "noProfiles": "Языковых профилей пока нет",
     "noProfilesDesc": "Начните языковой путь, добавив первый язык.",
-    "startLearning": "Начать обучение"
+    "startLearning": "Начать обучение",
+    "lessonHistory": "История уроков"
   },
   "Profile": {
     "title": "Настройки профиля",
@@ -149,6 +150,17 @@
     "pronunciation": "Произношение",
     "speechNotSupported": "Распознавание речи не поддерживается в этом браузере."
   },
+  "VoiceHistory": {
+    "title": "История уроков",
+    "subtitle": "Просмотр завершённых голосовых уроков и оценок.",
+    "backToDashboard": "На главную",
+    "empty": "Уроков пока нет. Пройдите урок из плана обучения!",
+    "statusCompleted": "Завершён",
+    "statusAbandoned": "Прерван",
+    "statusInProgress": "В процессе",
+    "module": "Модуль",
+    "scoreTitle": "Оценка урока"
+  },
   "Plan": {
     "backToDashboard": "На главную",
     "personalizedRoadmap": "Персональный план",
@@ -157,6 +169,8 @@
     "module": "Модуль",
     "topics": "тем",
     "voiceLesson": "Голосовой урок",
+    "locked": "Заблокировано",
+    "completed": "Завершено",
     "noPlanTitle": "План обучения не найден",
     "noPlanDesc": "Пройдите диагностику, чтобы мы могли составить ваш план.",
     "goToDashboard": "На главную"
@@ -176,6 +190,7 @@
     "nativeUpdateFailed": "Не удалось обновить родной язык",
     "updateProfileFailed": "Не удалось обновить профиль",
     "loadPlanFailed": "Не удалось загрузить план",
+    "loadHistoryFailed": "Не удалось загрузить историю уроков",
     "sendMessageFailed": "Не удалось отправить сообщение",
     "generatePlanFailed": "Не удалось сгенерировать план"
   },

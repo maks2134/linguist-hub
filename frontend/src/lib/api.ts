@@ -136,6 +136,45 @@ class ApiClient {
   async changePassword(old_password: string, new_password: string) {
     return this.put<any>("/api/auth/password", { old_password, new_password });
   }
+
+  async listVoiceLessons(profileId: string, limit = 20, offset = 0) {
+    const params = new URLSearchParams({
+      limit: limit.toString(),
+      offset: offset.toString(),
+    });
+    return this.get<import("@/types").VoiceLessonHistory[]>(
+      `/api/voice/lessons/${profileId}?${params.toString()}`
+    );
+  }
+
+  async transcribeAudio(audio: Blob, locale: string) {
+    const token = this.getToken();
+    const formData = new FormData();
+    formData.append("audio", audio, "recording.webm");
+    formData.append("locale", locale);
+
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    const response = await fetch(`${this.baseUrl}/api/voice/stt`, {
+      method: "POST",
+      headers,
+      body: formData,
+    });
+
+    const data: ApiResponse<{ text: string; confidence: number }> = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new ApiRequestError(
+        data.error?.message || "Transcription failed",
+        data.error?.code
+      );
+    }
+
+    return data.data as { text: string; confidence: number };
+  }
 }
 
 export const api = new ApiClient(API_URL);

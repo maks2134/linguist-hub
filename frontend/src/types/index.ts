@@ -17,14 +17,22 @@ export interface Profile {
   current_level: string;
   onboarding_phase: string;
   goals?: string;
+  weaknesses?: string[];
   progress_percentage: number;
+}
+
+export interface Topic {
+  name: string;
+  completed: boolean;
+  locked: boolean;
 }
 
 export interface Module {
   id: number;
   title: string;
   description: string;
-  topics: string[];
+  topics: Topic[];
+  locked?: boolean;
 }
 
 export interface StudyPlan {
@@ -43,4 +51,22 @@ export interface ChatResponse {
   level?: string;
   weaknesses?: string[];
   is_assessment?: boolean;
+}
+
+export interface LessonScore {
+  fluency: number;
+  grammar: number;
+  vocabulary: number;
+  pronunciation: number;
+  notes: string;
+}
+
+export interface VoiceLessonHistory {
+  lesson_id: number;
+  module_id: number;
+  topic: string;
+  status: string;
+  score?: LessonScore;
+  started_at: string;
+  completed_at?: string;
 }

@@ -1,11 +1,13 @@
 package app
 
 import (
+	"context"
 	"fmt"
 	"log/slog"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	swagger "github.com/gofiber/contrib/v3/swaggo"
 	"github.com/gofiber/fiber/v3"
@@ -25,7 +27,9 @@ type App struct {
 	cfg           *config.Config
 	db            *gorm.DB
 	geminiService *services.GeminiService
+	container     *containers.Container
 	logger        *slog.Logger
+	cleanupCancel context.CancelFunc
 }
 
 func New(cfg *config.Config, logger *slog.Logger) (*App, error) {
@@ -91,6 +95,7 @@ func New(cfg *config.Config, logger *slog.Logger) (*App, error) {
 		cfg:           cfg,
 		db:            db,
 		geminiService: geminiService,
+		container:     container,
 		logger:        logger,
 	}, nil
 }
@@ -98,6 +103,10 @@ func New(cfg *config.Config, logger *slog.Logger) (*App, error) {
 func (a *App) Run() error {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	a.cleanupCancel = cancel
+	go a.runVoiceLessonCleanup(ctx)
 
 	go func() {
 		<-quit
@@ -117,7 +126,32 @@ func (a *App) Run() error {
 	return nil
 }
 
+func (a *App) runVoiceLessonCleanup(ctx context.Context) {
+	ticker := time.NewTicker(a.cfg.VoiceLessonCleanupInterval)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-ticker.C:
+			n, err := a.container.MarkStaleVoiceLessons(a.cfg.VoiceLessonStaleAfter)
+			if err != nil {
+				a.logger.Error("voice lesson cleanup failed", slog.Any("error", err))
+				continue
+			}
+			if n > 0 {
+				a.logger.Info("marked stale voice lessons as abandoned", slog.Int64("count", n))
+			}
+		}
+	}
+}
+
 func (a *App) Shutdown() error {
+	if a.cleanupCancel != nil {
+		a.cleanupCancel()
+	}
+
 	if err := a.fiber.Shutdown(); err != nil {
 		a.logger.Error("error shutting down fiber", slog.Any("error", err))
 	}

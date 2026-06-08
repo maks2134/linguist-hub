@@ -2,24 +2,43 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getSpeechRecognitionCtor, isSpeechRecognitionSupported } from "@/lib/voice/codec";
+import { getSTTStrategy, STTStrategy } from "@/lib/voice/stt-strategy";
+import { api } from "@/lib/api";
 
 export function useVoiceCapture(locale: string) {
   const [isRecording, setIsRecording] = useState(false);
   const [partialText, setPartialText] = useState("");
   const [finalText, setFinalText] = useState("");
   const [supported, setSupported] = useState(false);
+  const [sttStrategy, setSttStrategy] = useState<STTStrategy>("web-speech");
   const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const mediaStreamRef = useRef<MediaStream | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
 
   useEffect(() => {
-    setSupported(isSpeechRecognitionSupported());
+    getSTTStrategy().then((strategy) => {
+      setSttStrategy(strategy);
+      if (strategy === "server") {
+        setSupported(
+          typeof navigator !== "undefined" && !!navigator.mediaDevices?.getUserMedia
+        );
+      } else {
+        setSupported(isSpeechRecognitionSupported());
+      }
+    });
   }, []);
 
   const stop = useCallback(() => {
     recognitionRef.current?.stop();
-    setIsRecording(false);
+    if (mediaRecorderRef.current?.state === "recording") {
+      mediaRecorderRef.current.stop();
+    } else {
+      setIsRecording(false);
+    }
   }, []);
 
-  const start = useCallback(() => {
+  const startWebSpeech = useCallback(() => {
     const Ctor = getSpeechRecognitionCtor();
     if (!Ctor) return;
 
@@ -55,9 +74,61 @@ export function useVoiceCapture(locale: string) {
     setIsRecording(true);
   }, [locale]);
 
+  const startServerSTT = useCallback(async () => {
+    setPartialText("");
+    setFinalText("");
+
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaStreamRef.current = stream;
+
+    const recorder = new MediaRecorder(stream);
+    chunksRef.current = [];
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        chunksRef.current.push(event.data);
+      }
+    };
+
+    recorder.onstop = async () => {
+      mediaStreamRef.current?.getTracks().forEach((track) => track.stop());
+      mediaStreamRef.current = null;
+      setIsRecording(false);
+
+      if (chunksRef.current.length === 0) return;
+
+      const blob = new Blob(chunksRef.current, {
+        type: recorder.mimeType || "audio/webm",
+      });
+
+      try {
+        const result = await api.transcribeAudio(blob, locale);
+        setFinalText(result.text.trim());
+      } catch {
+        setFinalText("");
+      }
+    };
+
+    mediaRecorderRef.current = recorder;
+    recorder.start();
+    setIsRecording(true);
+  }, [locale]);
+
+  const start = useCallback(() => {
+    if (sttStrategy === "server") {
+      void startServerSTT();
+    } else {
+      startWebSpeech();
+    }
+  }, [sttStrategy, startServerSTT, startWebSpeech]);
+
   useEffect(() => {
     return () => {
       recognitionRef.current?.abort();
+      if (mediaRecorderRef.current?.state === "recording") {
+        mediaRecorderRef.current.stop();
+      }
+      mediaStreamRef.current?.getTracks().forEach((track) => track.stop());
     };
   }, []);
 
@@ -68,6 +139,7 @@ export function useVoiceCapture(locale: string) {
 
   return {
     supported,
+    sttStrategy,
     isRecording,
     partialText,
     finalText,

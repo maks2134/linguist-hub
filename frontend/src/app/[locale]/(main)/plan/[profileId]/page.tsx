@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/api";
 import { StudyPlan } from "@/types";
 import { toast } from "sonner";
-import { ArrowLeft, BookOpen, Map, Sparkles, ChevronRight, GraduationCap, Loader2, Mic } from "lucide-react";
+import { ArrowLeft, BookOpen, Map, Sparkles, ChevronRight, GraduationCap, Loader2, Mic, Lock, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function PlanPage({
@@ -136,7 +136,7 @@ export default function PlanPage({
               {/* Dot for roadmap */}
               <div className="absolute left-[28px] top-8 h-3 w-3 rounded-full bg-primary ring-4 ring-primary/20 hidden lg:block" />
               
-              <Card className="border-none shadow-md hover:shadow-xl transition-all duration-300 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md overflow-hidden ring-1 ring-slate-100 dark:ring-slate-800">
+              <Card className={`border-none shadow-md hover:shadow-xl transition-all duration-300 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md overflow-hidden ring-1 ring-slate-100 dark:ring-slate-800 ${module.locked ? "opacity-60" : ""}`}>
                 <CardHeader className="pb-4">
                   <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                     <div className="space-y-1">
@@ -144,6 +144,12 @@ export default function PlanPage({
                         <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 font-bold px-3">
                           {t("module")} {module.id}
                         </Badge>
+                        {module.locked && (
+                          <Badge variant="outline" className="flex items-center gap-1">
+                            <Lock className="h-3 w-3" />
+                            {t("locked")}
+                          </Badge>
+                        )}
                         <span className="text-sm text-muted-foreground font-medium flex items-center gap-1">
                            <BookOpen className="h-3 w-3" />
                            {module.topics.length} {t("topics")}
@@ -161,27 +167,46 @@ export default function PlanPage({
                 <CardContent>
                   <div className="space-y-4">
                     <div className="flex flex-wrap gap-2 pt-2">
-                      {module.topics.map((topic, idx) => (
+                      {module.topics.map((topic, idx) => {
+                        const isLocked = module.locked || topic.locked;
+                        const isCompleted = topic.completed;
+                        return (
                         <div key={idx} className="flex flex-wrap items-center gap-2">
                           <motion.button
-                            whileHover={{ y: -2 }}
-                            whileTap={{ scale: 0.98 }}
+                            whileHover={!isLocked ? { y: -2 } : undefined}
+                            whileTap={!isLocked ? { scale: 0.98 } : undefined}
+                            disabled={isLocked}
                             onClick={() =>
-                              router.push(`/tutor/${profileId}?topic=${encodeURIComponent(topic)}`)
+                              !isLocked &&
+                              router.push(`/tutor/${profileId}?topic=${encodeURIComponent(topic.name)}`)
                             }
-                            className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all group"
+                            className={`flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-all group ${
+                              isLocked
+                                ? "cursor-not-allowed opacity-50"
+                                : "hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5"
+                            } ${isCompleted ? "border-green-300 dark:border-green-700" : ""}`}
                           >
-                            <div className="h-2 w-2 rounded-full bg-slate-300 group-hover:bg-primary transition-colors" />
-                            <span className="text-sm font-medium pr-1">{topic}</span>
-                            <ChevronRight className="h-4 w-4 text-slate-400 group-hover:text-primary transition-colors" />
+                            {isCompleted ? (
+                              <CheckCircle2 className="h-4 w-4 text-green-500" />
+                            ) : isLocked ? (
+                              <Lock className="h-4 w-4 text-slate-400" />
+                            ) : (
+                              <div className="h-2 w-2 rounded-full bg-slate-300 group-hover:bg-primary transition-colors" />
+                            )}
+                            <span className="text-sm font-medium pr-1">{topic.name}</span>
+                            {!isLocked && (
+                              <ChevronRight className="h-4 w-4 text-slate-400 group-hover:text-primary transition-colors" />
+                            )}
                           </motion.button>
                           <Button
                             variant="outline"
                             size="sm"
                             className="rounded-xl"
+                            disabled={isLocked}
                             onClick={() =>
+                              !isLocked &&
                               router.push(
-                                `/voice/lesson/${profileId}?topic=${encodeURIComponent(topic)}&moduleId=${module.id}`
+                                `/voice/lesson/${profileId}?topic=${encodeURIComponent(topic.name)}&moduleId=${module.id}`
                               )
                             }
                           >
@@ -189,7 +214,8 @@ export default function PlanPage({
                             {t("voiceLesson")}
                           </Button>
                         </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 </CardContent>

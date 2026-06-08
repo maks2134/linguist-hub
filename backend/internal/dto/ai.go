@@ -32,11 +32,18 @@ type PlanResponse struct {
 	Modules   []Module `json:"modules"`
 }
 
+type Topic struct {
+	Name      string `json:"name"`
+	Completed bool   `json:"completed"`
+	Locked    bool   `json:"locked"`
+}
+
 type Module struct {
-	ID          int      `json:"id"`
-	Title       string   `json:"title"`
-	Description string   `json:"description"`
-	Topics      []string `json:"topics"`
+	ID          int     `json:"id"`
+	Title       string  `json:"title"`
+	Description string  `json:"description"`
+	Topics      []Topic `json:"topics"`
+	Locked      bool    `json:"locked"`
 }
 
 type OnboardingChatResponse struct {

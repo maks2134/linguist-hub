@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func MustLoad(cfg interface{}) {
@@ -55,6 +56,14 @@ func MustLoad(cfg interface{}) {
 		case reflect.String:
 			field.SetString(envVal)
 		case reflect.Int, reflect.Int64:
+			if fieldType.Type == reflect.TypeOf(time.Duration(0)) {
+				d, err := time.ParseDuration(envVal)
+				if err != nil {
+					panic(fmt.Sprintf("config: invalid duration value for %s: %v", envKey, err))
+				}
+				field.SetInt(int64(d))
+				break
+			}
 			intVal, err := strconv.ParseInt(envVal, 10, 64)
 			if err != nil {
 				panic(fmt.Sprintf("config: invalid int value for %s: %v", envKey, err))

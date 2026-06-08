@@ -1,6 +1,8 @@
 package containers
 
 import (
+	"time"
+
 	h "github.com/makskozlov/linguist-hub/internal/handlers"
 	r "github.com/makskozlov/linguist-hub/internal/repository"
 	s "github.com/makskozlov/linguist-hub/internal/services"
@@ -30,26 +32,29 @@ func newRepositories(db *gorm.DB) *Repositories {
 }
 
 type Services struct {
-	authService    *s.AuthService
-	profileService *s.ProfileService
-	aiService      *s.AIService
-	voiceService   *s.VoiceService
+	authService     *s.AuthService
+	profileService  *s.ProfileService
+	aiService       *s.AIService
+	voiceService    *s.VoiceService
+	progressService *s.ProgressService
 }
 
 func (c *Container) newServices(jwtSecret string, serverSTT bool) *Services {
 	ai := s.NewAIService(c.geminiService, c.repos.chatRepo, c.repos.profileRepo, c.repos.planRepo)
+	progress := s.NewProgressService(c.repos.profileRepo, c.repos.planRepo)
 	var recognizer speech.Recognizer = speech.NewPassthroughRecognizer()
 	if serverSTT {
 		recognizer = speech.NewGeminiRecognizer(c.geminiService)
 	}
 	return &Services{
-		authService:    s.NewAuthService(c.repos.userRepo, jwtSecret),
-		profileService: s.NewProfileService(c.repos.profileRepo),
-		aiService:      ai,
+		authService:     s.NewAuthService(c.repos.userRepo, jwtSecret),
+		profileService:  s.NewProfileService(c.repos.profileRepo),
+		aiService:       ai,
+		progressService: progress,
 		voiceService: s.NewVoiceService(
 			ai, c.geminiService, c.repos.voiceLessonRepo,
 			c.repos.chatRepo, c.repos.profileRepo, c.repos.planRepo,
-			recognizer,
+			progress, recognizer,
 		),
 	}
 }
@@ -60,6 +65,7 @@ type Handlers struct {
 	aiHandler        *h.AIHandler
 	voiceHandler     *h.VoiceHandler
 	webSocketHandler *h.WebSocketHandler
+	metaHandler      *h.MetaHandler
 }
 
 func (c *Container) newHandlers(serverSTT bool) *Handlers {
@@ -74,6 +80,7 @@ func (c *Container) newHandlers(serverSTT bool) *Handlers {
 		aiHandler:        h.NewAIHandler(c.services.aiService),
 		voiceHandler:     vh,
 		webSocketHandler: h.NewWebSocketHandler(c.services.aiService, c.services.voiceService),
+		metaHandler:      h.NewMetaHandler(serverSTT),
 	}
 }
 
@@ -94,9 +101,14 @@ func NewContainer(db *gorm.DB, geminiService *s.GeminiService, jwtSecret string,
 
 func (c *Container) RegisterRoutes(api fiber.Router, authMiddleware fiber.Handler) {
 	voiceRL := middleware.VoiceRateLimit(middleware.DefaultVoiceRateLimitConfig())
+	c.handlers.metaHandler.RegisterRoutes(api)
 	c.handlers.webSocketHandler.RegisterRoutes(api, authMiddleware)
 	c.handlers.authHandler.RegisterRoutes(api, authMiddleware)
 	c.handlers.profileHandler.RegisterRoutes(api, authMiddleware)
 	c.handlers.aiHandler.RegisterRoutes(api, authMiddleware)
 	c.handlers.voiceHandler.RegisterRoutes(api, authMiddleware, voiceRL)
+}
+
+func (c *Container) MarkStaleVoiceLessons(staleAfter time.Duration) (int64, error) {
+	return c.repos.voiceLessonRepo.MarkAbandonedStale(staleAfter)
 }

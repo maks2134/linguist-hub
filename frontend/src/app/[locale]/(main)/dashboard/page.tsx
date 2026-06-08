@@ -13,7 +13,7 @@ import { findLanguage, suggestNativeFromUILocale } from "@/lib/language";
 import { ApiRequestError } from "@/lib/api";
 import { translationKeyForApiError } from "@/lib/errors";
 import { toast } from "sonner";
-import { Plus, Sparkles, BookOpen, MessageSquare, Target, ChevronRight, Loader2 } from "lucide-react";
+import { Plus, Sparkles, BookOpen, MessageSquare, Target, ChevronRight, Loader2, History } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function DashboardPage() {
@@ -172,6 +172,17 @@ export default function DashboardPage() {
                                 <ChevronRight className="h-4 w-4 ml-1" />
                               </Button>
                             </div>
+                            {profile.current_level !== "unknown" && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="w-full"
+                                onClick={() => router.push(`/voice/history/${profile.id}`)}
+                              >
+                                <History className="h-4 w-4 mr-2" />
+                                {t("lessonHistory")}
+                              </Button>
+                            )}
                           </CardContent>
                         </Card>
                       </motion.div>

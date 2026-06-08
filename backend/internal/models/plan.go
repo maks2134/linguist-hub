@@ -17,10 +17,11 @@ type StudyPlan struct {
 }
 
 type Module struct {
-	ID          int      `json:"id"`
-	Title       string   `json:"title"`
-	Description string   `json:"description"`
-	Topics      []string `json:"topics"`
+	ID              int      `json:"id"`
+	Title           string   `json:"title"`
+	Description     string   `json:"description"`
+	Topics          []string `json:"topics"`
+	CompletedTopics []string `json:"completed_topics,omitempty"`
 }
 
 func (m Modules) Value() (driver.Value, error) {

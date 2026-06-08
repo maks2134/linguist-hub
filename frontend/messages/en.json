@@ -72,7 +72,8 @@
     "level": "Level",
     "noProfiles": "No language profiles yet",
     "noProfilesDesc": "Start your language learning journey by adding your first language.",
-    "startLearning": "Start Learning"
+    "startLearning": "Start Learning",
+    "lessonHistory": "Lesson history"
   },
   "Profile": {
     "title": "Profile Settings",
@@ -149,6 +150,17 @@
     "pronunciation": "Pronunciation",
     "speechNotSupported": "Speech recognition is not supported in this browser."
   },
+  "VoiceHistory": {
+    "title": "Lesson History",
+    "subtitle": "Review your completed voice lessons and scores.",
+    "backToDashboard": "Back to Dashboard",
+    "empty": "No voice lessons yet. Complete a lesson from your study plan!",
+    "statusCompleted": "Completed",
+    "statusAbandoned": "Abandoned",
+    "statusInProgress": "In progress",
+    "module": "Module",
+    "scoreTitle": "Lesson score"
+  },
   "Plan": {
     "backToDashboard": "Back to Dashboard",
     "personalizedRoadmap": "Personalized Roadmap",
@@ -157,6 +169,8 @@
     "module": "Module",
     "topics": "topics",
     "voiceLesson": "Voice lesson",
+    "locked": "Locked",
+    "completed": "Completed",
     "noPlanTitle": "No Study Plan Found",
     "noPlanDesc": "You need to complete the diagnostic assessment so we can generate your path.",
     "goToDashboard": "Go to Dashboard"
@@ -176,6 +190,7 @@
     "nativeUpdateFailed": "Failed to update native language",
     "updateProfileFailed": "Failed to update profile",
     "loadPlanFailed": "Failed to load study plan",
+    "loadHistoryFailed": "Failed to load lesson history",
     "sendMessageFailed": "Failed to send message",
     "generatePlanFailed": "Failed to generate plan"
   },

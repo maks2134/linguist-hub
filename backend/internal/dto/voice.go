@@ -57,6 +57,16 @@ type LessonResponse struct {
 	Locale        string          `json:"locale,omitempty"`
 }
 
+type LessonHistoryItem struct {
+	LessonID    uint            `json:"lesson_id"`
+	ModuleID    int             `json:"module_id"`
+	Topic       string          `json:"topic"`
+	Status      string          `json:"status"`
+	Score       *LessonScoreDTO `json:"score,omitempty"`
+	StartedAt   string          `json:"started_at"`
+	CompletedAt *string         `json:"completed_at,omitempty"`
+}
+
 type STTResponse struct {
 	Text       string  `json:"text"`
 	Confidence float32 `json:"confidence"`

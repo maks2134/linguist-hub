@@ -21,8 +21,13 @@ func (l *JSONStringList) Scan(value any) error {
 		*l = JSONStringList{}
 		return nil
 	}
-	b, ok := value.([]byte)
-	if !ok {
+	var b []byte
+	switch v := value.(type) {
+	case []byte:
+		b = v
+	case string:
+		b = []byte(v)
+	default:
 		return errors.New("type assertion to []byte failed")
 	}
 	return json.Unmarshal(b, l)

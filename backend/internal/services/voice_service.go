@@ -22,13 +22,14 @@ import (
 const voiceLessonStageTotal = 4
 
 type VoiceService struct {
-	ai          *AIService
-	gemini      *GeminiService
-	lessonRepo  *repository.VoiceLessonRepository
-	chatRepo    *repository.ChatRepository
-	profileRepo *repository.ProfileRepository
-	planRepo    *repository.PlanRepository
-	recognizer  speech.Recognizer
+	ai              *AIService
+	gemini          *GeminiService
+	lessonRepo      *repository.VoiceLessonRepository
+	chatRepo        *repository.ChatRepository
+	profileRepo     *repository.ProfileRepository
+	planRepo        *repository.PlanRepository
+	progressService *ProgressService
+	recognizer      speech.Recognizer
 }
 
 func NewVoiceService(
@@ -38,16 +39,18 @@ func NewVoiceService(
 	chatRepo *repository.ChatRepository,
 	profileRepo *repository.ProfileRepository,
 	planRepo *repository.PlanRepository,
+	progressService *ProgressService,
 	recognizer speech.Recognizer,
 ) *VoiceService {
 	return &VoiceService{
-		ai:          ai,
-		gemini:      gemini,
-		lessonRepo:  lessonRepo,
-		chatRepo:    chatRepo,
-		profileRepo: profileRepo,
-		planRepo:    planRepo,
-		recognizer:  recognizer,
+		ai:              ai,
+		gemini:          gemini,
+		lessonRepo:      lessonRepo,
+		chatRepo:        chatRepo,
+		profileRepo:     profileRepo,
+		planRepo:        planRepo,
+		progressService: progressService,
+		recognizer:      recognizer,
 	}
 }
 
@@ -193,6 +196,18 @@ func (s *VoiceService) LessonTurn(ctx context.Context, userID uint, lessonID uin
 		now := time.Now()
 		lesson.CompletedAt = &now
 		lesson.Stage = "completed"
+
+		if plan, planErr := s.planRepo.FindByProfileID(lesson.ProfileID); planErr == nil {
+			if MarkTopicCompleted(&plan.Structure, lesson.ModuleID, lesson.Topic) {
+				if updateErr := s.planRepo.Update(plan); updateErr != nil {
+					slog.Error("failed to update plan progress", "error", updateErr)
+				} else if s.progressService != nil {
+					if recalcErr := s.progressService.Recalculate(lesson.ProfileID); recalcErr != nil {
+						slog.Error("failed to recalculate progress", "error", recalcErr)
+					}
+				}
+			}
+		}
 	}
 	if err := s.lessonRepo.Update(lesson); err != nil {
 		return nil, apierror.Wrap(err, constants.StatusInternalError, "DB_ERROR")
@@ -217,7 +232,7 @@ func (s *VoiceService) LessonAbandon(ctx context.Context, userID, lessonID uint)
 	return s.lessonRepo.Update(lesson)
 }
 
-func (s *VoiceService) ListLessons(userID, profileID uint, limit, offset int) ([]dto.LessonResponse, error) {
+func (s *VoiceService) ListLessons(userID, profileID uint, limit, offset int) ([]dto.LessonHistoryItem, error) {
 	if _, err := s.ai.validateProfileAccess(userID, profileID); err != nil {
 		return nil, err
 	}
@@ -225,9 +240,9 @@ func (s *VoiceService) ListLessons(userID, profileID uint, limit, offset int) ([
 	if err != nil {
 		return nil, apierror.Wrap(err, constants.StatusInternalError, "DB_ERROR")
 	}
-	out := make([]dto.LessonResponse, len(lessons))
+	out := make([]dto.LessonHistoryItem, len(lessons))
 	for i, l := range lessons {
-		out[i] = *s.lessonToDTO(&l, "", "")
+		out[i] = *s.lessonToHistoryDTO(&l)
 	}
 	return out, nil
 }
@@ -281,6 +296,7 @@ func (s *VoiceService) advanceLesson(ctx context.Context, profile *models.Langua
 	systemPrompt := GetVoiceLessonStagePrompt(
 		profile.TargetLanguage, nativeLanguageFor(profile), profile.CurrentLevel,
 		lesson.Stage, lesson.Topic, []string(lesson.TargetPhrases), []string(lesson.HitPhrases),
+		[]string(profile.Weaknesses),
 	)
 
 	raw, err := s.gemini.TutorChat(ctx, systemPrompt, history, userText)
@@ -341,6 +357,30 @@ func (s *VoiceService) saveLessonMessages(userID, profileID, lessonID uint, user
 		UserID: userID, ProfileID: profileID, Role: "assistant",
 		Context: ctx, Content: assistantText, CreatedAt: now,
 	})
+}
+
+func (s *VoiceService) lessonToHistoryDTO(lesson *models.VoiceLesson) *dto.LessonHistoryItem {
+	item := &dto.LessonHistoryItem{
+		LessonID:  lesson.ID,
+		ModuleID:  lesson.ModuleID,
+		Topic:     lesson.Topic,
+		Status:    lesson.Status,
+		StartedAt: lesson.StartedAt.Format(time.RFC3339),
+	}
+	if lesson.CompletedAt != nil {
+		completed := lesson.CompletedAt.Format(time.RFC3339)
+		item.CompletedAt = &completed
+	}
+	if lesson.Score != nil {
+		item.Score = &dto.LessonScoreDTO{
+			Fluency:       lesson.Score.Fluency,
+			Grammar:       lesson.Score.Grammar,
+			Vocabulary:    lesson.Score.Vocabulary,
+			Pronunciation: lesson.Score.Pronunciation,
+			Notes:         lesson.Score.Notes,
+		}
+	}
+	return item
 }
 
 func (s *VoiceService) lessonToDTO(lesson *models.VoiceLesson, prompt, locale string) *dto.LessonResponse {

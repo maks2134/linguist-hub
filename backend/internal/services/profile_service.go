@@ -29,6 +29,7 @@ func profileToDTO(p *models.LanguageProfile) *dto.ProfileResponse {
 		CurrentLevel:       p.CurrentLevel,
 		OnboardingPhase:    p.OnboardingPhase,
 		Goals:              p.Goals,
+		Weaknesses:         []string(p.Weaknesses),
 		ProgressPercentage: p.ProgressPercentage,
 	}
 }
