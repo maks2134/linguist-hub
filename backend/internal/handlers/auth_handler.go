@@ -138,12 +138,16 @@ func (h *AuthHandler) GetMe(c fiber.Ctx) error {
 	return httputil.RespondJSON(c, 200, resp)
 }
 
-func (h *AuthHandler) RegisterRoutes(api fiber.Router, authMiddleware fiber.Handler) {
+func (h *AuthHandler) RegisterRoutes(
+	api fiber.Router,
+	authMiddleware fiber.Handler,
+	registerRL fiber.Handler,
+	loginRL fiber.Handler,
+) {
 	auth := api.Group("/auth")
-	auth.Post("/register", h.Register)
-	auth.Post("/login", h.Login)
+	auth.Post("/register", registerRL, h.Register)
+	auth.Post("/login", loginRL, h.Login)
 
-	// Protected routes
 	auth.Get("/me", authMiddleware, h.GetMe)
 	auth.Put("/profile", authMiddleware, h.UpdateProfile)
 	auth.Put("/password", authMiddleware, h.ChangePassword)

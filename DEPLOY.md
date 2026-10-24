@@ -46,6 +46,18 @@ Project: `maks-projects-a122241c/linguist-hub` · Root Directory: `frontend`
 
 `ALLOWED_ORIGINS` on Render is currently `*` (CORS OK for the SPA). Tighten to the Vercel URL when you want.
 
+### Abuse / OpenRouter spend guards
+
+In-memory limits (reset on redeploy):
+
+| Surface | Limit |
+|---------|--------|
+| `POST /api/auth/register` | 5 / hour / IP |
+| `POST /api/auth/login` | 30 / hour / IP |
+| AI HTTP + WS LLM turns | 20 / minute / user **and** 80 / UTC day / user |
+
+Also set a **monthly spend cap** in the OpenRouter dashboard — app limits are a soft guard, not a billing firewall.
+
 ## 4. Smoke test
 
 1. Open Vercel URL → register / login  

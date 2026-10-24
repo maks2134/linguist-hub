@@ -12,6 +12,7 @@ import (
 	"github.com/makskozlov/linguist-hub/internal/services"
 	"github.com/makskozlov/linguist-hub/internal/services/speech"
 	"github.com/makskozlov/linguist-hub/pkg/audio"
+	"github.com/makskozlov/linguist-hub/pkg/ratelimit"
 )
 
 type WebSocketMessage struct {
@@ -56,10 +57,33 @@ type WebSocketResponse struct {
 type WebSocketHandler struct {
 	aiService    *services.AIService
 	voiceService *services.VoiceService
+	aiMinute     *ratelimit.Limiter
+	aiDaily      *ratelimit.DailyQuota
 }
 
-func NewWebSocketHandler(aiService *services.AIService, voiceService *services.VoiceService) *WebSocketHandler {
-	return &WebSocketHandler{aiService: aiService, voiceService: voiceService}
+func NewWebSocketHandler(
+	aiService *services.AIService,
+	voiceService *services.VoiceService,
+	aiMinute *ratelimit.Limiter,
+	aiDaily *ratelimit.DailyQuota,
+) *WebSocketHandler {
+	return &WebSocketHandler{
+		aiService:    aiService,
+		voiceService: voiceService,
+		aiMinute:     aiMinute,
+		aiDaily:      aiDaily,
+	}
+}
+
+func (h *WebSocketHandler) allowAI(userID uint) bool {
+	key := ratelimit.UserKey(userID)
+	if h.aiMinute != nil && !h.aiMinute.Allow(key) {
+		return false
+	}
+	if h.aiDaily != nil && !h.aiDaily.Allow(key) {
+		return false
+	}
+	return true
 }
 
 func (h *WebSocketHandler) HandleWebSocket() fiber.Handler {
@@ -81,6 +105,16 @@ func (h *WebSocketHandler) HandleWebSocket() fiber.Handler {
 			if err := json.Unmarshal(msg, &req); err != nil {
 				h.sendError(c, "invalid message format", false)
 				continue
+			}
+
+			switch req.Type {
+			case "onboarding", "diagnostic", "tutor", "generate_plan",
+				"voice_tutor_turn", "voice_tutor_audio",
+				"voice_lesson_start", "voice_lesson_turn":
+				if !h.allowAI(userID) {
+					h.sendError(c, "rate_limited", false)
+					continue
+				}
 			}
 
 			switch req.Type {

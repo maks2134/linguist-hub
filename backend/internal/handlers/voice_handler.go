@@ -23,15 +23,20 @@ func NewVoiceHandlerWithSTT(voiceService *services.VoiceService, recognizer spee
 	return &VoiceHandler{voiceService: voiceService, sttRecognizer: recognizer}
 }
 
-func (h *VoiceHandler) RegisterRoutes(api fiber.Router, authMiddleware fiber.Handler, voiceRateLimit fiber.Handler) {
-	voice := api.Group("/voice", authMiddleware, voiceRateLimit)
+func (h *VoiceHandler) RegisterRoutes(
+	api fiber.Router,
+	authMiddleware fiber.Handler,
+	aiDaily fiber.Handler,
+	voiceRateLimit fiber.Handler,
+) {
+	voice := api.Group("/voice", authMiddleware)
 	voice.Get("/locales/:profileId", h.GetLocales)
-	voice.Post("/tutor/:profileId", h.TutorTurn)
-	voice.Post("/lessons/:profileId/start", h.LessonStart)
-	voice.Post("/lessons/:profileId/turn", h.LessonTurn)
-	voice.Post("/lessons/:profileId/:lessonId/abandon", h.LessonAbandon)
 	voice.Get("/lessons/:profileId", h.ListLessons)
-	voice.Post("/stt", h.STT)
+	voice.Post("/tutor/:profileId", aiDaily, voiceRateLimit, h.TutorTurn)
+	voice.Post("/lessons/:profileId/start", aiDaily, voiceRateLimit, h.LessonStart)
+	voice.Post("/lessons/:profileId/turn", aiDaily, voiceRateLimit, h.LessonTurn)
+	voice.Post("/lessons/:profileId/:lessonId/abandon", voiceRateLimit, h.LessonAbandon)
+	voice.Post("/stt", aiDaily, voiceRateLimit, h.STT)
 }
 
 func (h *VoiceHandler) GetLocales(c fiber.Ctx) error {

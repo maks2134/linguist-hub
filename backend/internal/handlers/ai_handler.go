@@ -210,15 +210,19 @@ func (h *AIHandler) GetChatHistory(c fiber.Ctx) error {
 	return httputil.RespondJSON(c, 200, history)
 }
 
-func (h *AIHandler) RegisterRoutes(api fiber.Router, authMiddleware fiber.Handler) {
+func (h *AIHandler) RegisterRoutes(
+	api fiber.Router,
+	authMiddleware fiber.Handler,
+	aiRL fiber.Handler,
+) {
 	ai := api.Group("/ai", authMiddleware)
-	ai.Post("/onboarding/:profileId", h.OnboardingChat)
-	ai.Post("/diagnostic/:profileId", h.DiagnosticChat)
-	ai.Post("/generate-plan/:profileId", h.GeneratePlan)
+	ai.Post("/onboarding/:profileId", aiRL, h.OnboardingChat)
+	ai.Post("/diagnostic/:profileId", aiRL, h.DiagnosticChat)
+	ai.Post("/generate-plan/:profileId", aiRL, h.GeneratePlan)
 	ai.Get("/plan/:profileId", h.GetPlan)
 
 	chat := api.Group("/chat", authMiddleware)
-	chat.Post("/tutor/:profileId", h.TutorChat)
+	chat.Post("/tutor/:profileId", aiRL, h.TutorChat)
 	chat.Get("/history/:profileId", h.GetChatHistory)
 }
 

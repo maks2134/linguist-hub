@@ -54,6 +54,13 @@ func New(cfg *config.Config, logger *slog.Logger) (*App, error) {
 	logger.Info("LLM service initialized", slog.String("model", llmService.Model()))
 
 	app := fiber.New(fiber.Config{
+		// Render (and similar) terminate TLS and forward client IP.
+		ProxyHeader: fiber.HeaderXForwardedFor,
+		TrustProxy:  true,
+		TrustProxyConfig: fiber.TrustProxyConfig{
+			Private:  true,
+			Loopback: true,
+		},
 		ErrorHandler: func(c fiber.Ctx, err error) error {
 			logger.Error("fiber error", slog.Any("error", err))
 			return c.Status(constants.StatusInternalError).JSON(fiber.Map{

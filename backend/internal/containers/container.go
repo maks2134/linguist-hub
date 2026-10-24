@@ -73,7 +73,12 @@ func (c *Container) newHandlers(serverSTT bool) *Handlers {
 		profileHandler:   h.NewProfileHandler(c.services.profileService),
 		aiHandler:        h.NewAIHandler(c.services.aiService),
 		voiceHandler:     vh,
-		webSocketHandler: h.NewWebSocketHandler(c.services.aiService, c.services.voiceService),
+		webSocketHandler: h.NewWebSocketHandler(
+			c.services.aiService,
+			c.services.voiceService,
+			middleware.DefaultAIMinuteLimit,
+			middleware.DefaultAIDailyQuota,
+		),
 	}
 }
 
@@ -93,10 +98,26 @@ func NewContainer(db *gorm.DB, llmService *s.LLMService, jwtSecret string, serve
 }
 
 func (c *Container) RegisterRoutes(api fiber.Router, authMiddleware fiber.Handler) {
+	registerRL := middleware.IPRateLimit(
+		middleware.DefaultRegisterLimit,
+		"REGISTER_RATE_LIMIT",
+		"Too many registrations from this IP, try later",
+	)
+	loginRL := middleware.IPRateLimit(
+		middleware.DefaultLoginLimit,
+		"LOGIN_RATE_LIMIT",
+		"Too many login attempts, try later",
+	)
+	aiRL := middleware.AIProtect(
+		middleware.DefaultAIMinuteLimit,
+		middleware.DefaultAIDailyQuota,
+	)
 	voiceRL := middleware.VoiceRateLimit(middleware.DefaultVoiceRateLimitConfig())
+	voiceDaily := middleware.AIDailyQuota(middleware.DefaultAIDailyQuota)
+
 	c.handlers.webSocketHandler.RegisterRoutes(api, authMiddleware)
-	c.handlers.authHandler.RegisterRoutes(api, authMiddleware)
+	c.handlers.authHandler.RegisterRoutes(api, authMiddleware, registerRL, loginRL)
 	c.handlers.profileHandler.RegisterRoutes(api, authMiddleware)
-	c.handlers.aiHandler.RegisterRoutes(api, authMiddleware)
-	c.handlers.voiceHandler.RegisterRoutes(api, authMiddleware, voiceRL)
+	c.handlers.aiHandler.RegisterRoutes(api, authMiddleware, aiRL)
+	c.handlers.voiceHandler.RegisterRoutes(api, authMiddleware, voiceDaily, voiceRL)
 }
