@@ -36,13 +36,15 @@ Dashboard: https://dashboard.render.com/web/srv-dbecvve7bikc7381t3gg
 
 ## 3. Vercel (frontend)
 
-- Root Directory: `frontend`
-- Build-time env:
+Live: **https://linguist-hub.vercel.app**  
+Project: `maks-projects-a122241c/linguist-hub` · Root Directory: `frontend`
 
 | Key | Value |
 |-----|--------|
 | `NEXT_PUBLIC_API_URL` | `https://linguist-hub-api.onrender.com` |
 | `NEXT_PUBLIC_WS_URL` | `wss://linguist-hub-api.onrender.com` |
+
+`ALLOWED_ORIGINS` on Render is currently `*` (CORS OK for the SPA). Tighten to the Vercel URL when you want.
 
 ## 4. Smoke test
 
