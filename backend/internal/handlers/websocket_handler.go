@@ -452,12 +452,30 @@ func joinWords(words []string) string {
 
 func wsAuthMiddleware() fiber.Handler {
 	return func(c fiber.Ctx) error {
-		token := c.Query("token")
+		token := extractWSToken(c)
 		if token != "" {
 			c.Request().Header.Set("Authorization", "Bearer "+token)
 		}
 		return c.Next()
 	}
+}
+
+// extractWSToken prefers Sec-WebSocket-Protocol (bearer,<jwt>) over ?token=
+// so long-lived JWTs are less likely to appear in access logs / Referer.
+func extractWSToken(c fiber.Ctx) string {
+	if proto := c.Get("Sec-WebSocket-Protocol"); proto != "" {
+		parts := strings.Split(proto, ",")
+		for i := range parts {
+			parts[i] = strings.TrimSpace(parts[i])
+		}
+		if len(parts) >= 2 && strings.EqualFold(parts[0], "bearer") && parts[1] != "" {
+			return parts[1]
+		}
+		if len(parts) == 1 && parts[0] != "" && !strings.EqualFold(parts[0], "bearer") {
+			return parts[0]
+		}
+	}
+	return strings.TrimSpace(c.Query("token"))
 }
 
 func (h *WebSocketHandler) RegisterRoutes(api fiber.Router, authMiddleware fiber.Handler) {

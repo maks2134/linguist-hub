@@ -69,13 +69,16 @@ func New(cfg *config.Config, logger *slog.Logger) (*App, error) {
 	app.Use(middleware.RequestID())
 	app.Use(middleware.Recover(logger))
 	app.Use(middleware.Logger(logger))
-	app.Use(middleware.CORS([]string{cfg.AllowedOrigins}))
+	app.Use(middleware.CORS(cfg.OriginList()))
 
 	app.Get("/healthz", func(c fiber.Ctx) error {
 		return c.JSON(fiber.Map{"status": "ok"})
 	})
 
-	app.Get("/swagger/*", swagger.HandlerDefault)
+	if cfg.SwaggerEnabled() {
+		app.Get("/swagger/*", swagger.HandlerDefault)
+		logger.Info("Swagger enabled at /swagger")
+	}
 
 	container := containers.NewContainer(db, geminiService, cfg.JWTSecret, cfg.FeatureServerSTT)
 

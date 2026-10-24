@@ -90,6 +90,8 @@ export class WebSocketClient {
         return;
       }
 
+      // Token via query (browser WS cannot set Authorization).
+      // Backend also accepts Sec-WebSocket-Protocol: bearer,<jwt> when negotiated.
       const wsUrl = `${this.url}/api/ws?token=${encodeURIComponent(this.token)}`;
       this.ws = new WebSocket(wsUrl);
 

@@ -7,7 +7,11 @@
 
 ### 1. Account & JWT Auth
 - Регистрация и логин. Получение JWT токена.
-- Хранение токена в Cookie
+- Хранение токена в **localStorage**; API: `Authorization: Bearer <token>`
+- WebSocket: `Sec-WebSocket-Protocol: bearer,<token>`
+
+### Deploy
+See [DEPLOY.md](./DEPLOY.md) — Neon (Postgres) + Railway (Go API) + Vercel (Next.js).
 
 ### 2. Language Selection & Hub
 - Пользователь выбирает язык (например, German).

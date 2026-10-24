@@ -8,9 +8,10 @@ const (
 	DefaultAllowedOrigins = "http://localhost:3000"
 	DBMaxRetries          = 5
 	DBRetryDelay          = 2 * time.Second
-	DBMaxIdleConns        = 10
-	DBMaxOpenConns        = 100
-	DBConnMaxLifetime     = time.Hour
+	// Neon / serverless-friendly pool defaults (override later if needed).
+	DBMaxIdleConns    = 5
+	DBMaxOpenConns    = 20
+	DBConnMaxLifetime = 30 * time.Minute
 	JWTTokenExpiry        = time.Hour * 24 * 7
 	JWTContextKey         = "user_id"
 	AuthorizationHeader   = "Authorization"
