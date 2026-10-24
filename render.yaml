@@ -1,0 +1,33 @@
+# Render Blueprint — Go API for Linguist Hub
+# Dashboard: New → Blueprint → connect maks2134/linguist-hub
+services:
+  - type: web
+    name: linguist-hub-api
+    runtime: docker
+    plan: free
+    region: oregon
+
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /healthz
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: ENABLE_SWAGGER
+        value: "false"
+      - key: PORT
+        value: "8080"
+      - key: LLM_BASE_URL
+        value: https://openrouter.ai/api/v1
+      - key: LLM_MODEL
+        value: openai/gpt-4o-mini
+      - key: FEATURE_SERVER_STT
+        value: "false"
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: LLM_API_KEY
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
