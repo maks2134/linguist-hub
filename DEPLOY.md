@@ -1,48 +1,51 @@
-# Deploy: Neon + Railway + Vercel
+# Deploy: Neon + Fly.io + Vercel
 
 ```
-Browser → Vercel (Next.js) → Railway (Go Fiber) → Neon (Postgres)
-                          ↘ OpenRouter LLM API (from Railway only)
+Browser → Vercel (Next.js) → Fly.io (Go Fiber) → Neon (Postgres)
+                          ↘ OpenRouter LLM API (from Fly only)
 ```
+
+> Railway trial expired; backend targets **Fly.io** (`backend/fly.toml`).  
+> Fly requires a payment method on the account (free allowance after card).
 
 ## 1. Neon
 
-1. Create project + database.
-2. Copy connection string (pooled or direct) with `sslmode=require`.
-3. You can set it as `DATABASE_URL` **or** `DB_DSN` on Railway.
+1. Create project + database (done: `linguist-hub` / `dry-union-33518524`).
+2. Connection string with `sslmode=require` → `DATABASE_URL` or `DB_DSN`.
 
-## 2. Railway (backend)
+## 2. Fly.io (backend)
 
-Root directory / Dockerfile: `backend/`
+```bash
+cd backend
+fly auth login
+fly apps create linguist-hub-api   # needs billing on account
+fly secrets set \
+  APP_ENV=production \
+  ENABLE_SWAGGER=false \
+  DATABASE_URL='postgresql://...' \
+  JWT_SECRET='...' \
+  LLM_API_KEY='...' \
+  LLM_BASE_URL='https://openrouter.ai/api/v1' \
+  LLM_MODEL='openai/gpt-4o-mini' \
+  ALLOWED_ORIGINS='https://your-app.vercel.app'
+fly deploy
+```
 
-Env:
-
-| Key | Value |
-|-----|--------|
-| `APP_ENV` | `production` |
-| `ENABLE_SWAGGER` | `false` |
-| `DATABASE_URL` or `DB_DSN` | Neon URL |
-| `JWT_SECRET` | long random |
-| `LLM_API_KEY` | OpenRouter API key |
-| `LLM_BASE_URL` | `https://openrouter.ai/api/v1` (default) |
-| `LLM_MODEL` | e.g. `openai/gpt-4o-mini` |
-| `ALLOWED_ORIGINS` | `https://your-app.vercel.app` (comma-separated OK) |
-| `PORT` | Railway sets this |
-
-Healthcheck: `GET /healthz`
+Healthcheck: `GET /healthz`  
+Public URL: `https://linguist-hub-api.fly.dev`
 
 ## 3. Vercel (frontend)
 
 - Root Directory: `frontend`
 - Framework: Next.js
-- Env (**Production + Preview**, available at **build**):
+- Env (**Production + Preview**, at **build**):
 
 | Key | Value |
 |-----|--------|
-| `NEXT_PUBLIC_API_URL` | `https://<railway-public-host>` |
-| `NEXT_PUBLIC_WS_URL` | `wss://<railway-public-host>` |
+| `NEXT_PUBLIC_API_URL` | `https://linguist-hub-api.fly.dev` |
+| `NEXT_PUBLIC_WS_URL` | `wss://linguist-hub-api.fly.dev` |
 
-Redeploy frontend after Railway URL is known.
+Redeploy frontend after Fly URL is live.
 
 ## 4. Smoke test
 
