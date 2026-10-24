@@ -15,7 +15,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "LinguistAI - AI Language Learning",
-  description: "AI-adaptive language learning platform powered by Google Gemini",
+  description: "AI-adaptive language learning platform powered by OpenRouter LLMs",
 };
 
 export default async function RootLayout({

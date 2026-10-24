@@ -17,7 +17,8 @@ const (
 	AuthorizationHeader   = "Authorization"
 	BearerPrefix          = "Bearer"
 	MinPasswordLength     = 6
-	GeminiModel           = "gemini-flash-latest"
+	DefaultLLMBaseURL = "https://openrouter.ai/api/v1"
+	DefaultLLMModel   = "openai/gpt-4o-mini"
 	StatusOK              = 200
 	StatusBadRequest      = 400
 	StatusUnauthorized    = 401

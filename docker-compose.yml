@@ -29,7 +29,9 @@ services:
       - PORT=8080
       - DB_DSN=host=postgres user=postgres password=postgres dbname=linguistai port=5432 sslmode=disable
       - JWT_SECRET=dev_jwt_secret_change_in_production
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - LLM_API_KEY=${LLM_API_KEY}
+      - LLM_BASE_URL=${LLM_BASE_URL:-https://openrouter.ai/api/v1}
+      - LLM_MODEL=${LLM_MODEL:-openai/gpt-4o-mini}
       - LOG_LEVEL=info
       - ALLOWED_ORIGINS=http://localhost:3000
     depends_on:

@@ -12,7 +12,9 @@ type Config struct {
 	Port             string `env:"PORT,default=8080"`
 	DBDsn            string `env:"DB_DSN"`
 	JWTSecret        string `env:"JWT_SECRET,required"`
-	GeminiAPIKey     string `env:"GEMINI_API_KEY,required"`
+	LLMAPIKey        string `env:"LLM_API_KEY"`
+	LLMBaseURL       string `env:"LLM_BASE_URL,default=https://openrouter.ai/api/v1"`
+	LLMModel         string `env:"LLM_MODEL,default=openai/gpt-4o-mini"`
 	LogLevel         string `env:"LOG_LEVEL,default=info"`
 	AllowedOrigins   string `env:"ALLOWED_ORIGINS,default=http://localhost:3000"`
 	FeatureServerSTT bool   `env:"FEATURE_SERVER_STT,default=false"`
@@ -24,16 +26,16 @@ func MustLoad() *Config {
 	cfg := &Config{}
 	cfgloader.MustLoad(cfg)
 	cfg.resolveDSN()
+	cfg.resolveLLMKey()
 	if strings.TrimSpace(cfg.JWTSecret) == "" {
 		panic("config: JWT_SECRET is required")
 	}
-	if strings.TrimSpace(cfg.GeminiAPIKey) == "" {
-		panic("config: GEMINI_API_KEY is required")
+	if strings.TrimSpace(cfg.LLMAPIKey) == "" {
+		panic("config: LLM_API_KEY or OPENROUTER_API_KEY is required")
 	}
 	return cfg
 }
 
-// resolveDSN accepts DB_DSN or Neon/Railway DATABASE_URL.
 func (c *Config) resolveDSN() {
 	if strings.TrimSpace(c.DBDsn) == "" {
 		c.DBDsn = strings.TrimSpace(os.Getenv("DATABASE_URL"))
@@ -44,12 +46,24 @@ func (c *Config) resolveDSN() {
 	c.DBDsn = ensureSSLMode(c.DBDsn)
 }
 
+func (c *Config) resolveLLMKey() {
+	if strings.TrimSpace(c.LLMAPIKey) != "" {
+		return
+	}
+	// Aliases for convenience / migration from Gemini.
+	for _, k := range []string{"OPENROUTER_API_KEY", "GEMINI_API_KEY"} {
+		if v := strings.TrimSpace(os.Getenv(k)); v != "" {
+			c.LLMAPIKey = v
+			return
+		}
+	}
+}
+
 func ensureSSLMode(dsn string) string {
 	lower := strings.ToLower(dsn)
 	if strings.Contains(lower, "sslmode=") {
 		return dsn
 	}
-	// Neon / managed Postgres need TLS; local docker often uses host= without ssl.
 	if strings.HasPrefix(lower, "postgres://") || strings.HasPrefix(lower, "postgresql://") {
 		sep := "?"
 		if strings.Contains(dsn, "?") {
@@ -60,7 +74,6 @@ func ensureSSLMode(dsn string) string {
 	return dsn
 }
 
-// OriginList splits ALLOWED_ORIGINS by comma.
 func (c *Config) OriginList() []string {
 	parts := strings.Split(c.AllowedOrigins, ",")
 	out := make([]string, 0, len(parts))
@@ -76,8 +89,6 @@ func (c *Config) OriginList() []string {
 	return out
 }
 
-// SwaggerEnabled is true in non-production unless explicitly disabled,
-// or when ENABLE_SWAGGER=true.
 func (c *Config) SwaggerEnabled() bool {
 	if c.EnableSwagger {
 		return true
@@ -86,5 +97,5 @@ func (c *Config) SwaggerEnabled() bool {
 }
 
 func (c *Config) String() string {
-	return fmt.Sprintf("port=%s app_env=%s swagger=%v", c.Port, c.AppEnv, c.SwaggerEnabled())
+	return fmt.Sprintf("port=%s app_env=%s swagger=%v model=%s", c.Port, c.AppEnv, c.SwaggerEnabled(), c.LLMModel)
 }

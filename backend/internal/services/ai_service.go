@@ -18,20 +18,20 @@ import (
 )
 
 type AIService struct {
-	geminiService *GeminiService
+	llmService *LLMService
 	chatRepo      *repository.ChatRepository
 	profileRepo   *repository.ProfileRepository
 	planRepo      *repository.PlanRepository
 }
 
 func NewAIService(
-	geminiService *GeminiService,
+	llmService *LLMService,
 	chatRepo *repository.ChatRepository,
 	profileRepo *repository.ProfileRepository,
 	planRepo *repository.PlanRepository,
 ) *AIService {
 	return &AIService{
-		geminiService: geminiService,
+		llmService: llmService,
 		chatRepo:      chatRepo,
 		profileRepo:   profileRepo,
 		planRepo:      planRepo,
@@ -91,9 +91,9 @@ func (s *AIService) DiagnosticChat(ctx context.Context, userID, profileID uint, 
 
 	systemPrompt := GetDiagnosticSystemPrompt(profile.TargetLanguage)
 
-	response, err := s.geminiService.DiagnosticChat(ctx, systemPrompt, history, message)
+	response, err := s.llmService.DiagnosticChat(ctx, systemPrompt, history, message)
 	if err != nil {
-		slog.Error("gemini API error", "error", err)
+		slog.Error("llm API error", "error", err)
 		return nil, apierror.Wrap(err, constants.StatusInternalError, "AI_ERROR")
 	}
 
@@ -121,7 +121,7 @@ func (s *AIService) DiagnosticChat(ctx context.Context, userID, profileID uint, 
 		return nil, apierror.Wrap(err, constants.StatusInternalError, "DB_ERROR")
 	}
 
-	assessment, err := s.geminiService.ExtractLevelFromResponse(response)
+	assessment, err := s.llmService.ExtractLevelFromResponse(response)
 	if err == nil && assessment != nil {
 		profile.CurrentLevel = assessment.Level
 		if err := s.profileRepo.Update(profile); err != nil {
@@ -157,7 +157,7 @@ func (s *AIService) GeneratePlan(ctx context.Context, userID, profileID uint) (*
 		return planToDTO(existingPlan), nil
 	}
 
-	planJSON, err := s.geminiService.GeneratePlan(ctx, profile.TargetLanguage, nativeLanguageFor(profile), profile.CurrentLevel)
+	planJSON, err := s.llmService.GeneratePlan(ctx, profile.TargetLanguage, nativeLanguageFor(profile), profile.CurrentLevel)
 	if err != nil {
 		return nil, apierror.Wrap(err, constants.StatusInternalError, "AI_ERROR")
 	}
@@ -208,7 +208,7 @@ func (s *AIService) VoiceTutorChat(ctx context.Context, userID, profileID uint, 
 	}
 	systemPrompt := GetVoiceTutorSystemPrompt(profile.TargetLanguage, nativeLanguageFor(profile), topic, profile.CurrentLevel)
 
-	rawResponse, err := s.geminiService.TutorChat(ctx, systemPrompt, history, message)
+	rawResponse, err := s.llmService.TutorChat(ctx, systemPrompt, history, message)
 	if err != nil {
 		return nil, apierror.Wrap(err, constants.StatusInternalError, "AI_ERROR")
 	}
@@ -251,7 +251,7 @@ func (s *AIService) TutorChat(ctx context.Context, userID, profileID uint, messa
 	}
 	systemPrompt := GetTutorSystemPrompt(profile.TargetLanguage, nativeLanguageFor(profile), topic, profile.CurrentLevel)
 
-	response, err := s.geminiService.TutorChat(ctx, systemPrompt, history, message)
+	response, err := s.llmService.TutorChat(ctx, systemPrompt, history, message)
 	if err != nil {
 		return nil, apierror.Wrap(err, constants.StatusInternalError, "AI_ERROR")
 	}
@@ -302,9 +302,9 @@ func (s *AIService) OnboardingChat(ctx context.Context, userID, profileID uint, 
 
 	systemPrompt := GetOnboardingSystemPrompt(profile.TargetLanguage, nativeLanguageFor(profile))
 
-	response, err := s.geminiService.DiagnosticChat(ctx, systemPrompt, history, message)
+	response, err := s.llmService.DiagnosticChat(ctx, systemPrompt, history, message)
 	if err != nil {
-		slog.Error("gemini API error", "error", err)
+		slog.Error("llm API error", "error", err)
 		return nil, apierror.Wrap(err, constants.StatusInternalError, "AI_ERROR")
 	}
 
@@ -332,7 +332,7 @@ func (s *AIService) OnboardingChat(ctx context.Context, userID, profileID uint, 
 		return nil, apierror.Wrap(err, constants.StatusInternalError, "DB_ERROR")
 	}
 
-	result, _ := s.geminiService.ExtractOnboardingResult(response)
+	result, _ := s.llmService.ExtractOnboardingResult(response)
 	if result != nil {
 		profile.CurrentLevel = result.Level
 		profile.OnboardingPhase = "completed"
@@ -342,7 +342,7 @@ func (s *AIService) OnboardingChat(ctx context.Context, userID, profileID uint, 
 		}
 
 		var planResp *dto.PlanResponse
-		planJSON, planErr := s.geminiService.GeneratePlan(ctx, profile.TargetLanguage, nativeLanguageFor(profile), profile.CurrentLevel)
+		planJSON, planErr := s.llmService.GeneratePlan(ctx, profile.TargetLanguage, nativeLanguageFor(profile), profile.CurrentLevel)
 		if planErr == nil {
 			var modules models.Modules
 			if parseErr := json.Unmarshal(planJSON, &modules); parseErr == nil {

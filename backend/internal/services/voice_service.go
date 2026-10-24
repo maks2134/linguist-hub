@@ -23,7 +23,7 @@ const voiceLessonStageTotal = 4
 
 type VoiceService struct {
 	ai          *AIService
-	gemini      *GeminiService
+	llm      *LLMService
 	lessonRepo  *repository.VoiceLessonRepository
 	chatRepo    *repository.ChatRepository
 	profileRepo *repository.ProfileRepository
@@ -33,7 +33,7 @@ type VoiceService struct {
 
 func NewVoiceService(
 	ai *AIService,
-	gemini *GeminiService,
+	llm *LLMService,
 	lessonRepo *repository.VoiceLessonRepository,
 	chatRepo *repository.ChatRepository,
 	profileRepo *repository.ProfileRepository,
@@ -42,7 +42,7 @@ func NewVoiceService(
 ) *VoiceService {
 	return &VoiceService{
 		ai:          ai,
-		gemini:      gemini,
+		llm:      llm,
 		lessonRepo:  lessonRepo,
 		chatRepo:    chatRepo,
 		profileRepo: profileRepo,
@@ -234,7 +234,7 @@ func (s *VoiceService) ListLessons(userID, profileID uint, limit, offset int) ([
 
 func (s *VoiceService) generateLessonInit(ctx context.Context, profile *models.LanguageProfile, topic string) ([]string, string, error) {
 	prompt := GetVoiceLessonInitPrompt(profile.TargetLanguage, nativeLanguageFor(profile), topic, profile.CurrentLevel)
-	raw, err := s.gemini.DiagnosticChat(ctx, prompt, nil, "Generate lesson phrases.")
+	raw, err := s.llm.DiagnosticChat(ctx, prompt, nil, "Generate lesson phrases.")
 	if err != nil {
 		return nil, "", err
 	}
@@ -283,7 +283,7 @@ func (s *VoiceService) advanceLesson(ctx context.Context, profile *models.Langua
 		lesson.Stage, lesson.Topic, []string(lesson.TargetPhrases), []string(lesson.HitPhrases),
 	)
 
-	raw, err := s.gemini.TutorChat(ctx, systemPrompt, history, userText)
+	raw, err := s.llm.TutorChat(ctx, systemPrompt, history, userText)
 	if err != nil {
 		return "", false, nil, apierror.Wrap(err, constants.StatusInternalError, "AI_ERROR")
 	}

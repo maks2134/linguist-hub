@@ -2,7 +2,7 @@
 
 ```
 Browser → Vercel (Next.js) → Railway (Go Fiber) → Neon (Postgres)
-                          ↘ Google Gemini (from Railway only)
+                          ↘ OpenRouter LLM API (from Railway only)
 ```
 
 ## 1. Neon
@@ -23,7 +23,9 @@ Env:
 | `ENABLE_SWAGGER` | `false` |
 | `DATABASE_URL` or `DB_DSN` | Neon URL |
 | `JWT_SECRET` | long random |
-| `GEMINI_API_KEY` | Google AI key |
+| `LLM_API_KEY` | OpenRouter API key |
+| `LLM_BASE_URL` | `https://openrouter.ai/api/v1` (default) |
+| `LLM_MODEL` | e.g. `openai/gpt-4o-mini` |
 | `ALLOWED_ORIGINS` | `https://your-app.vercel.app` (comma-separated OK) |
 | `PORT` | Railway sets this |
 

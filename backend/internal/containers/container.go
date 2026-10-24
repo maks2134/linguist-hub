@@ -37,17 +37,17 @@ type Services struct {
 }
 
 func (c *Container) newServices(jwtSecret string, serverSTT bool) *Services {
-	ai := s.NewAIService(c.geminiService, c.repos.chatRepo, c.repos.profileRepo, c.repos.planRepo)
+	ai := s.NewAIService(c.llmService, c.repos.chatRepo, c.repos.profileRepo, c.repos.planRepo)
 	var recognizer speech.Recognizer = speech.NewPassthroughRecognizer()
 	if serverSTT {
-		recognizer = speech.NewGeminiRecognizer(c.geminiService)
+		recognizer = speech.NewLLMRecognizer(c.llmService)
 	}
 	return &Services{
 		authService:    s.NewAuthService(c.repos.userRepo, jwtSecret),
 		profileService: s.NewProfileService(c.repos.profileRepo),
 		aiService:      ai,
 		voiceService: s.NewVoiceService(
-			ai, c.geminiService, c.repos.voiceLessonRepo,
+			ai, c.llmService, c.repos.voiceLessonRepo,
 			c.repos.chatRepo, c.repos.profileRepo, c.repos.planRepo,
 			recognizer,
 		),
@@ -65,7 +65,7 @@ type Handlers struct {
 func (c *Container) newHandlers(serverSTT bool) *Handlers {
 	vh := h.NewVoiceHandler(c.services.voiceService)
 	if serverSTT {
-		var recognizer speech.Recognizer = speech.NewGeminiRecognizer(c.geminiService)
+		var recognizer speech.Recognizer = speech.NewLLMRecognizer(c.llmService)
 		vh = h.NewVoiceHandlerWithSTT(c.services.voiceService, recognizer)
 	}
 	return &Handlers{
@@ -81,11 +81,11 @@ type Container struct {
 	repos         *Repositories
 	services      *Services
 	handlers      *Handlers
-	geminiService *s.GeminiService
+	llmService *s.LLMService
 }
 
-func NewContainer(db *gorm.DB, geminiService *s.GeminiService, jwtSecret string, serverSTT bool) *Container {
-	c := &Container{geminiService: geminiService}
+func NewContainer(db *gorm.DB, llmService *s.LLMService, jwtSecret string, serverSTT bool) *Container {
+	c := &Container{llmService: llmService}
 	c.repos = newRepositories(db)
 	c.services = c.newServices(jwtSecret, serverSTT)
 	c.handlers = c.newHandlers(serverSTT)

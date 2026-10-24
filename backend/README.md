@@ -7,7 +7,7 @@ Backend API для платформы изучения языков с испо�
 - **Go 1.23**
 - **Fiber v2** - HTTP framework
 - **GORM** - ORM для PostgreSQL
-- **Google Gemini API** - AI движок
+- **OpenRouter API** - AI движок
 - **JWT** - аутентификация
 - **Swagger** - API документация
 
@@ -58,7 +58,7 @@ swag init -g cmd/api/docs.go -o docs --parseDependency --parseInternal
 
 ```bash
 cp .env.example .env
-# Отредактировать .env и добавить GEMINI_API_KEY
+# Отредактировать .env и добавить LLM_API_KEY
 ```
 
 ### Запуск
@@ -105,7 +105,7 @@ make build
 PORT=8080
 DB_DSN=host=localhost user=postgres password=postgres dbname=linguistai port=5432 sslmode=disable
 JWT_SECRET=your_jwt_secret
-GEMINI_API_KEY=your_gemini_api_key
+LLM_API_KEY=your_gemini_api_key
 LOG_LEVEL=info
 ALLOWED_ORIGINS=http://localhost:3000
 ```
@@ -142,7 +142,7 @@ make deps       # Обновление зависимостей
 - `StudyPlan` - учебные планы (JSONB)
 - `ChatMessage` - история сообщений
 
-## Интеграция с Gemini
+## Интеграция с LLM
 
 См. `internal/services/gemini_service.go`:
 

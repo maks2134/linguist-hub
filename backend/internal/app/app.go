@@ -24,7 +24,7 @@ type App struct {
 	fiber         *fiber.App
 	cfg           *config.Config
 	db            *gorm.DB
-	geminiService *services.GeminiService
+	llmService *services.LLMService
 	logger        *slog.Logger
 }
 
@@ -46,12 +46,12 @@ func New(cfg *config.Config, logger *slog.Logger) (*App, error) {
 
 	logger.Info("Database migrations completed")
 
-	geminiService, err := services.NewGeminiService(cfg.GeminiAPIKey)
+	llmService, err := services.NewLLMService(cfg.LLMAPIKey, cfg.LLMBaseURL, cfg.LLMModel)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create Gemini service: %w", err)
+		return nil, fmt.Errorf("failed to create LLM service: %w", err)
 	}
 
-	logger.Info("Gemini service initialized")
+	logger.Info("LLM service initialized", slog.String("model", llmService.Model()))
 
 	app := fiber.New(fiber.Config{
 		ErrorHandler: func(c fiber.Ctx, err error) error {
@@ -80,7 +80,7 @@ func New(cfg *config.Config, logger *slog.Logger) (*App, error) {
 		logger.Info("Swagger enabled at /swagger")
 	}
 
-	container := containers.NewContainer(db, geminiService, cfg.JWTSecret, cfg.FeatureServerSTT)
+	container := containers.NewContainer(db, llmService, cfg.JWTSecret, cfg.FeatureServerSTT)
 
 	api := app.Group("/api")
 	authMiddleware := middleware.JWTAuth(cfg.JWTSecret)
@@ -93,7 +93,7 @@ func New(cfg *config.Config, logger *slog.Logger) (*App, error) {
 		fiber:         app,
 		cfg:           cfg,
 		db:            db,
-		geminiService: geminiService,
+		llmService: llmService,
 		logger:        logger,
 	}, nil
 }
@@ -125,9 +125,9 @@ func (a *App) Shutdown() error {
 		a.logger.Error("error shutting down fiber", slog.Any("error", err))
 	}
 
-	if a.geminiService != nil {
-		if err := a.geminiService.Close(); err != nil {
-			a.logger.Error("error closing gemini service", slog.Any("error", err))
+	if a.llmService != nil {
+		if err := a.llmService.Close(); err != nil {
+			a.logger.Error("error closing llm service", slog.Any("error", err))
 		}
 	}
 
